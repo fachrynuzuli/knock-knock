@@ -26,10 +26,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 px-4">
       <div className="text-center mb-8 animate-bounce-slow">
         <h1 className="text-4xl md:text-6xl font-heading text-primary-400 mb-2">
-          Knock Knock, Shippers!
+          Knock-Knock, Shippers!
         </h1>
         <p className="text-xl md:text-2xl font-pixel text-white">
-          A Team Management Adventure
+          A non-boring task reporting adventure
         </p>
       </div>
 
