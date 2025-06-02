@@ -93,16 +93,21 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-4">
               <button
                 onClick={handlePreviousAvatar}
-                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
+                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200 hover:text-primary-400"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={24} />
               </button>
 
-              <div className="bg-gray-700 p-2 rounded-lg">
-                <div className="w-16 h-16 flex items-center justify-center">
+              <div className="relative bg-gray-700 p-4 rounded-lg border-2 border-gray-600 transition-transform duration-200 transform hover:scale-105">
+                <div 
+                  className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                  }}
+                >
                   <div 
                     className="character"
                     style={{
@@ -110,21 +115,23 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       height: '48px',
                       backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
                       backgroundPosition: '0px 0px',
-                      transform: 'scale(1.25)',
+                      transform: 'scale(1.5)',
                       transformOrigin: 'center',
                     }}
                   />
                 </div>
-                <div className="text-center mt-1 text-white font-pixel text-sm">
-                  {getAvatarName(avatarOptions[currentAvatarIndex])}
+                <div className="text-center mt-2">
+                  <span className="text-primary-400 font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full">
+                    {getAvatarName(avatarOptions[currentAvatarIndex])}
+                  </span>
                 </div>
               </div>
 
               <button
                 onClick={handleNextAvatar}
-                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
+                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200 hover:text-primary-400"
               >
-                <ChevronRight size={20} />
+                <ChevronRight size={24} />
               </button>
             </div>
           </div>
