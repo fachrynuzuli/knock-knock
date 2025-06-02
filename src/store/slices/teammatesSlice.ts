@@ -29,7 +29,7 @@ const initialState: TeammatesState = {
       name: 'Alex',
       avatarId: 1,
       houseLevel: 2,
-      housePosition: { x: 90, y: 100 },
+      housePosition: { x: 300, y: 300 },
       houseType: 1,
       stats: {
         projectCount: 12,
