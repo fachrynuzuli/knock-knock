@@ -212,8 +212,8 @@ const Game: React.FC = () => {
       <div 
         className="absolute"
         style={{
-          left: '350px',
-          top: '250px',
+          left: '400px',
+          top: '300px',
         }}
       >
         <div className="house" style={{ width: '64px', height: '64px' }}>
