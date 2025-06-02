@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pixel-size: 4;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  font-family: 'Silkscreen', cursive;
+}
+
+body {
+  background-color: #111827;
+}
+
+#root {
+  height: 100%;
+}
+
+.pixel-art {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pixel-text {
+  font-family: 'VT323', monospace;
+}
+
+.pixel-heading {
+  font-family: 'Press Start 2P', cursive;
+}
+
+.shadow-pixel {
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.5);
+}
+
+.button-pixel {
+  transition: all 0.1s ease;
+}
+
+.button-pixel:active {
+  transform: translateY(4px);
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+/* Game object animations */
+@keyframes idle {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-idle {
+  animation: idle 1s infinite ease-in-out;
+}
+
+/* Walking animation classes */
+.character {
+  transition: transform 0.2s ease-out;
+}
+
+.character-shadow {
+  width: 16px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -2px;
+  left: 8px;
+  z-index: -1;
+}
+
+/* Game board design */
+.board {
+  background-color: #c8a080;
+  border: 4px solid #8b5a2b;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Dialog styling */
+.dialog {
+  background-color: #f9fafb;
+  border: 4px solid #4b5563;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 0 #1f2937;
+}
+
+/* Priority indicators */
+.priority-high {
+  @apply bg-red-500;
+}
+
+.priority-medium {
+  @apply bg-yellow-500;
+}
+
+.priority-low {
+  @apply bg-blue-500;
+}
+
+/* Category color coding */
+.category-project {
+  @apply bg-green-600 border-green-800;
+}
+
+.category-adhoc {
+  @apply bg-amber-500 border-amber-700;
+}
+
+.category-routine {
+  @apply bg-blue-500 border-blue-700;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
