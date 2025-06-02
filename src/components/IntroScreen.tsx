@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGameContext } from '../contexts/GameContext';
-import { Users, UserPlus, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -20,6 +20,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
+  const avatarOptions = [1, 2, 3, 4, 5, 6, 7];
+
   const getAvatarName = (id: number) => {
     switch (id) {
       case 1: return 'Casual';
@@ -32,8 +34,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       default: return 'Unknown';
     }
   };
-
-  const avatarOptions = [1, 2, 3, 4, 5, 6, 7];
 
   const getAvatarSprite = (id: number) => {
     switch (id) {
@@ -93,34 +93,30 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-center gap-2">
               <button
                 onClick={handlePreviousAvatar}
                 className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={20} />
               </button>
 
-              <div className="flex-1">
-                <div
-                  className="bg-gray-700 p-4 rounded-lg flex flex-col items-center"
-                >
-                  <div className="w-24 h-24 flex items-center justify-center">
-                    <div 
-                      className="character"
-                      style={{
-                        width: '32px',
-                        height: '48px',
-                        backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
-                        backgroundPosition: '0px 0px',
-                        transform: 'scale(3)',
-                        transformOrigin: 'center',
-                      }}
-                    />
-                  </div>
-                  <div className="text-center mt-2 text-white font-pixel">
-                    {getAvatarName(avatarOptions[currentAvatarIndex])}
-                  </div>
+              <div className="bg-gray-700 p-2 rounded-lg">
+                <div className="w-16 h-16 flex items-center justify-center">
+                  <div 
+                    className="character"
+                    style={{
+                      width: '32px',
+                      height: '48px',
+                      backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
+                      backgroundPosition: '0px 0px',
+                      transform: 'scale(1.25)',
+                      transformOrigin: 'center',
+                    }}
+                  />
+                </div>
+                <div className="text-center mt-1 text-white font-pixel text-sm">
+                  {getAvatarName(avatarOptions[currentAvatarIndex])}
                 </div>
               </div>
 
@@ -128,7 +124,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 onClick={handleNextAvatar}
                 className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
               >
-                <ChevronRight size={24} />
+                <ChevronRight size={20} />
               </button>
             </div>
           </div>
