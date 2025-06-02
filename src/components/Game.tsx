@@ -34,9 +34,9 @@ const Game: React.FC = () => {
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
         // Find which teammate's house we're near
         const nearbyTeammate = teammates.find(teammate => {
-          const dx = Math.abs(playerPosition.x - teammate.housePosition.x);
-          const dy = Math.abs(playerPosition.y - teammate.housePosition.y);
-          return dx < 100 && dy < 100;
+          const dx = Math.abs((playerPosition.x) - (teammate.housePosition.x + 32));
+          const dy = Math.abs((playerPosition.y) - (teammate.housePosition.y + 32));
+          return dx < 48 && dy < 48;
         });
         
         if (nearbyTeammate) {
@@ -44,14 +44,14 @@ const Game: React.FC = () => {
         } else {
           // If near player's own board
           const playerHouse = {
-            x: 350,
-            y: 250
+            x: 782,
+            y: 232
           };
           
-          const dx = Math.abs(playerPosition.x - playerHouse.x);
-          const dy = Math.abs(playerPosition.y - playerHouse.y);
+          const dx = Math.abs((playerPosition.x) - (playerHouse.x + 32));
+          const dy = Math.abs((playerPosition.y) - (playerHouse.y + 32));
           
-          if (dx < 100 && dy < 100) {
+          if (dx < 48 && dy < 48) {
             openForm();
           }
         }
@@ -121,10 +121,10 @@ const Game: React.FC = () => {
       let foundInteraction = false;
       
       // Check if near player's own board
-      const dxPlayer = Math.abs(newX - playerHouse.x);
-      const dyPlayer = Math.abs(newY - playerHouse.y);
+      const dxPlayer = Math.abs((newX) - (playerHouse.x + 32));
+      const dyPlayer = Math.abs((newY) - (playerHouse.y + 32));
       
-      if (dxPlayer < 100 && dyPlayer < 100) {
+      if (dxPlayer < 48 && dyPlayer < 48) {
         setInteractionPrompt({
           show: true,
           message: 'Press E to update your board',
@@ -137,10 +137,10 @@ const Game: React.FC = () => {
       // Check if near teammate houses
       if (!foundInteraction) {
         for (const teammate of teammates) {
-          const dx = Math.abs(newX - teammate.housePosition.x);
-          const dy = Math.abs(newY - teammate.housePosition.y);
+          const dx = Math.abs((newX) - (teammate.housePosition.x + 32));
+          const dy = Math.abs((newY) - (teammate.housePosition.y + 32));
           
-          if (dx < 100 && dy < 100) {
+          if (dx < 48 && dy < 48) {
             setInteractionPrompt({
               show: true,
               message: `Press E to view ${teammate.name}'s board`,
@@ -198,10 +198,6 @@ const Game: React.FC = () => {
               src={`/houses/house-${teammate.houseType}-level-${teammate.houseLevel}.png`}
               alt={`${teammate.name}'s house`}
               className="pixel-art"
-              onError={(e) => {
-                // Fallback if image doesn't exist
-                (e.target as HTMLImageElement).src = 'https://placehold.co/64x64/A5B4FC/FFFFFF?text=House';
-              }}
             />
             <div className="text-white text-xs font-pixel text-center mt-1">{teammate.name}</div>
           </div>
@@ -218,13 +214,9 @@ const Game: React.FC = () => {
       >
         <div className="house" style={{ width: '64px', height: '64px' }}>
           <img 
-            src={`/houses/house-0-level-1.png`}
+            src="/houses/house-0-level-1.png"
             alt="Your house"
             className="pixel-art"
-            onError={(e) => {
-              // Fallback if image doesn't exist
-              (e.target as HTMLImageElement).src = 'https://placehold.co/64x64/F97316/FFFFFF?text=Your+House';
-            }}
           />
           <div className="text-white text-xs font-pixel text-center mt-1">{playerName}</div>
         </div>
