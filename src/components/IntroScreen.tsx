@@ -20,16 +20,16 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const avatarOptions = [1, 2, 3, 4];
+  const avatarOptions = [1, 2];
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 px-4">
       <div className="text-center mb-8 animate-bounce-slow">
         <h1 className="text-4xl md:text-6xl font-heading text-primary-400 mb-2">
-          Knock Knock,Shippers!
+          Knock Knock, Shippers!
         </h1>
         <p className="text-xl md:text-2xl font-pixel text-white">
-          A non-boring task reporting sheet
+          A Team Management Adventure
         </p>
       </div>
 
@@ -55,7 +55,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-4">
               {avatarOptions.map((option) => (
                 <div
                   key={option}
@@ -64,17 +64,21 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     avatar === option ? 'bg-primary-600 ring-2 ring-white' : 'bg-gray-700 hover:bg-gray-600'
                   }`}
                 >
-                  <div className="w-16 h-16 mx-auto overflow-hidden">
+                  <div className="w-16 h-16 mx-auto overflow-hidden flex items-center justify-center">
                     <div 
-                      className="w-[32px] h-[48px] mx-auto"
+                      className="character"
                       style={{
-                        backgroundImage: 'url("/Unarmed_Walk_full.png")',
-                        backgroundPosition: '-32px 0px', // Show idle frame
-                        imageRendering: 'pixelated',
+                        width: '32px',
+                        height: '48px',
+                        backgroundImage: `url("${option === 1 ? '/Unarmed_Walk_full.png' : '/suittie_walk_full.png'}")`,
+                        backgroundPosition: option === 1 ? '-32px 0px' : '0px 0px',
                         transform: 'scale(2)',
                         transformOrigin: 'center',
                       }}
                     />
+                  </div>
+                  <div className="text-center mt-2 text-white font-pixel text-sm">
+                    {option === 1 ? 'Casual' : 'Business'}
                   </div>
                 </div>
               ))}

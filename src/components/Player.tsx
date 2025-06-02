@@ -11,8 +11,27 @@ interface PlayerProps {
   direction: 'up' | 'down' | 'left' | 'right';
 }
 
-const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) => {
-  const [currentFrame, setCurrentFrame] = useState(1); // Start with idle frame
+// Sprite configuration for different character types
+const spriteConfig = {
+  1: {
+    path: '/Unarmed_Walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 3,
+    idleFrame: 1,
+  },
+  2: {
+    path: '/suittie_walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 4,
+    idleFrame: 0,
+  }
+};
+
+const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, direction }) => {
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const sprite = spriteConfig[avatarId as keyof typeof spriteConfig] || spriteConfig[1];
   
   // Handle animation frames
   useEffect(() => {
@@ -20,10 +39,10 @@ const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) 
     
     if (isMoving) {
       animationInterval = window.setInterval(() => {
-        setCurrentFrame(prev => (prev + 1) % 3);
+        setCurrentFrame(prev => (prev + 1) % sprite.frameCount);
       }, 150); // Adjust timing for smooth animation
     } else {
-      setCurrentFrame(1); // Reset to idle frame when not moving
+      setCurrentFrame(sprite.idleFrame);
     }
     
     return () => {
@@ -31,11 +50,11 @@ const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) 
         clearInterval(animationInterval);
       }
     };
-  }, [isMoving]);
+  }, [isMoving, sprite.frameCount, sprite.idleFrame]);
   
-  // Calculate sprite position based on direction
+  // Calculate sprite position based on direction and current frame
   const getBackgroundPosition = () => {
-    const x = currentFrame * 32; // Each frame is 32px wide
+    const x = currentFrame * sprite.frameWidth;
     let y = 0;
     
     switch (direction) {
@@ -43,13 +62,13 @@ const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) 
         y = 0;
         break;
       case 'left':
-        y = 48;
+        y = sprite.frameHeight;
         break;
       case 'right':
-        y = 96;
+        y = sprite.frameHeight * 2;
         break;
       case 'up':
-        y = 144;
+        y = sprite.frameHeight * 3;
         break;
     }
     
@@ -58,10 +77,10 @@ const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) 
   
   return (
     <div 
-      className="absolute transition-all duration-200 ease-linear z-20"
+      className="absolute z-20"
       style={{
-        left: `${position.x - 16}px`, // Center character
-        top: `${position.y - 24}px`, // Offset for feet position
+        left: `${position.x - sprite.frameWidth/2}px`,
+        top: `${position.y - sprite.frameHeight/2}px`,
       }}
     >
       <div className="relative">
@@ -72,11 +91,10 @@ const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) 
         <div 
           className="character"
           style={{
-            width: '32px',
-            height: '48px',
-            backgroundImage: 'url("/Unarmed_Walk_full.png")',
+            width: `${sprite.frameWidth}px`,
+            height: `${sprite.frameHeight}px`,
+            backgroundImage: `url("${sprite.path}")`,
             backgroundPosition: getBackgroundPosition(),
-            imageRendering: 'pixelated',
           }}
         />
         
