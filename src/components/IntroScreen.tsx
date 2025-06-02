@@ -29,7 +29,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           Knock Knock,Shippers!
         </h1>
         <p className="text-xl md:text-2xl font-pixel text-white">
-          Unsubscribe from Boring Reporting
+          Non-boring reporting sheet
         </p>
       </div>
 
