@@ -95,16 +95,16 @@ const Game: React.FC = () => {
       let newX = playerPosition.x;
       let newY = playerPosition.y;
       
-      if ((keysPressed.w || keysPressed.arrowup) && playerPosition.y > 50) {
+      if ((keysPressed.w || keysPressed.arrowup) && playerPosition.y > 24) {
         newY -= moveSpeed;
       }
-      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < 550) {
+      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < 696) {
         newY += moveSpeed;
       }
-      if ((keysPressed.a || keysPressed.arrowleft) && playerPosition.x > 50) {
+      if ((keysPressed.a || keysPressed.arrowleft) && playerPosition.x > 16) {
         newX -= moveSpeed;
       }
-      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < 750) {
+      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < 1264) {
         newX += moveSpeed;
       }
       
