@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface PlayerProps {
   position: {
@@ -11,17 +11,50 @@ interface PlayerProps {
   direction: 'up' | 'down' | 'left' | 'right';
 }
 
-const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, direction }) => {
-  // Fallback character image URLs - in a real implementation, these would be sprite sheets
-  const characterImages = {
-    1: 'https://i.imgur.com/q5TYbm3.png',
-    2: 'https://i.imgur.com/tUVuHY5.png',
-    3: 'https://i.imgur.com/GKDJ9W4.png',
-    4: 'https://i.imgur.com/VygpJHz.png',
-  };
+const Player: React.FC<PlayerProps> = ({ position, name, isMoving, direction }) => {
+  const [currentFrame, setCurrentFrame] = useState(1); // Start with idle frame
   
-  // Get character image or fallback
-  const characterImage = characterImages[avatarId as keyof typeof characterImages] || characterImages[1];
+  // Handle animation frames
+  useEffect(() => {
+    let animationInterval: number | null = null;
+    
+    if (isMoving) {
+      animationInterval = window.setInterval(() => {
+        setCurrentFrame(prev => (prev + 1) % 3);
+      }, 150); // Adjust timing for smooth animation
+    } else {
+      setCurrentFrame(1); // Reset to idle frame when not moving
+    }
+    
+    return () => {
+      if (animationInterval) {
+        clearInterval(animationInterval);
+      }
+    };
+  }, [isMoving]);
+  
+  // Calculate sprite position based on direction
+  const getBackgroundPosition = () => {
+    const x = currentFrame * 32; // Each frame is 32px wide
+    let y = 0;
+    
+    switch (direction) {
+      case 'down':
+        y = 0;
+        break;
+      case 'left':
+        y = 48;
+        break;
+      case 'right':
+        y = 96;
+        break;
+      case 'up':
+        y = 144;
+        break;
+    }
+    
+    return `-${x}px -${y}px`;
+  };
   
   return (
     <div 
@@ -33,22 +66,19 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
     >
       <div className="relative">
         {/* Character shadow */}
-        <div className="character-shadow"></div>
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-4 bg-black/30 rounded-full"></div>
         
         {/* Character sprite */}
         <div 
-          className={`character ${isMoving ? 'animate-bounce-slow' : ''}`}
-          style={{ width: '32px', height: '48px' }}
-        >
-          <img 
-            src={characterImage}
-            alt="Character"
-            className="pixel-art w-full h-full"
-            style={{
-              transform: direction === 'left' ? 'scaleX(-1)' : 'none',
-            }}
-          />
-        </div>
+          className="character"
+          style={{
+            width: '32px',
+            height: '48px',
+            backgroundImage: 'url("/Unarmed_Walk_full.png")',
+            backgroundPosition: getBackgroundPosition(),
+            imageRendering: 'pixelated',
+          }}
+        />
         
         {/* Player name */}
         <div 

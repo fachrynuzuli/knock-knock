@@ -56,31 +56,13 @@ body {
   box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
 }
 
-/* Game object animations */
-@keyframes idle {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-2px); }
-  100% { transform: translateY(0px); }
-}
-
-.animate-idle {
-  animation: idle 1s infinite ease-in-out;
-}
-
-/* Walking animation classes */
+/* Character styles */
 .character {
-  transition: transform 0.2s ease-out;
-}
-
-.character-shadow {
-  width: 16px;
-  height: 4px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
-  position: absolute;
-  bottom: -2px;
-  left: 8px;
-  z-index: -1;
+  overflow: hidden;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  background-repeat: no-repeat;
 }
 
 /* Game board design */

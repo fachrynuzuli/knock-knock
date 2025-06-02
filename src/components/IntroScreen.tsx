@@ -64,14 +64,15 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     avatar === option ? 'bg-primary-600 ring-2 ring-white' : 'bg-gray-700 hover:bg-gray-600'
                   }`}
                 >
-                  <div className="w-16 h-16 mx-auto bg-gray-200 rounded-full overflow-hidden">
-                    <img 
-                      src={`/sprites/character${option}.png`} 
-                      alt={`Avatar ${option}`} 
-                      className="w-full h-full object-cover pixel-art"
-                      onError={(e) => {
-                        // Fallback if image doesn't exist
-                        (e.target as HTMLImageElement).src = 'https://placehold.co/64x64/6366F1/FFFFFF?text=Avatar';
+                  <div className="w-16 h-16 mx-auto overflow-hidden">
+                    <div 
+                      className="w-[32px] h-[48px] mx-auto"
+                      style={{
+                        backgroundImage: 'url("/Unarmed_Walk_full.png")',
+                        backgroundPosition: '-32px 0px', // Show idle frame
+                        imageRendering: 'pixelated',
+                        transform: 'scale(2)',
+                        transformOrigin: 'center',
                       }}
                     />
                   </div>
