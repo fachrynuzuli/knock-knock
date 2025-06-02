@@ -29,7 +29,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           Knock-Knock, Shippers!
         </h1>
         <p className="text-xl md:text-2xl font-pixel text-white">
-          A non-boring task reporting adventure
+          A non-boring task reporting management
         </p>
       </div>
 
