@@ -115,7 +115,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       height: '48px',
                       backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
                       backgroundPosition: '-15px -5px',
-                      transform: 'scale(1.5)',
+                      transform: 'scale(1.75)',
                       transformOrigin: 'center',
                     }}
                   />
