@@ -26,6 +26,41 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+  },
+  3: {
+    path: '/orc1_walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 4,
+    idleFrame: 0,
+  },
+  4: {
+    path: '/Vampires1_Walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 4,
+    idleFrame: 0,
+  },
+  5: {
+    path: '/orc2_walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 4,
+    idleFrame: 0,
+  },
+  6: {
+    path: '/Vampires2_Walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 4,
+    idleFrame: 0,
+  },
+  7: {
+    path: '/orc3_walk_full.png',
+    frameWidth: 32,
+    frameHeight: 48,
+    frameCount: 4,
+    idleFrame: 0,
   }
 };
 

@@ -20,13 +20,39 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const avatarOptions = [1, 2];
+  const getAvatarName = (id: number) => {
+    switch (id) {
+      case 1: return 'Casual';
+      case 2: return 'Business';
+      case 3: return 'Orc Warrior';
+      case 4: return 'Vampire Lord';
+      case 5: return 'Orc Shaman';
+      case 6: return 'Vampire Noble';
+      case 7: return 'Orc Chief';
+      default: return 'Unknown';
+    }
+  };
+
+  const avatarOptions = [1, 2, 3, 4, 5, 6, 7];
+
+  const getAvatarSprite = (id: number) => {
+    switch (id) {
+      case 1: return '/Unarmed_Walk_full.png';
+      case 2: return '/suittie_walk_full.png';
+      case 3: return '/orc1_walk_full.png';
+      case 4: return '/Vampires1_Walk_full.png';
+      case 5: return '/orc2_walk_full.png';
+      case 6: return '/Vampires2_Walk_full.png';
+      case 7: return '/orc3_walk_full.png';
+      default: return '/Unarmed_Walk_full.png';
+    }
+  };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 px-4">
       <div className="text-center mb-8 animate-bounce-slow">
         <h1 className="text-4xl md:text-6xl font-heading text-primary-400 mb-2">
-          Knock-Knock,Shippers!
+          Knock-Knock, Shippers!
         </h1>
         <p className="text-xl md:text-2xl font-pixel text-white">
           A non-boring task reporting management
@@ -55,7 +81,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4 max-h-[300px] overflow-y-auto pr-2">
               {avatarOptions.map((option) => (
                 <div
                   key={option}
@@ -70,15 +96,15 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       style={{
                         width: '32px',
                         height: '48px',
-                        backgroundImage: `url("${option === 1 ? '/Unarmed_Walk_full.png' : '/suittie_walk_full.png'}")`,
-                        backgroundPosition: option === 1 ? '-32px 0px' : '0px 0px',
+                        backgroundImage: `url("${getAvatarSprite(option)}")`,
+                        backgroundPosition: '0px 0px',
                         transform: 'scale(2)',
                         transformOrigin: 'center',
                       }}
                     />
                   </div>
                   <div className="text-center mt-2 text-white font-pixel text-sm">
-                    {option === 1 ? 'Casual' : 'Business'}
+                    {getAvatarName(option)}
                   </div>
                 </div>
               ))}
