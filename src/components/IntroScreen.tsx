@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGameContext } from '../contexts/GameContext';
-import { Users, UserPlus, MapPin } from 'lucide-react';
+import { Users, UserPlus, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -9,13 +9,13 @@ interface IntroScreenProps {
 const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const { setPlayerName, setPlayerAvatar } = useGameContext();
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState(1);
+  const [currentAvatarIndex, setCurrentAvatarIndex] = useState(0);
   const [showInstructions, setShowInstructions] = useState(false);
 
   const handleStartGame = () => {
     if (name.trim()) {
       setPlayerName(name);
-      setPlayerAvatar(avatar);
+      setPlayerAvatar(avatarOptions[currentAvatarIndex]);
       onStartGame();
     }
   };
@@ -46,6 +46,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       case 7: return '/orc3_walk_full.png';
       default: return '/Unarmed_Walk_full.png';
     }
+  };
+
+  const handlePreviousAvatar = () => {
+    setCurrentAvatarIndex((prev) => 
+      prev === 0 ? avatarOptions.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextAvatar = () => {
+    setCurrentAvatarIndex((prev) => 
+      prev === avatarOptions.length - 1 ? 0 : prev + 1
+    );
   };
 
   return (
@@ -81,33 +93,43 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="grid grid-cols-3 gap-4 max-h-[300px] overflow-y-auto pr-2">
-              {avatarOptions.map((option) => (
+            <div className="flex items-center justify-between gap-4">
+              <button
+                onClick={handlePreviousAvatar}
+                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
+              >
+                <ChevronLeft size={24} />
+              </button>
+
+              <div className="flex-1">
                 <div
-                  key={option}
-                  onClick={() => setAvatar(option)}
-                  className={`cursor-pointer p-2 rounded-lg transition-all ${
-                    avatar === option ? 'bg-primary-600 ring-2 ring-white' : 'bg-gray-700 hover:bg-gray-600'
-                  }`}
+                  className="bg-gray-700 p-4 rounded-lg flex flex-col items-center"
                 >
-                  <div className="w-16 h-16 mx-auto overflow-hidden flex items-center justify-center">
+                  <div className="w-24 h-24 flex items-center justify-center">
                     <div 
                       className="character"
                       style={{
                         width: '32px',
                         height: '48px',
-                        backgroundImage: `url("${getAvatarSprite(option)}")`,
+                        backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
                         backgroundPosition: '0px 0px',
-                        transform: 'scale(2)',
+                        transform: 'scale(3)',
                         transformOrigin: 'center',
                       }}
                     />
                   </div>
-                  <div className="text-center mt-2 text-white font-pixel text-sm">
-                    {getAvatarName(option)}
+                  <div className="text-center mt-2 text-white font-pixel">
+                    {getAvatarName(avatarOptions[currentAvatarIndex])}
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <button
+                onClick={handleNextAvatar}
+                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white"
+              >
+                <ChevronRight size={24} />
+              </button>
             </div>
           </div>
 
