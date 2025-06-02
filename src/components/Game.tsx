@@ -212,7 +212,7 @@ const Game: React.FC = () => {
       <div 
         className="absolute"
         style={{
-          left: '650px',
+          left: '400px',
           top: '200px',
         }}
       >
