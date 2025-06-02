@@ -114,8 +114,8 @@ const Game: React.FC = () => {
       
       // Check for nearby interaction opportunities
       const playerHouse = {
-        x: 400,
-        y: 300
+        x: 782,
+        y: 232
       };
       
       let foundInteraction = false;
