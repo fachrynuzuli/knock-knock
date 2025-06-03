@@ -62,6 +62,7 @@ body {
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
   background-repeat: no-repeat;
+  transition: transform 0.2s ease-out;
 }
 
 /* Game board design */
