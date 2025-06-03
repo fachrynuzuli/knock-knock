@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { useGameContext } from '../contexts/GameContext';
 import { addActivity, ActivityCategory, ProjectMilestone } from '../store/slices/activitiesSlice';
-import { incrementTeammateStats } from '../store/slices/teammatesSlice';
 import { CheckCircle2, XCircle, Clipboard, BarChart4 } from 'lucide-react';
 
 interface ActivityFormProps {
@@ -103,13 +102,6 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
         priority: activity.priority,
         week: currentWeek,
         createdBy: playerName
-      }));
-      
-      // Update teammate stats
-      const teammateId = '1'; // Hardcoded for demo
-      dispatch(incrementTeammateStats({
-        id: teammateId,
-        category: activity.category
       }));
     });
     

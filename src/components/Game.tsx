@@ -193,7 +193,7 @@ const Game: React.FC = () => {
             top: `${teammate.housePosition.y}px`,
           }}
         >
-          <div className="house opacity-0" style={{ width: '64px', height: '64px' }}>
+          <div className="house" style={{ width: '64px', height: '64px' }}>
             <img 
               src={`/houses/house-${teammate.houseType}-level-${teammate.houseLevel}.png`}
               alt={`${teammate.name}'s house`}
@@ -212,7 +212,7 @@ const Game: React.FC = () => {
           top: '200px',
         }}
       >
-        <div className="house opacity-0" style={{ width: '64px', height: '64px' }}>
+        <div className="house" style={{ width: '64px', height: '64px' }}>
           <img 
             src="/houses/house-0-level-1.png"
             alt="Your house"
