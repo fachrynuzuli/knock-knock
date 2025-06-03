@@ -44,7 +44,7 @@ body {
 }
 
 .shadow-pixel {
-  box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.5);
 }
 
 .button-pixel {
@@ -62,7 +62,6 @@ body {
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
   background-repeat: no-repeat;
-  transition: transform 0.2s ease-out;
 }
 
 /* Game board design */
