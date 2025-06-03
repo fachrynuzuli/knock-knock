@@ -1,2 +1,2 @@
-knock-knock
-a game for Bolt Largest Hackathon
+knock-knock:
+> submission for World's Largest Hackathon
