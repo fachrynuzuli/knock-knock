@@ -17,7 +17,7 @@ const spriteConfig = {
     path: '/Unarmed_Walk_full.png',
     frameWidth: 32,
     frameHeight: 48,
-    frameCount: 3,
+    frameCount: 6,
     idleFrame: 1,
   },
   2: {
