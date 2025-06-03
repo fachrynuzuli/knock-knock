@@ -15,7 +15,7 @@ interface PlayerProps {
 const spriteConfig = {
   1: {
     path: '/Unarmed_Walk_full.png',
-    frameWidth: 32,
+    frameWidth: 48,
     frameHeight: 48,
     frameCount: 3,
     idleFrame: 1,
