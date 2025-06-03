@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useGameContext } from '../contexts/GameContext';
 import { MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { spriteConfig } from '../utils/spriteConfig';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -32,19 +33,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       case 6: return 'Vampire Noble';
       case 7: return 'Orc Chief';
       default: return 'Unknown';
-    }
-  };
-
-  const getAvatarSprite = (id: number) => {
-    switch (id) {
-      case 1: return '/Unarmed_Walk_full.png';
-      case 2: return '/suittie_walk_full.png';
-      case 3: return '/orc1_walk_full.png';
-      case 4: return '/Vampires1_Walk_full.png';
-      case 5: return '/orc2_walk_full.png';
-      case 6: return '/Vampires2_Walk_full.png';
-      case 7: return '/orc3_walk_full.png';
-      default: return '/Unarmed_Walk_full.png';
     }
   };
 
@@ -111,10 +99,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   <div 
                     className="character"
                     style={{
-                      width: '32px',
-                      height: '48px',
-                      backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
-                      backgroundPosition: '-15px -5px',
+                      width: `${spriteConfig[avatarOptions[currentAvatarIndex]].frameWidth}px`,
+                      height: `${spriteConfig[avatarOptions[currentAvatarIndex]].frameHeight}px`,
+                      backgroundImage: `url("${spriteConfig[avatarOptions[currentAvatarIndex]].path}")`,
+                      backgroundPosition: `-${spriteConfig[avatarOptions[currentAvatarIndex]].idleFrame * spriteConfig[avatarOptions[currentAvatarIndex]].frameWidth - 1}px -${0}px`,
                       transform: 'scale(1.75)',
                       transformOrigin: 'center',
                     }}

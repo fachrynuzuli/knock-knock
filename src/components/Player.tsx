@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { spriteConfig } from '../utils/spriteConfig';
 
 interface PlayerProps {
   position: {
@@ -11,62 +12,9 @@ interface PlayerProps {
   direction: 'up' | 'down' | 'left' | 'right';
 }
 
-// Sprite configuration for different character types
-const spriteConfig = {
-  1: {
-    path: '/Unarmed_Walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 3,
-    idleFrame: 1,
-  },
-  2: {
-    path: '/suittie_walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 4,
-    idleFrame: 0,
-  },
-  3: {
-    path: '/orc1_walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 4,
-    idleFrame: 0,
-  },
-  4: {
-    path: '/Vampires1_Walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 4,
-    idleFrame: 0,
-  },
-  5: {
-    path: '/orc2_walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 4,
-    idleFrame: 0,
-  },
-  6: {
-    path: '/Vampires2_Walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 4,
-    idleFrame: 0,
-  },
-  7: {
-    path: '/orc3_walk_full.png',
-    frameWidth: 32,
-    frameHeight: 48,
-    frameCount: 4,
-    idleFrame: 0,
-  }
-};
-
 const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, direction }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
-  const sprite = spriteConfig[avatarId as keyof typeof spriteConfig] || spriteConfig[1];
+  const sprite = spriteConfig[avatarId] || spriteConfig[1];
   
   // Handle animation frames
   useEffect(() => {
@@ -107,7 +55,7 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
         break;
     }
     
-    return `-${x}px -${y}px`;
+    return `-${x - 1}px -${y - 1}px`;
   };
   
   return (
