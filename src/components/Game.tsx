@@ -36,7 +36,7 @@ const Game: React.FC = () => {
         const nearbyTeammate = teammates.find(teammate => {
           const dx = Math.abs((playerPosition.x) - (teammate.housePosition.x + 32));
           const dy = Math.abs((playerPosition.y) - (teammate.housePosition.y + 32));
-          return dx < 48 && dy < 48;
+          return dx < 64 && dy < 64;
         });
         
         if (nearbyTeammate) {
@@ -51,7 +51,7 @@ const Game: React.FC = () => {
           const dx = Math.abs((playerPosition.x) - (playerHouse.x + 32));
           const dy = Math.abs((playerPosition.y) - (playerHouse.y + 32));
           
-          if (dx < 48 && dy < 48) {
+          if (dx < 64 && dy < 64) {
             openForm();
           }
         }
@@ -124,7 +124,7 @@ const Game: React.FC = () => {
       const dxPlayer = Math.abs((newX) - (playerHouse.x + 32));
       const dyPlayer = Math.abs((newY) - (playerHouse.y + 32));
       
-      if (dxPlayer < 48 && dyPlayer < 48) {
+      if (dxPlayer < 64 && dyPlayer < 64) {
         setInteractionPrompt({
           show: true,
           message: 'Press E to update your board',
@@ -140,7 +140,7 @@ const Game: React.FC = () => {
           const dx = Math.abs((newX) - (teammate.housePosition.x + 32));
           const dy = Math.abs((newY) - (teammate.housePosition.y + 32));
           
-          if (dx < 48 && dy < 48) {
+          if (dx < 64 && dy < 64) {
             setInteractionPrompt({
               show: true,
               message: `Press E to view ${teammate.name}'s board`,
