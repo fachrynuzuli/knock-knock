@@ -18,56 +18,70 @@ const spriteConfig = {
     frameWidth: 64,
     frameHeight: 64,
     frameCount: 6,
-    idleFrame: 0,
-    scale: 3,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   },
   2: {
     path: '/suittie_walk_full.png',
-    frameWidth: 120,
-    frameHeight: 160,
-    frameCount: 4,
-    idleFrame: 0,
-    scale: 1,
+    frameWidth: 64,
+    frameHeight: 64,
+    frameCount: 6,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   },
   3: {
     path: '/orc1_walk_full.png',
     frameWidth: 64,
     frameHeight: 64,
     frameCount: 6,
-    idleFrame: 0,
-    scale: 3,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   },
   4: {
     path: '/Vampires1_Walk_full.png',
-   frameWidth: 64,
+    frameWidth: 64,
     frameHeight: 64,
     frameCount: 6,
-    idleFrame: 0,
-    scale: 3,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   },
   5: {
     path: '/orc2_walk_full.png',
     frameWidth: 64,
     frameHeight: 64,
     frameCount: 6,
-    idleFrame: 0,
-    scale: 3,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   },
   6: {
     path: '/Vampires2_Walk_full.png',
     frameWidth: 64,
     frameHeight: 64,
     frameCount: 6,
-    idleFrame: 0,
-    scale: 3,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   },
   7: {
     path: '/orc3_walk_full.png',
     frameWidth: 64,
     frameHeight: 64,
     frameCount: 6,
-    idleFrame: 0,
-    scale: 3,
+    rowCount: 4,
+    scale: 1.5,
+    offsetX: 0,
+    offsetY: 0,
   }
 };
 
@@ -75,59 +89,63 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
   const [currentFrame, setCurrentFrame] = useState(0);
   const sprite = spriteConfig[avatarId as keyof typeof spriteConfig] || spriteConfig[1];
   
-  // Handle animation frames
+  // Animation frame handling
   useEffect(() => {
-    let animationInterval: number | null = null;
+    let animationFrame: number;
+    let lastTimestamp = 0;
+    const frameInterval = 100; // Milliseconds between frames
     
-    if (isMoving) {
-      animationInterval = window.setInterval(() => {
-        setCurrentFrame(prev => (prev + 1) % sprite.frameCount);
-      }, 150); // Adjust timing for smooth animation
-    } else {
-      setCurrentFrame(sprite.idleFrame);
-    }
+    const animate = (timestamp: number) => {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      
+      const elapsed = timestamp - lastTimestamp;
+      
+      if (elapsed > frameInterval) {
+        if (isMoving) {
+          setCurrentFrame(prev => (prev + 1) % sprite.frameCount);
+        } else {
+          setCurrentFrame(0); // Reset to idle frame when not moving
+        }
+        lastTimestamp = timestamp;
+      }
+      
+      animationFrame = requestAnimationFrame(animate);
+    };
+    
+    animationFrame = requestAnimationFrame(animate);
     
     return () => {
-      if (animationInterval) {
-        clearInterval(animationInterval);
-      }
+      cancelAnimationFrame(animationFrame);
     };
-  }, [isMoving, sprite.frameCount, sprite.idleFrame]);
-  
-  // Calculate sprite position based on direction and current frame
-  const getBackgroundPosition = () => {
-    const x = currentFrame * sprite.frameWidth;
-    let y = 0;
-    
+  }, [isMoving, sprite.frameCount]);
+
+  // Get the row index based on direction
+  const getDirectionRow = () => {
     switch (direction) {
-      case 'down':
-        y = 0;
-        break;
-      case 'left':
-        y = sprite.frameHeight;
-        break;
-      case 'right':
-        y = sprite.frameHeight * 2;
-        break;
-      case 'up':
-        y = sprite.frameHeight * 3;
-        break;
+      case 'down': return 0;
+      case 'left': return 1;
+      case 'right': return 2;
+      case 'up': return 3;
+      default: return 0;
     }
-    
-    return `-${x}px -${y}px`;
   };
 
   const scaledWidth = sprite.frameWidth * sprite.scale;
   const scaledHeight = sprite.frameHeight * sprite.scale;
   
+  // Calculate background position
+  const x = currentFrame * sprite.frameWidth + sprite.offsetX;
+  const y = getDirectionRow() * sprite.frameHeight + sprite.offsetY;
+  
   return (
     <div 
-      className="absolute z-20"
+      className="absolute transition-transform duration-75"
       style={{
         left: `${position.x - (scaledWidth / 2)}px`,
         top: `${position.y - (scaledHeight / 2)}px`,
         width: `${scaledWidth}px`,
         height: `${scaledHeight}px`,
+        zIndex: Math.floor(position.y),
       }}
     >
       <div className="relative w-full h-full">
@@ -135,8 +153,8 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
         <div 
           className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-black/30"
           style={{
-            width: `${scaledWidth * 0.75}px`,
-            height: `${8 * sprite.scale}px`,
+            width: `${scaledWidth * 0.6}px`,
+            height: `${4 * sprite.scale}px`,
           }}
         />
         
@@ -144,18 +162,14 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
         <div 
           className="character absolute inset-0"
           style={{
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url("${sprite.path}")`,
-            backgroundPosition: getBackgroundPosition(),
-            backgroundSize: `${sprite.frameWidth * sprite.frameCount * sprite.scale}px ${sprite.frameHeight * 4 * sprite.scale}px`,
+            backgroundImage: `url(${sprite.path})`,
+            backgroundPosition: `-${x * sprite.scale}px -${y * sprite.scale}px`,
+            backgroundSize: `${sprite.frameWidth * sprite.frameCount * sprite.scale}px ${sprite.frameHeight * sprite.rowCount * sprite.scale}px`,
           }}
         />
         
         {/* Player name */}
-        <div 
-          className="absolute left-1/2 transform -translate-x-1/2 -top-6 whitespace-nowrap px-2 py-0.5 bg-gray-800 bg-opacity-75 text-white text-xs rounded-md font-pixel"
-        >
+        <div className="absolute left-1/2 -translate-x-1/2 -top-6 whitespace-nowrap px-2 py-0.5 bg-gray-800/75 text-white text-xs rounded-md font-pixel">
           {name}
         </div>
       </div>
