@@ -26,8 +26,8 @@ const Game: React.FC = () => {
   });
 
   // Calculate map offsets for centering
-  const mapWidth = 1536;
-  const mapHeight = 1024;
+  const mapWidth = 1280;
+  const mapHeight = 720;
   const mapOffsetX = (window.innerWidth - mapWidth) / 2;
   const mapOffsetY = (window.innerHeight - mapHeight) / 2;
   
@@ -104,13 +104,13 @@ const Game: React.FC = () => {
       if ((keysPressed.w || keysPressed.arrowup) && playerPosition.y > 24) {
         newY -= moveSpeed;
       }
-      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < mapHeight - 64) {
+      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < 696) {
         newY += moveSpeed;
       }
       if ((keysPressed.a || keysPressed.arrowleft) && playerPosition.x > 16) {
         newX -= moveSpeed;
       }
-      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < mapWidth - 64) {
+      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < 1264) {
         newX += moveSpeed;
       }
       
