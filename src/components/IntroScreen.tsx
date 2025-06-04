@@ -20,12 +20,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const avatarOptions = [1, 2, 3, 4, 5, 6, 7];
+  const avatarOptions = [1, 3, 4, 5, 6, 7];
 
   const getAvatarName = (id: number) => {
     switch (id) {
       case 1: return 'Casual';
-      case 2: return 'Business';
       case 3: return 'Orc Warrior';
       case 4: return 'Vampire Lord';
       case 5: return 'Orc Shaman';
@@ -38,7 +37,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const getAvatarSprite = (id: number) => {
     switch (id) {
       case 1: return '/Unarmed_Walk_full.png';
-      case 2: return '/suittie_walk_full.png';
       case 3: return '/orc1_walk_full.png';
       case 4: return '/Vampires1_Walk_full.png';
       case 5: return '/orc2_walk_full.png';
