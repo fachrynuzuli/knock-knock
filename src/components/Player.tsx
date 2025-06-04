@@ -15,10 +15,11 @@ interface PlayerProps {
 const spriteConfig = {
   1: {
     path: '/Unarmed_Walk_full.png',
-    frameWidth: 68,
+    frameWidth: 32,
     frameHeight: 48,
-    frameCount: 3,
-    idleFrame: 1,
+    frameCount: 4,
+    idleFrame: 0,
+    scale: 2,
   },
   2: {
     path: '/suittie_walk_full.png',
@@ -26,6 +27,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+    scale: 2,
   },
   3: {
     path: '/orc1_walk_full.png',
@@ -33,6 +35,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+    scale: 2,
   },
   4: {
     path: '/Vampires1_Walk_full.png',
@@ -40,6 +43,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+    scale: 2,
   },
   5: {
     path: '/orc2_walk_full.png',
@@ -47,6 +51,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+    scale: 2,
   },
   6: {
     path: '/Vampires2_Walk_full.png',
@@ -54,6 +59,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+    scale: 2,
   },
   7: {
     path: '/orc3_walk_full.png',
@@ -61,6 +67,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 4,
     idleFrame: 0,
+    scale: 2,
   }
 };
 
@@ -109,27 +116,39 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
     
     return `-${x}px -${y}px`;
   };
+
+  const scaledWidth = sprite.frameWidth * sprite.scale;
+  const scaledHeight = sprite.frameHeight * sprite.scale;
   
   return (
     <div 
       className="absolute z-20"
       style={{
-        left: `${position.x - sprite.frameWidth/2}px`,
-        top: `${position.y - sprite.frameHeight/2}px`,
+        left: `${position.x - (scaledWidth / 2)}px`,
+        top: `${position.y - (scaledHeight / 2)}px`,
+        width: `${scaledWidth}px`,
+        height: `${scaledHeight}px`,
       }}
     >
-      <div className="relative">
+      <div className="relative w-full h-full">
         {/* Character shadow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-4 bg-black/30 rounded-full"></div>
+        <div 
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-black/30"
+          style={{
+            width: `${scaledWidth * 0.75}px`,
+            height: `${8 * sprite.scale}px`,
+          }}
+        />
         
         {/* Character sprite */}
         <div 
-          className="character"
+          className="character absolute inset-0"
           style={{
-            width: `${sprite.frameWidth}px`,
-            height: `${sprite.frameHeight}px`,
+            width: '100%',
+            height: '100%',
             backgroundImage: `url("${sprite.path}")`,
             backgroundPosition: getBackgroundPosition(),
+            backgroundSize: `${sprite.frameWidth * sprite.frameCount * sprite.scale}px ${sprite.frameHeight * 4 * sprite.scale}px`,
           }}
         />
         
