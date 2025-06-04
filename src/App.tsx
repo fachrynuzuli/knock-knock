@@ -11,7 +11,7 @@ function App() {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center overflow-hidden">
+    <div className="w-full h-full overflow-hidden">
       <GameProvider>
         {!gameStarted ? (
           <IntroScreen onStartGame={handleStartGame} />

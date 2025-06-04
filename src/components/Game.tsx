@@ -25,11 +25,14 @@ const Game: React.FC = () => {
     y: 0
   });
   
+  // Handle key presses for movement
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setKeysPressed(prev => ({ ...prev, [e.key.toLowerCase()]: true }));
       
+      // Handle interaction key
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
+        // Find which teammate's house we're near
         const nearbyTeammate = teammates.find(teammate => {
           const dx = Math.abs((playerPosition.x) - (teammate.housePosition.x + 32));
           const dy = Math.abs((playerPosition.y) - (teammate.housePosition.y + 32));
@@ -39,6 +42,7 @@ const Game: React.FC = () => {
         if (nearbyTeammate) {
           setViewingTeammate(nearbyTeammate.name);
         } else {
+          // If near player's own board
           const playerHouse = {
             x: 782,
             y: 232
@@ -53,6 +57,7 @@ const Game: React.FC = () => {
         }
       }
       
+      // ESC key to close forms
       if (e.key === 'Escape') {
         if (viewingTeammate) {
           setViewingTeammate(null);
@@ -63,6 +68,7 @@ const Game: React.FC = () => {
         }
       }
       
+      // L key to toggle leaderboard
       if (e.key.toLowerCase() === 'l') {
         dispatch(toggleLeaderboard());
       }
@@ -81,6 +87,7 @@ const Game: React.FC = () => {
     };
   }, [playerPosition, interactionPrompt, teammates, dispatch, openForm, closeForm, isFormOpen, isLeaderboardOpen, viewingTeammate, setViewingTeammate]);
   
+  // Handle movement based on pressed keys
   useEffect(() => {
     const moveSpeed = 5;
     
@@ -105,6 +112,7 @@ const Game: React.FC = () => {
         dispatch(updatePlayerPosition({ x: newX, y: newY }));
       }
       
+      // Check for nearby interaction opportunities
       const playerHouse = {
         x: 782,
         y: 232
@@ -112,6 +120,7 @@ const Game: React.FC = () => {
       
       let foundInteraction = false;
       
+      // Check if near player's own board
       const dxPlayer = Math.abs((newX) - (playerHouse.x + 32));
       const dyPlayer = Math.abs((newY) - (playerHouse.y + 32));
       
@@ -125,6 +134,7 @@ const Game: React.FC = () => {
         foundInteraction = true;
       }
       
+      // Check if near teammate houses
       if (!foundInteraction) {
         for (const teammate of teammates) {
           const dx = Math.abs((newX) - (teammate.housePosition.x + 32));
@@ -147,15 +157,16 @@ const Game: React.FC = () => {
         setInteractionPrompt({ show: false, message: '', x: 0, y: 0 });
       }
       
-    }, 33);
+    }, 33); // ~30fps
     
     return () => clearInterval(moveInterval);
   }, [keysPressed, playerPosition, dispatch, teammates]);
   
   return (
-    <div className="relative bg-gray-900 w-full h-full max-w-[1280px] max-h-[720px] aspect-video mx-auto my-auto overflow-hidden">
+    <div className="game-container bg-gray-900">
       <GameMap />
       
+      {/* Player */}
       <Player
         position={playerPosition}
         avatarId={playerAvatar}
@@ -172,6 +183,7 @@ const Game: React.FC = () => {
         }
       />
       
+      {/* Houses and Boards */}
       {teammates.map((teammate) => (
         <div 
           key={teammate.id}
@@ -193,6 +205,7 @@ const Game: React.FC = () => {
         </div>
       ))}
       
+      {/* Player's house */}
       <div 
         className="absolute"
         style={{
@@ -211,6 +224,7 @@ const Game: React.FC = () => {
         </div>
       </div>
       
+      {/* Interaction Prompt */}
       {interactionPrompt.show && (
         <div 
           className="absolute bg-gray-800 bg-opacity-80 px-3 py-1 rounded-lg text-white text-sm font-pixel z-30 animate-bounce-slow"
@@ -225,8 +239,10 @@ const Game: React.FC = () => {
         </div>
       )}
       
+      {/* HUD */}
       <GameHUD />
       
+      {/* Activity Forms and Boards */}
       {isFormOpen && <ActivityForm onClose={closeForm} />}
       
       {viewingTeammate && (
