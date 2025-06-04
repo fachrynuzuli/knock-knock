@@ -2,8 +2,8 @@ import React from 'react';
 
 const GameMap: React.FC = () => {
   // Calculate map offsets for centering
-  const mapWidth = 1280;
-  const mapHeight = 720;
+  const mapWidth = 1536;
+  const mapHeight = 1024;
   const mapOffsetX = (window.innerWidth - mapWidth) / 2;
   const mapOffsetY = (window.innerHeight - mapHeight) / 2;
 
