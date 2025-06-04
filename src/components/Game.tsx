@@ -24,12 +24,6 @@ const Game: React.FC = () => {
     x: 0,
     y: 0
   });
-
-  // Calculate map offsets for centering
-  const mapWidth = 1280;
-  const mapHeight = 720;
-  const mapOffsetX = (window.innerWidth - mapWidth) / 2;
-  const mapOffsetY = (window.innerHeight - mapHeight) / 2;
   
   // Handle key presses for movement
   useEffect(() => {
@@ -174,10 +168,7 @@ const Game: React.FC = () => {
       
       {/* Player */}
       <Player
-        position={{
-          x: playerPosition.x + mapOffsetX,
-          y: playerPosition.y + mapOffsetY
-        }}
+        position={playerPosition}
         avatarId={playerAvatar}
         name={playerName}
         isMoving={
@@ -198,17 +189,15 @@ const Game: React.FC = () => {
           key={teammate.id}
           className="absolute"
           style={{
-            left: `${teammate.housePosition.x + mapOffsetX}px`,
-            top: `${teammate.housePosition.y + mapOffsetY}px`,
+            left: `${teammate.housePosition.x}px`,
+            top: `${teammate.housePosition.y}px`,
           }}
         >
-          <div className="house relative" style={{ width: '64px', height: '64px' }}>
-            <div 
-              className="absolute inset-0"
-              style={{
-                backgroundColor: 'transparent',
-                opacity: 0,
-              }}
+          <div className="house" style={{ width: '64px', height: '64px' }}>
+            <img 
+              src={`/houses/house-${teammate.houseType}-level-${teammate.houseLevel}.png`}
+              alt={`${teammate.name}'s house`}
+              className="pixel-art"
             />
             <div className="text-white text-xs font-pixel text-center mt-1">{teammate.name}</div>
           </div>
@@ -219,17 +208,15 @@ const Game: React.FC = () => {
       <div 
         className="absolute"
         style={{
-          left: `${750 + mapOffsetX}px`,
-          top: `${200 + mapOffsetY}px`,
+          left: '750px',
+          top: '200px',
         }}
       >
-        <div className="house relative" style={{ width: '64px', height: '64px' }}>
-          <div 
-            className="absolute inset-0"
-            style={{
-              backgroundColor: 'transparent',
-              opacity: 0,
-            }}
+        <div className="house" style={{ width: '64px', height: '64px' }}>
+          <img 
+            src="/houses/house-0-level-1.png"
+            alt="Your house"
+            className="pixel-art"
           />
           <div className="text-white text-xs font-pixel text-center mt-1">{playerName}</div>
         </div>
@@ -240,8 +227,8 @@ const Game: React.FC = () => {
         <div 
           className="absolute bg-gray-800 bg-opacity-80 px-3 py-1 rounded-lg text-white text-sm font-pixel z-30 animate-bounce-slow"
           style={{
-            left: `${interactionPrompt.x + mapOffsetX - 100}px`,
-            top: `${interactionPrompt.y + mapOffsetY}px`,
+            left: `${interactionPrompt.x - 100}px`,
+            top: `${interactionPrompt.y}px`,
             width: '200px',
             textAlign: 'center',
           }}
