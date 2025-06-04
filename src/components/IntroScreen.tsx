@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../contexts/GameContext';
-import { MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Lock } from 'lucide-react';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -9,13 +9,14 @@ interface IntroScreenProps {
 const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const { setPlayerName, setPlayerAvatar } = useGameContext();
   const [name, setName] = useState('');
-  const [currentAvatarIndex, setCurrentAvatarIndex] = useState(0);
+  const [selectedAvatarId, setSelectedAvatarId] = useState(1);
+  const [lockedMessage, setLockedMessage] = useState('');
   const [showInstructions, setShowInstructions] = useState(false);
 
   const handleStartGame = () => {
     if (name.trim()) {
       setPlayerName(name);
-      setPlayerAvatar(avatarOptions[currentAvatarIndex]);
+      setPlayerAvatar(selectedAvatarId);
       onStartGame();
     }
   };
@@ -46,16 +47,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const handlePreviousAvatar = () => {
-    setCurrentAvatarIndex((prev) => 
-      prev === 0 ? avatarOptions.length - 1 : prev - 1
-    );
-  };
-
-  const handleNextAvatar = () => {
-    setCurrentAvatarIndex((prev) => 
-      prev === avatarOptions.length - 1 ? 0 : prev + 1
-    );
+  const handleAvatarClick = (id: number) => {
+    if (id === 1) {
+      setSelectedAvatarId(id);
+    } else {
+      setLockedMessage('This avatar is locked. Play more to unlock!');
+      setTimeout(() => setLockedMessage(''), 3000);
+    }
   };
 
   return (
@@ -91,47 +89,55 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="flex items-center justify-center gap-4">
-              <button
-                onClick={handlePreviousAvatar}
-                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200 hover:text-primary-400"
-              >
-                <ChevronLeft size={24} />
-              </button>
-
-              <div className="relative bg-gray-700 p-4 rounded-lg border-2 border-gray-600 transition-transform duration-200 transform hover:scale-105">
-                <div 
-                  className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                  }}
+            <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+              {avatarOptions.map((id) => (
+                <div
+                  key={id}
+                  onClick={() => handleAvatarClick(id)}
+                  className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                    selectedAvatarId === id
+                      ? 'border-primary-400 transform scale-105'
+                      : 'border-gray-600'
+                  } ${id !== 1 ? 'opacity-50' : ''}`}
                 >
                   <div 
-                    className="character"
+                    className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
                     style={{
-                      width: '32px',
-                      height: '48px',
-                      backgroundImage: `url("${getAvatarSprite(avatarOptions[currentAvatarIndex])}")`,
-                      backgroundPosition: '-15px -5px',
-                      transform: 'scale(1.75)',
-                      transformOrigin: 'center',
+                      backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                     }}
-                  />
+                  >
+                    <div 
+                      className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                      style={{
+                        width: '32px',
+                        height: '48px',
+                        backgroundImage: `url("${getAvatarSprite(id)}")`,
+                        backgroundPosition: '-15px -5px',
+                        transform: 'scale(1.75)',
+                        transformOrigin: 'center',
+                      }}
+                    />
+                    {id !== 1 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                        <Lock className="text-white" size={24} />
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-center mt-2">
+                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
+                      id === 1 ? 'text-primary-400' : 'text-gray-400'
+                    }`}>
+                      {getAvatarName(id)}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-center mt-2">
-                  <span className="text-primary-400 font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full">
-                    {getAvatarName(avatarOptions[currentAvatarIndex])}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={handleNextAvatar}
-                className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200 hover:text-primary-400"
-              >
-                <ChevronRight size={24} />
-              </button>
+              ))}
             </div>
+            {lockedMessage && (
+              <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
+                {lockedMessage}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col space-y-3">
