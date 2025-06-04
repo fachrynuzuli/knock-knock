@@ -197,7 +197,8 @@ const Game: React.FC = () => {
             <img 
               src={`/houses/house-${teammate.houseType}-level-${teammate.houseLevel}.png`}
               alt={`${teammate.name}'s house`}
-              className="pixel-art"
+              className="pixel-art opacity-0"
+              style={{ width: '64px', height: '64px' }}
             />
             <div className="text-white text-xs font-pixel text-center mt-1">{teammate.name}</div>
           </div>
@@ -216,7 +217,8 @@ const Game: React.FC = () => {
           <img 
             src="/houses/house-0-level-1.png"
             alt="Your house"
-            className="pixel-art"
+            className="pixel-art opacity-0"
+            style={{ width: '64px', height: '64px' }}
           />
           <div className="text-white text-xs font-pixel text-center mt-1">{playerName}</div>
         </div>
