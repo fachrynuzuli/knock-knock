@@ -35,7 +35,7 @@ function App() {
     return (
       <div className="fixed inset-0 bg-gray-900 flex items-center justify-center p-4">
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full border-4 border-primary-600 text-center">
-          <Maximize2 className="mx-auto mb-4 text-primary-400" size={48} />
+          <Maximize2 className="mx-auto mb-4 text-primary-400\" size={48} />
           <h2 className="text-xl font-heading text-white mb-4">
             Screen Size Warning
           </h2>
