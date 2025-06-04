@@ -19,7 +19,7 @@ const spriteConfig = {
     frameHeight: 48,
     frameCount: 6,
     idleFrame: 0,
-    scale: 2,
+    scale: 3,
   },
   2: {
     path: '/suittie_walk_full.png',
