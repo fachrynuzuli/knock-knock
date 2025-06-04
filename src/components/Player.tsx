@@ -23,16 +23,6 @@ const spriteConfig = {
     offsetX: 0,
     offsetY: 0,
   },
-  2: {
-    path: '/suittie_walk_full.png',
-    frameWidth: 120,
-    frameHeight: 160,
-    frameCount: 4,
-    rowCount: 3,
-    scale: 0.5,
-    offsetX: 0,
-    offsetY: 0,
-  },
   3: {
     path: '/orc1_walk_full.png',
     frameWidth: 64,
@@ -153,8 +143,8 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
         <div 
           className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-black/30"
           style={{
-            width: `${scaledWidth * 0.1}px`,
-            height: `${2 * sprite.scale}px`,
+            width: `${scaledWidth * 0.6}px`,
+            height: `${4 * sprite.scale}px`,
           }}
         />
         

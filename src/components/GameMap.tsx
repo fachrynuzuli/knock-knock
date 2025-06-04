@@ -12,13 +12,16 @@ const GameMap: React.FC = () => {
           backgroundPosition: 'center',
           imageRendering: 'pixelated',
         }}
-      />
-      
-      {/* Optional grid overlay for debugging - commented out by default */}
-      {/* <div className="absolute inset-0" style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-        backgroundSize: '32px 32px',
-      }} /> */}
+      >
+        {/* Optional grid overlay for debugging */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
+            backgroundSize: '32px 32px',
+          }}
+        />
+      </div>
     </div>
   );
 };
