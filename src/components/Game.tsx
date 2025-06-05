@@ -218,6 +218,23 @@ const Game: React.FC = () => {
         </div>
       )}
       
+      {/* Built on Bolt Logo */}
+      <div className="fixed bottom-4 left-4 z-50">
+        <div className="bg-white rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-200" style={{
+          boxShadow: '0 4px 0 rgba(0,0,0,0.2), 0 0 20px rgba(0,0,0,0.1)',
+          padding: '8px 16px',
+        }}>
+          <img 
+            src="/built_on_bolt_logo.png" 
+            alt="Built on Bolt" 
+            className="h-6"
+            style={{
+              imageRendering: 'pixelated',
+            }}
+          />
+        </div>
+      </div>
+      
       {/* HUD */}
       <GameHUD />
       
