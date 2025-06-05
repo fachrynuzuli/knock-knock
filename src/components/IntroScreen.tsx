@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../contexts/GameContext';
-import { MapPin, Lock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Lock } from 'lucide-react';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -12,12 +12,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [selectedAvatarId, setSelectedAvatarId] = useState(1);
   const [lockedMessage, setLockedMessage] = useState('');
   const [showInstructions, setShowInstructions] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(false);
-  
-  const avatarContainerRef = useRef<HTMLDivElement>(null);
 
   const handleStartGame = () => {
     if (name.trim()) {
@@ -28,8 +22,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const avatarOptions = [1, 3, 4, 5, 6, 7];
-  const itemsPerPage = 4;
-  const totalPages = Math.ceil(avatarOptions.length / itemsPerPage);
 
   const getAvatarName = (id: number) => {
     switch (id) {
@@ -64,32 +56,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 0 && !isAnimating) {
-      setIsAnimating(true);
-      setCurrentPage(prev => prev - 1);
-      setTimeout(() => setIsAnimating(false), 300);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages - 1 && !isAnimating) {
-      setIsAnimating(true);
-      setCurrentPage(prev => prev + 1);
-      setTimeout(() => setIsAnimating(false), 300);
-    }
-  };
-
-  useEffect(() => {
-    setCanScrollLeft(currentPage > 0);
-    setCanScrollRight(currentPage < totalPages - 1);
-  }, [currentPage, totalPages]);
-
-  const visibleAvatars = avatarOptions.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
-
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 px-4">
       <div className="text-center mb-8 animate-bounce-slow">
@@ -102,10 +68,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       </div>
 
       {!showInstructions ? (
-        <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600">
-          <h2 className="text-xl font-heading text-white mb-6">Create Your Character</h2>
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full border-4 border-primary-600">
+          <h2 className="text-xl font-heading text-white mb-4">Create Your Character</h2>
           
-          <div className="mb-6">
+          <div className="mb-4">
             <label htmlFor="name" className="block text-white font-pixel mb-2">
               Your Name:
             </label>
@@ -119,94 +85,56 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             />
           </div>
 
-          <div className="mb-8">
-            <label className="block text-white font-pixel mb-4">
+          <div className="mb-6">
+            <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="relative">
-              {/* Navigation Buttons */}
-              {canScrollLeft && (
-                <button
-                  onClick={handlePrevPage}
-                  disabled={isAnimating}
-                  className="absolute -left-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+            <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+              {avatarOptions.map((id) => (
+                <div
+                  key={id}
+                  onClick={() => handleAvatarClick(id)}
+                  className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                    selectedAvatarId === id
+                      ? 'border-primary-400 transform scale-105'
+                      : 'border-gray-600'
+                  } ${id !== 1 ? 'opacity-50' : ''}`}
                 >
-                  <ChevronLeft size={24} className="text-primary-400" />
-                </button>
-              )}
-              
-              {canScrollRight && (
-                <button
-                  onClick={handleNextPage}
-                  disabled={isAnimating}
-                  className="absolute -right-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
-                >
-                  <ChevronRight size={24} className="text-primary-400" />
-                </button>
-              )}
-
-              {/* Avatar Container */}
-              <div 
-                ref={avatarContainerRef}
-                className="relative overflow-hidden px-4"
-              >
-                <div 
-                  className={`grid grid-cols-4 gap-8 transition-all duration-300 ease-in-out transform ${
-                    isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
-                  }`}
-                  style={{
-                    transform: `translateX(-${currentPage * 100}%)`,
-                  }}
-                >
-                  {visibleAvatars.map((id) => (
-                    <div
-                      key={id}
-                      onClick={() => handleAvatarClick(id)}
-                      className={`relative bg-gray-700 p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                        selectedAvatarId === id
-                          ? 'border-primary-400 transform scale-105 shadow-xl'
-                          : 'border-gray-600'
-                      } ${id !== 1 ? 'opacity-50' : ''}`}
-                    >
-                      <div 
-                        className="w-32 h-32 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
-                        style={{
-                          backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                        }}
-                      >
-                        <div 
-                          className={`character ${id !== 1 ? 'grayscale' : ''}`}
-                          style={{
-                            width: '64px',
-                            height: '64px',
-                            backgroundImage: `url("${getAvatarSprite(id)}")`,
-                            backgroundPosition: id === 1 ? '-32px 0px' : '0px 0px',
-                            transform: 'scale(2)',
-                            imageRendering: 'pixelated',
-                            transformOrigin: 'center',
-                          }}
-                        />
-                        {id !== 1 && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                            <Lock className="text-white" size={32} />
-                          </div>
-                        )}
+                  <div 
+                    className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                    style={{
+                      backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                    }}
+                  >
+                    <div 
+                      className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                      style={{
+                        width: '32px',
+                        height: '48px',
+                        backgroundImage: `url("${getAvatarSprite(id)}")`,
+                        backgroundPosition: '-20px -5px',
+                        transform: 'scale(1.75)',
+                        transformOrigin: 'center',
+                      }}
+                    />
+                    {id !== 1 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                        <Lock className="text-white\" size={24} />
                       </div>
-                      <div className="text-center mt-4">
-                        <span className={`font-pixel text-sm px-4 py-2 bg-gray-800 rounded-full ${
-                          id === 1 ? 'text-primary-400 border-2 border-primary-400' : 'text-gray-400'
-                        }`}>
-                          {getAvatarName(id)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    )}
+                  </div>
+                  <div className="text-center mt-2">
+                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
+                      id === 1 ? 'text-primary-400' : 'text-gray-400'
+                    }`}>
+                      {getAvatarName(id)}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-
             {lockedMessage && (
-              <div className="mt-4 text-warning-400 text-sm font-pixel text-center animate-bounce">
+              <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
                 {lockedMessage}
               </div>
             )}
