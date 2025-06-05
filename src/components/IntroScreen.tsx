@@ -102,10 +102,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       </div>
 
       {!showInstructions ? (
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600">
-          <h2 className="text-xl font-heading text-white mb-4">Create Your Character</h2>
+        <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600">
+          <h2 className="text-xl font-heading text-white mb-6">Create Your Character</h2>
           
-          <div className="mb-4">
+          <div className="mb-6">
             <label htmlFor="name" className="block text-white font-pixel mb-2">
               Your Name:
             </label>
@@ -119,17 +119,41 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             />
           </div>
 
-          <div className="mb-6">
-            <label className="block text-white font-pixel mb-2">
+          <div className="mb-8">
+            <label className="block text-white font-pixel mb-4">
               Select Avatar:
             </label>
-            <div className="relative px-8">
+            <div className="relative">
+              {/* Navigation Buttons */}
+              {canScrollLeft && (
+                <button
+                  onClick={handlePrevPage}
+                  disabled={isAnimating}
+                  className="absolute -left-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+                >
+                  <ChevronLeft size={24} className="text-primary-400" />
+                </button>
+              )}
+              
+              {canScrollRight && (
+                <button
+                  onClick={handleNextPage}
+                  disabled={isAnimating}
+                  className="absolute -right-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+                >
+                  <ChevronRight size={24} className="text-primary-400" />
+                </button>
+              )}
+
+              {/* Avatar Container */}
               <div 
                 ref={avatarContainerRef}
-                className="relative overflow-hidden"
+                className="relative overflow-hidden px-4"
               >
                 <div 
-                  className={`grid grid-cols-4 gap-6 transition-transform duration-300 ease-in-out transform ${isAnimating ? 'opacity-50' : ''}`}
+                  className={`grid grid-cols-4 gap-8 transition-all duration-300 ease-in-out transform ${
+                    isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
+                  }`}
                   style={{
                     transform: `translateX(-${currentPage * 100}%)`,
                   }}
@@ -138,14 +162,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     <div
                       key={id}
                       onClick={() => handleAvatarClick(id)}
-                      className={`relative bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                      className={`relative bg-gray-700 p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
                         selectedAvatarId === id
-                          ? 'border-primary-400 transform scale-105'
+                          ? 'border-primary-400 transform scale-105 shadow-xl'
                           : 'border-gray-600'
                       } ${id !== 1 ? 'opacity-50' : ''}`}
                     >
                       <div 
-                        className="w-24 h-24 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
+                        className="w-32 h-32 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
                         style={{
                           backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                         }}
@@ -157,19 +181,20 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                             height: '64px',
                             backgroundImage: `url("${getAvatarSprite(id)}")`,
                             backgroundPosition: id === 1 ? '-32px 0px' : '0px 0px',
-                            transform: 'scale(1.5)',
+                            transform: 'scale(2)',
                             imageRendering: 'pixelated',
+                            transformOrigin: 'center',
                           }}
                         />
                         {id !== 1 && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                            <Lock className="text-white" size={24} />
+                            <Lock className="text-white" size={32} />
                           </div>
                         )}
                       </div>
-                      <div className="text-center mt-3">
-                        <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
-                          id === 1 ? 'text-primary-400' : 'text-gray-400'
+                      <div className="text-center mt-4">
+                        <span className={`font-pixel text-sm px-4 py-2 bg-gray-800 rounded-full ${
+                          id === 1 ? 'text-primary-400 border-2 border-primary-400' : 'text-gray-400'
                         }`}>
                           {getAvatarName(id)}
                         </span>
@@ -178,31 +203,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   ))}
                 </div>
               </div>
-
-              {/* Navigation Buttons */}
-              {canScrollLeft && (
-                <button
-                  onClick={handlePrevPage}
-                  disabled={isAnimating}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 hover:bg-gray-700 transition-colors p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft size={24} />
-                </button>
-              )}
-              
-              {canScrollRight && (
-                <button
-                  onClick={handleNextPage}
-                  disabled={isAnimating}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-800 hover:bg-gray-700 transition-colors p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronRight size={24} />
-                </button>
-              )}
             </div>
 
             {lockedMessage && (
-              <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
+              <div className="mt-4 text-warning-400 text-sm font-pixel text-center animate-bounce">
                 {lockedMessage}
               </div>
             )}
