@@ -169,9 +169,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <button
               onClick={handlePrevPage}
               disabled={isAnimating}
-              className="absolute -left-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+              className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
             >
-              <ChevronLeft size={24} className="text-primary-400" />
+              <ChevronLeft size={16} className="text-primary-400" />
             </button>
           )}
           
@@ -179,18 +179,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <button
               onClick={handleNextPage}
               disabled={isAnimating}
-              className="absolute -right-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+              className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
             >
-              <ChevronRight size={24} className="text-primary-400" />
+              <ChevronRight size={16} className="text-primary-400" />
             </button>
           )}
 
           <div 
             ref={avatarContainerRef}
-            className="relative overflow-hidden px-4"
+            className="relative overflow-hidden px-2"
           >
             <div 
-              className={`grid grid-cols-4 gap-8 transition-all duration-300 ease-in-out transform ${
+              className={`grid grid-cols-4 gap-4 transition-all duration-300 ease-in-out transform ${
                 isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
               }`}
               style={{
@@ -201,14 +201,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 <div
                   key={id}
                   onClick={() => handleAvatarClick(id)}
-                  className={`relative bg-gray-700 p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                  className={`relative bg-gray-700 p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
                     selectedAvatarId === id
                       ? 'border-primary-400 transform scale-105 shadow-xl'
                       : 'border-gray-600'
                   } ${id !== 1 ? 'opacity-50' : ''}`}
                 >
                   <div 
-                    className="w-32 h-32 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
+                    className="w-24 h-24 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
                     style={{
                       backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                     }}
@@ -216,24 +216,24 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     <div 
                       className={`character ${id !== 1 ? 'grayscale' : ''}`}
                       style={{
-                        width: '64px',
-                        height: '64px',
+                        width: '48px',
+                        height: '48px',
                         backgroundImage: `url("${getAvatarSprite(id)}")`,
-                        backgroundPosition: '-32px 0px',
-                        transform: 'scale(2)',
+                        backgroundPosition: '-24px 0px',
+                        transform: 'scale(1.5)',
                         imageRendering: 'pixelated',
                         transformOrigin: 'center',
                       }}
                     />
                     {id !== 1 && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white\" size={32} />
+                        <Lock className="text-white\" size={24} />
                       </div>
                     )}
                   </div>
-                  <div className="text-center mt-4">
-                    <span className={`font-pixel text-sm px-4 py-2 bg-gray-800 rounded-full ${
-                      id === 1 ? 'text-primary-400 border-2 border-primary-400' : 'text-gray-400'
+                  <div className="text-center mt-2">
+                    <span className={`font-pixel text-xs px-3 py-1 bg-gray-800 rounded-full ${
+                      id === 1 ? 'text-primary-400 border border-primary-400' : 'text-gray-400'
                     }`}>
                       {getAvatarName(id)}
                     </span>
@@ -337,9 +337,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   <button
                     onClick={handlePrevPage}
                     disabled={isAnimating}
-                    className="absolute -left-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-secondary-600"
+                    className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-secondary-600"
                   >
-                    <ChevronLeft size={24} className="text-secondary-400" />
+                    <ChevronLeft size={16} className="text-secondary-400" />
                   </button>
                 )}
                 
@@ -347,18 +347,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   <button
                     onClick={handleNextPage}
                     disabled={isAnimating}
-                    className="absolute -right-12 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-3 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-secondary-600"
+                    className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-secondary-600"
                   >
-                    <ChevronRight size={24} className="text-secondary-400" />
+                    <ChevronRight size={16} className="text-secondary-400" />
                   </button>
                 )}
 
                 <div 
                   ref={avatarContainerRef}
-                  className="relative overflow-hidden px-4"
+                  className="relative overflow-hidden px-2"
                 >
                   <div 
-                    className={`grid grid-cols-4 gap-8 transition-all duration-300 ease-in-out transform ${
+                    className={`grid grid-cols-4 gap-4 transition-all duration-300 ease-in-out transform ${
                       isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
                     }`}
                     style={{
@@ -369,14 +369,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       <div
                         key={id}
                         onClick={() => handleAvatarClick(id)}
-                        className={`relative bg-gray-700 p-6 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                        className={`relative bg-gray-700 p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
                           selectedAvatarId === id
                             ? 'border-secondary-400 transform scale-105 shadow-xl'
                             : 'border-gray-600'
                         } ${id !== 1 ? 'opacity-50' : ''}`}
                       >
                         <div 
-                          className="w-32 h-32 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
+                          className="w-24 h-24 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
                           style={{
                             backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                           }}
@@ -384,24 +384,24 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                           <div 
                             className={`character ${id !== 1 ? 'grayscale' : ''}`}
                             style={{
-                              width: '64px',
-                              height: '64px',
+                              width: '48px',
+                              height: '48px',
                               backgroundImage: `url("${getAvatarSprite(id)}")`,
-                              backgroundPosition: '-32px 0px',
-                              transform: 'scale(2)',
+                              backgroundPosition: '-24px 0px',
+                              transform: 'scale(1.5)',
                               imageRendering: 'pixelated',
                               transformOrigin: 'center',
                             }}
                           />
                           {id !== 1 && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                              <Lock className="text-white\" size={32} />
+                              <Lock className="text-white\" size={24} />
                             </div>
                           )}
                         </div>
-                        <div className="text-center mt-4">
-                          <span className={`font-pixel text-sm px-4 py-2 bg-gray-800 rounded-full ${
-                            id === 1 ? 'text-secondary-400 border-2 border-secondary-400' : 'text-gray-400'
+                        <div className="text-center mt-2">
+                          <span className={`font-pixel text-xs px-3 py-1 bg-gray-800 rounded-full ${
+                            id === 1 ? 'text-secondary-400 border border-secondary-400' : 'text-gray-400'
                           }`}>
                             {getAvatarName(id)}
                           </span>
