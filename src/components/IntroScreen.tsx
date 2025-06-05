@@ -33,7 +33,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const handleJoinRequest = () => {
     if (name.trim() && inviteCode.trim()) {
-      setIsWaitingApproval(true);
+      // Check for dummy invite code
+      if (inviteCode.trim().toUpperCase() === 'HACKATHON') {
+        setIsWaitingApproval(true);
+      } else {
+        setLockedMessage('Invalid invitation code. Please try again.');
+        setTimeout(() => setLockedMessage(''), 3000);
+      }
     }
   };
 
