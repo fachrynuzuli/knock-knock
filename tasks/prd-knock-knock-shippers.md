@@ -85,49 +85,74 @@ This document outlines the requirements for the Minimum Viable Product (MVP) of 
     - Submit all logged activities for current week
     - All activity fields required for submission
 
-13. The system must allow players to interact with teammate houses to view their activity boards.
-14. Activity board must display:
+13. **[MUST HAVE - MVP]** Task submission must trigger instant visual feedback:
+    - House lighting up animation
+    - Satisfying particle effects or sparkles
+    - Chimney smoke animation for active submissions
+    - Success confirmation with visual celebration
+
+14. The system must allow players to interact with teammate houses to view their activity boards.
+15. Activity board must display:
     - List of activities sorted by pride/priority level
     - Category and project milestone indicators
     - Activity submission timestamp
+    - **[MUST HAVE - MVP]** Peer interaction features per activity:
+      - Comment/reply system for team feedback
+      - Quick reaction options (👏, 🔥, 💡, ❤️)
+      - Comment thread display with timestamps
 
 ### Game HUD & Information Display
-15. The system must display game HUD showing:
+16. The system must display game HUD showing:
     - Current week and day of week
     - Player information
+    - **[MUST HAVE - MVP]** Achievement notification area for badge popups
     - Interaction prompts
 
-16. The system must provide "How To Play" section with game instructions and controls.
-17. The system must display screen size warning and offer fullscreen option if window size is below 1280x720 pixels.
+17. **[MUST HAVE - MVP]** Achievement/Badge System must include:
+    - **Instant Badges:** "First Submission!", "Early Bird!", "Pride Level Champion!"
+    - **Weekly Badges:** "Consistent Reporter", "Team Player", "Most Detailed"
+    - **Social Badges:** "Helpful Commenter", "Reaction King/Queen", "Supportive Teammate"
+    - Badge popup animations with satisfying visual effects
+    - Badge collection display in player profile
+    - Progress indicators for upcoming badges
+
+18. The system must provide "How To Play" section with game instructions and controls.
+19. The system must display screen size warning and offer fullscreen option if window size is below 1280x720 pixels.
 
 ### Analytics & Statistics
-18. Town hall must be accessible to all team members and display:
+20. Town hall must be accessible to all team members and display:
     - Weekly task completion count by member
     - Task category distribution
     - Current week reporting status
     - Team performance metrics
+    - **[NICE TO HAVE - Post MVP]** Social engagement metrics (comments, reactions given/received)
 
-19. Leaderboard system must display:
+21. Leaderboard system must display:
     - Team members sorted by activity points
     - Breakdown of activity categories
+    - **[MUST HAVE - MVP]** Badge showcase for each member
     - Fun statistics including:
       - Most productive day of week
       - Submission streaks
       - Category champions
       - Early bird awards
       - Pride level achievements
+      - **[MUST HAVE - MVP]** Social engagement stats (most helpful commenter, reaction giver)
 
-20. House progression system must:
+22. House progression system must:
     - Calculate points based on activity volume, categories, and pride levels
+    - **[NICE TO HAVE - Post MVP]** Bonus points for receiving peer reactions and comments
     - Update house visual appearance based on total points
     - Provide visual feedback for member engagement
 
 ### Data Management
-21. The system must integrate with Supabase for:
+23. The system must integrate with Supabase for:
     - User authentication and profiles
     - Neighborhood and team member relationships
     - Task data storage and retrieval
     - Weekly reporting period tracking
+    - **[MUST HAVE - MVP]** Badge/achievement data and progress tracking
+    - **[MUST HAVE - MVP]** Comments, replies, and peer reactions data
 
 ## 5. Non-Goals (Out of Scope for MVP)
 
@@ -172,6 +197,9 @@ This document outlines the requirements for the Minimum Viable Product (MVP) of 
 - team_members (id, neighborhood_id, user_id, role, status, house_position)
 - tasks (id, user_id, week_start, description, category, project_milestone, priority, points, created_at)
 - join_requests (id, neighborhood_id, user_id, status, requested_at)
+- **[MUST HAVE - MVP]** badges (id, user_id, badge_type, earned_at, badge_data)
+- **[MUST HAVE - MVP]** task_interactions (id, task_id, user_id, interaction_type, content, created_at)
+- **[MUST HAVE - MVP]** reactions (id, task_id, user_id, reaction_type, created_at)
 
 ### Performance Considerations
 - Simple boundary checking for collision detection
@@ -201,11 +229,14 @@ This document outlines the requirements for the Minimum Viable Product (MVP) of 
 
 ## 9. Implementation Phases
 
-### Phase 1 (MVP Launch - 8 Days)
+### Phase 1 (MVP Launch - 10 Days) *[Extended for engagement features]*
 - **Day 1-2:** Core game environment, movement, simple boundary collision
 - **Day 3-4:** Authentication, neighborhood creation, invitation system with approval workflow
 - **Day 5-6:** Task management, activity boards, drag-and-drop priority system
-- **Day 7-8:** Town hall analytics, leaderboard, statistics, testing and polish
+- **Day 7:** **[CRITICAL]** Instant visual feedback system, task submission animations
+- **Day 8:** **[CRITICAL]** Badge/achievement system, peer reaction features
+- **Day 9:** **[CRITICAL]** Comment/reply system, social interaction features
+- **Day 10:** Town hall analytics, leaderboard with social stats, testing and polish
 
 ### Phase 2 (Post-MVP)
 - Advanced statistics and fun metrics
