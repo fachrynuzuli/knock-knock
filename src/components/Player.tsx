@@ -141,10 +141,11 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
       <div className="relative w-full h-full">
         {/* Character shadow */}
         <div 
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/20"
+          className="absolute left-1/2 -translate-x-1/2 rounded-full bg-black/30"
           style={{
-            width: `${scaledWidth * 0.1}px`,
-            height: `${2 * sprite.scale}px`,
+            width: `${scaledWidth * 0.6}px`,
+            height: `${4 * sprite.scale}px`,
+            bottom: '-4px',
           }}
         />
         
