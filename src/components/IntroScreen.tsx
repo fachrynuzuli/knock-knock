@@ -131,7 +131,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           className={`character ${id !== 1 ? 'grayscale' : ''}`}
           style={{
             width: '32px',
-            height: '32px',
+            height: '48px',
             backgroundImage: `url("${getAvatarSprite(id)}")`,
             backgroundPosition: '0px 0px',
             transform: 'scale(2)',
