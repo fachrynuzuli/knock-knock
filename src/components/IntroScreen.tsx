@@ -109,11 +109,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     <div 
                       className={`character ${id !== 1 ? 'grayscale' : ''}`}
                       style={{
-                        width: '32px',
-                        height: '48px',
+                        width: '64px',
+                        height: '64px',
                         backgroundImage: `url("${getAvatarSprite(id)}")`,
-                        backgroundPosition: '-20px -5px',
-                        transform: 'scale(1.75)',
+                        backgroundPosition: '0px 0px',
+                        transform: 'scale(1.25)',
                         transformOrigin: 'center',
                       }}
                     />
