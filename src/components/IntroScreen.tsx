@@ -89,7 +89,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <label className="block text-white font-pixel mb-2">
               Select Avatar:
             </label>
-            <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+            <div className="grid grid-cols-4 gap-2">
               {avatarOptions.map((id) => (
                 <div
                   key={id}
@@ -112,7 +112,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                         width: '64px',
                         height: '64px',
                         backgroundImage: `url("${getAvatarSprite(id)}")`,
-                        backgroundPosition: '0px 0px',
+                        backgroundPosition: id === 1 ? '-32px 0px' : '0px 0px',
                         transform: 'scale(1.25)',
                         transformOrigin: 'center',
                       }}
