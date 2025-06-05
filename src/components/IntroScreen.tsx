@@ -133,7 +133,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             width: '32px',
             height: '48px',
             backgroundImage: `url("${getAvatarSprite(id)}")`,
-            backgroundPosition: '0px 0px',
+            backgroundPosition: '-20px -5px',
             transform: 'scale(2)',
             imageRendering: 'pixelated',
           }}
