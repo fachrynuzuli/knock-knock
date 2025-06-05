@@ -111,49 +111,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     (currentPage + 1) * itemsPerPage
   );
 
-  const renderAvatarBlock = (id: number, isSelected: boolean, mode: 'create' | 'join') => (
-    <div
-      key={id}
-      onClick={() => handleAvatarClick(id)}
-      className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-        isSelected
-          ? `border-${mode === 'create' ? 'primary' : 'secondary'}-400 transform scale-105`
-          : 'border-gray-600'
-      } ${id !== 1 ? 'opacity-50' : ''}`}
-    >
-      <div 
-        className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
-        style={{
-          backgroundImage: `radial-gradient(circle at center, rgba(${mode === 'create' ? '99, 102, 241' : '20, 184, 166'}, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)`,
-        }}
-      >
-        <div 
-          className={`character ${id !== 1 ? 'grayscale' : ''}`}
-          style={{
-            width: '32px',
-            height: '48px',
-            backgroundImage: `url("${getAvatarSprite(id)}")`,
-            backgroundPosition: '-20px -10px',
-            transform: 'scale(2)',
-            imageRendering: 'pixelated',
-          }}
-        />
-        {id !== 1 && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-            <Lock className="text-white\" size={20} />
-          </div>
-        )}
-      </div>
-      <div className="text-center mt-2">
-        <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-full ${
-          id === 1 ? `text-${mode === 'create' ? 'primary' : 'secondary'}-400` : 'text-gray-400'
-        }`}>
-          {getAvatarName(id)}
-        </span>
-      </div>
-    </div>
-  );
-
   const renderInitialScreen = () => (
     <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600">
       <h2 className="text-2xl font-heading text-white mb-8 text-center">Welcome to the Neighborhood!</h2>
@@ -217,8 +174,49 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         <label className="block text-white font-pixel mb-2">
           Select Avatar:
         </label>
-        <div className="grid grid-cols-3 gap-4">
-          {avatarOptions.map(id => renderAvatarBlock(id, selectedAvatarId === id, 'create'))}
+        <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+          {avatarOptions.map((id) => (
+            <div
+              key={id}
+              onClick={() => handleAvatarClick(id)}
+              className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                selectedAvatarId === id
+                  ? 'border-primary-400 transform scale-105'
+                  : 'border-gray-600'
+              } ${id !== 1 ? 'opacity-50' : ''}`}
+            >
+              <div 
+                className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                style={{
+                  backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                }}
+              >
+                <div 
+                  className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                  style={{
+                    width: '32px',
+                    height: '48px',
+                    backgroundImage: `url("${getAvatarSprite(id)}")`,
+                    backgroundPosition: '-20px -5px',
+                    transform: 'scale(1.75)',
+                    transformOrigin: 'center',
+                  }}
+                />
+                {id !== 1 && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                    <Lock className="text-white\" size={24} />
+                  </div>
+                )}
+              </div>
+              <div className="text-center mt-2">
+                <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
+                  id === 1 ? 'text-primary-400' : 'text-gray-400'
+                }`}>
+                  {getAvatarName(id)}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
 
         {lockedMessage && (
@@ -301,18 +299,59 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500"
                 placeholder="Enter the invitation code"
               />
-              <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mt-2 text-center">
-                <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
-                <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
-              </div>
             </div>
 
             <div className="mb-6">
               <label className="block text-white font-pixel mb-2">
                 Select Avatar:
               </label>
-              <div className="grid grid-cols-4 gap-4">
-                {avatarOptions.map(id => renderAvatarBlock(id, selectedAvatarId === id, 'join'))}
+              <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mb-4 text-center">
+                <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
+                <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
+              </div>
+              <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+                {avatarOptions.map((id) => (
+                  <div
+                    key={id}
+                    onClick={() => handleAvatarClick(id)}
+                    className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                      selectedAvatarId === id
+                        ? 'border-secondary-400 transform scale-105'
+                        : 'border-gray-600'
+                    } ${id !== 1 ? 'opacity-50' : ''}`}
+                  >
+                    <div 
+                      className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                      style={{
+                        backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                      }}
+                    >
+                      <div 
+                        className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                        style={{
+                          width: '32px',
+                          height: '48px',
+                          backgroundImage: `url("${getAvatarSprite(id)}")`,
+                          backgroundPosition: '-20px -5px',
+                          transform: 'scale(1.75)',
+                          transformOrigin: 'center',
+                        }}
+                      />
+                      {id !== 1 && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                          <Lock className="text-white\" size={24} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-center mt-2">
+                      <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
+                        id === 1 ? 'text-secondary-400' : 'text-gray-400'
+                      }`}>
+                        {getAvatarName(id)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {lockedMessage && (
