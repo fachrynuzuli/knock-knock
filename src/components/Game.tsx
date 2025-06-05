@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { updatePlayerPosition, toggleActivityForm, toggleLeaderboard } from '../store/slices/gameStateSlice';
 import { useGameContext } from '../contexts/GameContext';
+import { addBadge } from '../store/slices/badgesSlice';
 
 import GameMap from './GameMap';
 import Player from './Player';
@@ -10,6 +11,7 @@ import ActivityBoard from './ActivityBoard';
 import ActivityForm from './ActivityForm';
 import Leaderboard from './Leaderboard';
 import GameHUD from './GameHUD';
+import BadgeNotification from './BadgeNotification';
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
@@ -253,6 +255,9 @@ const Game: React.FC = () => {
       )}
       
       {isLeaderboardOpen && <Leaderboard />}
+      
+      {/* Badge Notifications */}
+      <BadgeNotification />
     </div>
   );
 };
