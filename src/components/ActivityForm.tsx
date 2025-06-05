@@ -9,6 +9,10 @@ interface ActivityFormProps {
   onClose: () => void;
 }
 
+interface ActivityError {
+  text?: string;
+}
+
 const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
   const dispatch = useDispatch();
   const { playerName } = useGameContext();
@@ -23,7 +27,8 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
     { text: '', category: 'project', projectMilestone: 'preparation', priority: 1 }
   ]);
   
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<ActivityError[]>([{}]);
+  const [generalError, setGeneralError] = useState('');
   
   const handleAddActivity = () => {
     setActivities([...activities, { 
@@ -32,23 +37,40 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
       projectMilestone: 'preparation', 
       priority: activities.length + 1 
     }]);
+    setErrors([...errors, {}]);
   };
   
   const handleRemoveActivity = (index: number) => {
     const newActivities = [...activities];
     newActivities.splice(index, 1);
+    const newErrors = [...errors];
+    newErrors.splice(index, 1);
+    
     // Reorder priorities
     const reorderedActivities = newActivities.map((activity, idx) => ({
       ...activity,
       priority: idx + 1
     }));
     setActivities(reorderedActivities);
+    setErrors(newErrors);
   };
   
   const handleTextChange = (index: number, text: string) => {
     const newActivities = [...activities];
     newActivities[index].text = text;
     setActivities(newActivities);
+    
+    // Clear error for this field if it exists
+    if (errors[index]?.text) {
+      const newErrors = [...errors];
+      delete newErrors[index].text;
+      setErrors(newErrors);
+    }
+    
+    // Clear general error when user starts typing
+    if (generalError) {
+      setGeneralError('');
+    }
   };
   
   const handleCategoryChange = (index: number, category: ActivityCategory) => {
@@ -85,13 +107,30 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
     setActivities(reorderedActivities);
   };
   
-  const handleSubmit = () => {
-    // Validate all activities have text
-    const emptyActivities = activities.some(activity => !activity.text.trim());
-    if (emptyActivities) {
-      setError('All activities must have a description.');
-      return;
+  const validateForm = (): boolean => {
+    let isValid = true;
+    const newErrors: ActivityError[] = activities.map(activity => {
+      const error: ActivityError = {};
+      
+      if (!activity.text.trim()) {
+        error.text = 'Activity description is required';
+        isValid = false;
+      }
+      
+      return error;
+    });
+    
+    setErrors(newErrors);
+    
+    if (!isValid) {
+      setGeneralError('Please fill in all required fields');
     }
+    
+    return isValid;
+  };
+  
+  const handleSubmit = () => {
+    if (!validateForm()) return;
     
     // Submit all activities
     activities.forEach(activity => {
@@ -136,9 +175,9 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
               </div>
             </div>
             
-            {error && (
+            {generalError && (
               <div className="bg-error-600 bg-opacity-30 border border-error-700 text-white px-4 py-2 rounded-md mb-4 font-pixel text-sm">
-                {error}
+                {generalError}
               </div>
             )}
             
@@ -180,10 +219,19 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                         <textarea
                           value={activity.text}
                           onChange={(e) => handleTextChange(index, e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          className={`w-full px-3 py-2 bg-gray-600 border rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                            errors[index]?.text 
+                              ? 'border-error-500 focus:ring-error-500' 
+                              : 'border-gray-500 focus:ring-primary-500'
+                          }`}
                           placeholder="Describe what you accomplished..."
                           rows={2}
                         />
+                        {errors[index]?.text && (
+                          <p className="mt-1 text-error-400 text-sm font-pixel">
+                            {errors[index].text}
+                          </p>
+                        )}
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
