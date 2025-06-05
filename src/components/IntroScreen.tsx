@@ -34,7 +34,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const handleJoinRequest = () => {
     if (name.trim() && inviteCode.trim()) {
       setIsWaitingApproval(true);
-      // In a real implementation, this would make an API call to submit the join request
     }
   };
 
@@ -135,8 +134,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   );
 
   const renderCreateScreen = () => (
-    <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600">
-      <div className="flex items-center mb-6">
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-xl w-full border-2 border-primary-600">
+      <div className="flex items-center mb-4">
         <button
           onClick={() => setScreenMode('initial')}
           className="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -146,7 +145,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         <h2 className="text-xl font-heading text-white">Create Your Character</h2>
       </div>
       
-      <div className="mb-6">
+      <div className="mb-4">
         <label htmlFor="name" className="block text-white font-pixel mb-2">
           Your Name:
         </label>
@@ -160,8 +159,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         />
       </div>
 
-      <div className="mb-8">
-        <label className="block text-white font-pixel mb-4">
+      <div className="mb-6">
+        <label className="block text-white font-pixel mb-2">
           Select Avatar:
         </label>
         <div className="relative">
@@ -169,9 +168,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <button
               onClick={handlePrevPage}
               disabled={isAnimating}
-              className="absolute -left-8 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 z-10 bg-primary-600 hover:bg-primary-700 transition-all p-1 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft size={16} className="text-primary-400" />
+              <ChevronLeft size={14} />
             </button>
           )}
           
@@ -179,18 +178,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <button
               onClick={handleNextPage}
               disabled={isAnimating}
-              className="absolute -right-8 top-1/2 -translate-y-1/2 z-10 bg-gray-700 hover:bg-gray-600 transition-all p-2 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-primary-600"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 z-10 bg-primary-600 hover:bg-primary-700 transition-all p-1 rounded-full text-white shadow-lg transform hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight size={16} className="text-primary-400" />
+              <ChevronRight size={14} />
             </button>
           )}
 
           <div 
             ref={avatarContainerRef}
-            className="relative overflow-hidden px-2"
+            className="relative overflow-hidden"
           >
             <div 
-              className={`grid grid-cols-4 gap-4 transition-all duration-300 ease-in-out transform ${
+              className={`grid grid-cols-4 gap-2 transition-all duration-300 ease-in-out transform ${
                 isAnimating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'
               }`}
               style={{
@@ -201,39 +200,36 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 <div
                   key={id}
                   onClick={() => handleAvatarClick(id)}
-                  className={`relative bg-gray-700 p-3 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                  className={`relative bg-gray-900 p-2 rounded-lg border transition-all duration-200 cursor-pointer hover:bg-gray-800 ${
                     selectedAvatarId === id
-                      ? 'border-primary-400 transform scale-105 shadow-xl'
-                      : 'border-gray-600'
+                      ? 'border-primary-400'
+                      : 'border-gray-700'
                   } ${id !== 1 ? 'opacity-50' : ''}`}
                 >
                   <div 
-                    className="w-24 h-24 flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
-                    style={{
-                      backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                    }}
+                    className="w-20 h-20 flex items-center justify-center rounded-lg overflow-hidden"
                   >
                     <div 
                       className={`character ${id !== 1 ? 'grayscale' : ''}`}
                       style={{
-                        width: '48px',
-                        height: '48px',
+                        width: '32px',
+                        height: '32px',
                         backgroundImage: `url("${getAvatarSprite(id)}")`,
-                        backgroundPosition: '-24px 0px',
-                        transform: 'scale(1.5)',
+                        backgroundPosition: '-16px 0px',
+                        transform: 'scale(1.25)',
                         imageRendering: 'pixelated',
                         transformOrigin: 'center',
                       }}
                     />
                     {id !== 1 && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white\" size={24} />
+                        <Lock className="text-white\" size={16} />
                       </div>
                     )}
                   </div>
-                  <div className="text-center mt-2">
-                    <span className={`font-pixel text-xs px-3 py-1 bg-gray-800 rounded-full ${
-                      id === 1 ? 'text-primary-400 border border-primary-400' : 'text-gray-400'
+                  <div className="text-center mt-1">
+                    <span className={`font-pixel text-xs px-2 py-0.5 rounded-full ${
+                      id === 1 ? 'bg-primary-900 text-primary-400' : 'bg-gray-800 text-gray-400'
                     }`}>
                       {getAvatarName(id)}
                     </span>
@@ -245,23 +241,21 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
 
         {lockedMessage && (
-          <div className="mt-4 text-warning-400 text-sm font-pixel text-center animate-bounce">
+          <div className="mt-2 text-warning-400 text-xs font-pixel text-center animate-bounce">
             {lockedMessage}
           </div>
         )}
       </div>
 
-      <div className="flex flex-col space-y-3">
-        <button
-          onClick={handleStartGame}
-          disabled={!name.trim()}
-          className={`w-full py-3 rounded-lg font-heading text-white shadow-pixel button-pixel ${
-            name.trim() ? 'bg-primary-600 hover:bg-primary-700' : 'bg-gray-600 cursor-not-allowed'
-          }`}
-        >
-          Create Neighborhood
-        </button>
-      </div>
+      <button
+        onClick={handleStartGame}
+        disabled={!name.trim()}
+        className={`w-full py-2 rounded-lg font-heading text-white text-sm shadow-pixel button-pixel ${
+          name.trim() ? 'bg-primary-600 hover:bg-primary-700' : 'bg-gray-600 cursor-not-allowed'
+        }`}
+      >
+        Create Neighborhood
+      </button>
     </div>
   );
 
