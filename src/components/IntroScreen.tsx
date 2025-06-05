@@ -33,8 +33,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const handleJoinRequest = () => {
     if (name.trim() && inviteCode.trim()) {
-      // Check for dummy invite code
-      if (inviteCode.trim().toUpperCase() === 'HACKATHON') {
+      const upperCode = inviteCode.trim().toUpperCase();
+      
+      if (upperCode === 'HACKED') {
+        setPlayerName(name);
+        setPlayerAvatar(selectedAvatarId);
+        onStartGame();
+      } else if (upperCode === 'HACKATHON') {
         setIsWaitingApproval(true);
       } else {
         setLockedMessage('Invalid invitation code. Please try again.');
@@ -300,6 +305,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               <label className="block text-white font-pixel mb-2">
                 Select Avatar:
               </label>
+              <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mb-4 text-center">
+                <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
+                <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
+              </div>
               <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
                 {avatarOptions.map((id) => (
                   <div
