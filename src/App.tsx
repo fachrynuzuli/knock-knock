@@ -72,7 +72,7 @@ function App() {
           <img 
             src="/built on bolt no Background.png" 
             alt="Built on Bolt" 
-            className="h-8 w-auto"
+            className="h-32 w-auto"
           />
         </div>
       </div>
