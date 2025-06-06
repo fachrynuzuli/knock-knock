@@ -4,6 +4,7 @@ import { RootState } from '../store';
 import { updatePlayerPosition, toggleActivityForm, toggleLeaderboard } from '../store/slices/gameStateSlice';
 import { useGameContext } from '../contexts/GameContext';
 import { addBadge } from '../store/slices/badgesSlice';
+import { Plus, Minus } from 'lucide-react';
 
 import GameMap from './GameMap';
 import Player from './Player';
@@ -87,24 +88,18 @@ const Game: React.FC = () => {
 
   const cameraPosition = calculateCameraPosition();
   
-  // Handle zoom with mouse wheel
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      
-      const zoomDirection = e.deltaY > 0 ? -1 : 1;
-      const newZoom = zoomLevel + (zoomDirection * ZOOM_STEP);
-      const clampedZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
-      
-      setZoomLevel(clampedZoom);
-    };
+  // Zoom functions
+  const handleZoomIn = () => {
+    const newZoom = zoomLevel + ZOOM_STEP;
+    const clampedZoom = Math.min(MAX_ZOOM, newZoom);
+    setZoomLevel(clampedZoom);
+  };
 
-    window.addEventListener('wheel', handleWheel, { passive: false });
-    
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, [zoomLevel]);
+  const handleZoomOut = () => {
+    const newZoom = zoomLevel - ZOOM_STEP;
+    const clampedZoom = Math.max(MIN_ZOOM, newZoom);
+    setZoomLevel(clampedZoom);
+  };
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -376,23 +371,34 @@ const Game: React.FC = () => {
       {/* Fixed UI Elements - These don't pan with the map */}
       <GameHUD />
       
-      {/* Zoom indicator */}
-      <div className="absolute top-20 right-4 bg-gray-800 bg-opacity-80 p-2 rounded-lg">
-        <div className="text-white font-pixel text-sm">
+      {/* Zoom Controls */}
+      <div className="absolute top-20 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
+        <div className="text-white font-pixel text-sm mb-2 text-center">
           Zoom: {Math.round(zoomLevel * 100)}%
         </div>
-        <div className="text-gray-400 font-pixel text-xs mt-1">
-          Scroll to zoom
-        </div>
-      </div>
-      
-      {/* Controls indicator */}
-      <div className="absolute bottom-4 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
-        <div className="text-white font-pixel text-sm mb-2">Camera Controls:</div>
-        <div className="text-gray-400 font-pixel text-xs space-y-1">
-          <div><kbd className="bg-gray-700 px-1">WASD</kbd> Move player</div>
-          <div><kbd className="bg-gray-700 px-1">Arrow Keys</kbd> Pan camera</div>
-          <div><kbd className="bg-gray-700 px-1">Mouse Wheel</kbd> Zoom</div>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={handleZoomOut}
+            disabled={zoomLevel <= MIN_ZOOM}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
+              zoomLevel <= MIN_ZOOM 
+                ? 'bg-gray-600 cursor-not-allowed opacity-50' 
+                : 'bg-primary-600 hover:bg-primary-700 shadow-pixel button-pixel'
+            }`}
+          >
+            <Minus size={16} />
+          </button>
+          <button
+            onClick={handleZoomIn}
+            disabled={zoomLevel >= MAX_ZOOM}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
+              zoomLevel >= MAX_ZOOM 
+                ? 'bg-gray-600 cursor-not-allowed opacity-50' 
+                : 'bg-primary-600 hover:bg-primary-700 shadow-pixel button-pixel'
+            }`}
+          >
+            <Plus size={16} />
+          </button>
         </div>
       </div>
       

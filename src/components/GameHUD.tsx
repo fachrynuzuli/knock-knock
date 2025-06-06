@@ -50,6 +50,8 @@ const GameHUD: React.FC = () => {
             <span><kbd className="bg-gray-700 px-1">E</kbd> Interact</span>
             <span><kbd className="bg-gray-700 px-1">L</kbd> Leaderboard</span>
             <span><kbd className="bg-gray-700 px-1">ESC</kbd> Close</span>
+            <span><kbd className="bg-gray-700 px-1">↑↓←→</kbd> Pan</span>
+            <span><kbd className="bg-gray-700 px-1">+/-</kbd> Zoom</span>
           </div>
         </div>
       </div>
