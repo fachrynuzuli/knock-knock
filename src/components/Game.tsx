@@ -26,8 +26,14 @@ const emptyLands: EmptyLand[] = [
   { id: '3', name: 'Forest Edge', x: 200, y: 670 },
   { id: '4', name: 'Meadow View', x: 845, y: 170 },
   { id: '5', name: 'Valley Vista', x: 410, y: 500 },
-  { id: '6', name: 'Mountain Peak', x: 740, y: 670 }
+  { id: '6', name: 'Mountain Peak', x: 740, y: 670 },
+  { id: '7', name: 'Lareina Valley', x: 425, y: 670 }
 ];
+
+const townHallPosition = {
+  x: 640,
+  y: 450
+};
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
@@ -123,26 +129,44 @@ const Game: React.FC = () => {
         dispatch(updatePlayerPosition({ x: newX, y: newY }));
       }
       
-      const playerHouse = {
-        x: 782,
-        y: 232
-      };
-      
       let foundInteraction = false;
       
-      const dxPlayer = Math.abs((newX) - (playerHouse.x + 32));
-      const dyPlayer = Math.abs((newY) - (playerHouse.y + 32));
+      // Check if near Town Hall
+      const dxTownHall = Math.abs((newX) - (townHallPosition.x + 48));
+      const dyTownHall = Math.abs((newY) - (townHallPosition.y + 48));
       
-      if (dxPlayer < 64 && dyPlayer < 64) {
+      if (dxTownHall < 96 && dyTownHall < 96) {
         setInteractionPrompt({
           show: true,
-          message: 'Press E to update your board',
-          x: playerHouse.x,
-          y: playerHouse.y - 40
+          message: 'Press E to enter Town Hall',
+          x: townHallPosition.x,
+          y: townHallPosition.y - 40
         });
         foundInteraction = true;
       }
       
+      // Check if near player's own board
+      if (!foundInteraction) {
+        const playerHouse = {
+          x: 782,
+          y: 232
+        };
+        
+        const dxPlayer = Math.abs((newX) - (playerHouse.x + 32));
+        const dyPlayer = Math.abs((newY) - (playerHouse.y + 32));
+        
+        if (dxPlayer < 64 && dyPlayer < 64) {
+          setInteractionPrompt({
+            show: true,
+            message: 'Press E to update your board',
+            x: playerHouse.x,
+            y: playerHouse.y - 40
+          });
+          foundInteraction = true;
+        }
+      }
+      
+      // Check if near teammate houses
       if (!foundInteraction) {
         for (const teammate of teammates) {
           const dx = Math.abs((newX) - (teammate.housePosition.x + 32));
@@ -209,6 +233,19 @@ const Game: React.FC = () => {
         }
       />
       
+      {/* Town Hall */}
+      <div 
+        className="absolute"
+        style={{
+          left: `${townHallPosition.x}px`,
+          top: `${townHallPosition.y}px`,
+        }}
+      >
+        <div className="w-24 h-24 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg">
+          <div className="text-white text-xs font-pixel text-center mt-1">Town Hall</div>
+        </div>
+      </div>
+
       {/* Empty Lands */}
       {emptyLands.map((land) => (
         <div 
@@ -219,7 +256,7 @@ const Game: React.FC = () => {
             top: `${land.y}px`,
           }}
         >
-          <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
+          <div className="w-16 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
             <div className="text-white text-xs font-pixel text-center mt-1">{land.name}</div>
           </div>
         </div>
