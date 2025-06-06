@@ -371,8 +371,8 @@ const Game: React.FC = () => {
       {/* Fixed UI Elements - These don't pan with the map */}
       <GameHUD />
       
-      {/* Zoom Controls */}
-      <div className="absolute top-20 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
+      {/* Zoom Controls - Moved to bottom right */}
+      <div className="absolute bottom-4 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
         <div className="text-white font-pixel text-sm mb-2 text-center">
           Zoom: {Math.round(zoomLevel * 100)}%
         </div>
