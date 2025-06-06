@@ -21,12 +21,12 @@ interface EmptyLand {
 }
 
 const emptyLands: EmptyLand[] = [
-  { id: '1', name: 'Riverside Plot', x: 450, y: 350 },
-  { id: '2', name: 'Hilltop Haven', x: 850, y: 450 },
-  { id: '3', name: 'Forest Edge', x: 200, y: 300 },
-  { id: '4', name: 'Meadow View', x: 1100, y: 200 },
-  { id: '5', name: 'Valley Vista', x: 600, y: 550 },
-  { id: '6', name: 'Mountain Peak', x: 950, y: 600 }
+  { id: '1', name: 'Riverside Plot', x: 420, y: 350 },
+  { id: '2', name: 'Hilltop Haven', x: 770, y: 350 },
+  { id: '3', name: 'Forest Edge', x: 200, y: 670 },
+  { id: '4', name: 'Meadow View', x: 845, y: 170 },
+  { id: '5', name: 'Valley Vista', x: 410, y: 500 },
+  { id: '6', name: 'Mountain Peak', x: 740, y: 670 }
 ];
 
 const Game: React.FC = () => {
@@ -219,7 +219,7 @@ const Game: React.FC = () => {
             top: `${land.y}px`,
           }}
         >
-          <div className="w-16 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
+          <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
             <div className="text-white text-xs font-pixel text-center mt-1">{land.name}</div>
           </div>
         </div>
