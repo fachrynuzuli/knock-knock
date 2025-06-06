@@ -68,7 +68,7 @@ function App() {
       
       {/* Built on Bolt Badge */}
       <div className="fixed bottom-6 left-6 z-50">
-        <div className="bg-white bg-opacity-90 rounded-xl shadow-lg p-3 transform transition-transform hover:scale-105">
+        <div className="transform transition-transform hover:scale-105">
           <img 
             src="/built on bolt no Background.png" 
             alt="Built on Bolt" 
