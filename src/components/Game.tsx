@@ -13,6 +13,22 @@ import Leaderboard from './Leaderboard';
 import GameHUD from './GameHUD';
 import BadgeNotification from './BadgeNotification';
 
+interface EmptyLand {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+}
+
+const emptyLands: EmptyLand[] = [
+  { id: '1', name: 'Riverside Plot', x: 450, y: 400 },
+  { id: '2', name: 'Hilltop Haven', x: 850, y: 450 },
+  { id: '3', name: 'Forest Edge', x: 200, y: 300 },
+  { id: '4', name: 'Meadow View', x: 1100, y: 200 },
+  { id: '5', name: 'Valley Vista', x: 600, y: 550 },
+  { id: '6', name: 'Mountain Peak', x: 950, y: 600 }
+];
+
 const Game: React.FC = () => {
   const dispatch = useDispatch();
   const { playerName, playerAvatar, isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
@@ -144,6 +160,25 @@ const Game: React.FC = () => {
           }
         }
       }
+
+      // Check for nearby empty lands
+      if (!foundInteraction) {
+        for (const land of emptyLands) {
+          const dx = Math.abs((newX) - (land.x + 32));
+          const dy = Math.abs((newY) - (land.y + 32));
+          
+          if (dx < 64 && dy < 64) {
+            setInteractionPrompt({
+              show: true,
+              message: `${land.name} - Available for development`,
+              x: land.x,
+              y: land.y - 40
+            });
+            foundInteraction = true;
+            break;
+          }
+        }
+      }
       
       if (!foundInteraction) {
         setInteractionPrompt({ show: false, message: '', x: 0, y: 0 });
@@ -173,6 +208,22 @@ const Game: React.FC = () => {
           keysPressed.d || keysPressed.arrowright ? 'right' : 'down'
         }
       />
+      
+      {/* Empty Lands */}
+      {emptyLands.map((land) => (
+        <div 
+          key={land.id}
+          className="absolute"
+          style={{
+            left: `${land.x}px`,
+            top: `${land.y}px`,
+          }}
+        >
+          <div className="w-16 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
+            <div className="text-white text-xs font-pixel text-center mt-1">{land.name}</div>
+          </div>
+        </div>
+      ))}
       
       {/* Houses */}
       {teammates.map((teammate) => (
