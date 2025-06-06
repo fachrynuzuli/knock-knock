@@ -77,6 +77,7 @@ const spriteConfig = {
 
 const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, direction }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
+  const [idleDirection, setIdleDirection] = useState<'up' | 'down' | 'left' | 'right'>('down');
   const sprite = spriteConfig[avatarId as keyof typeof spriteConfig] || spriteConfig[1];
   
   // Animation frame handling
@@ -93,6 +94,8 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
       if (elapsed > frameInterval) {
         if (isMoving) {
           setCurrentFrame(prev => (prev + 1) % sprite.frameCount);
+          // Update idle direction only when moving
+          setIdleDirection(direction);
         } else {
           setCurrentFrame(0); // Reset to idle frame when not moving
         }
@@ -107,11 +110,13 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
     return () => {
       cancelAnimationFrame(animationFrame);
     };
-  }, [isMoving, sprite.frameCount]);
+  }, [isMoving, direction, sprite.frameCount]);
 
   // Get the row index based on direction
   const getDirectionRow = () => {
-    switch (direction) {
+    const directionToUse = isMoving ? direction : idleDirection;
+    
+    switch (directionToUse) {
       case 'down': return 0;
       case 'left': return 1;
       case 'right': return 2;
