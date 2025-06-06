@@ -35,6 +35,10 @@ const townHallPosition = {
   y: 380
 };
 
+// Map dimensions
+const MAP_WIDTH = 2368;
+const MAP_HEIGHT = 1792;
+
 const Game: React.FC = () => {
   const dispatch = useDispatch();
   const { playerName, playerAvatar, isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
@@ -51,6 +55,24 @@ const Game: React.FC = () => {
 
   // Get player's house from teammates array
   const playerHouse = teammates.find(teammate => teammate.isPlayer);
+  
+  // Calculate camera position to center player on screen
+  const calculateCameraPosition = () => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Center the camera on the player
+    let cameraX = playerPosition.x - viewportWidth / 2;
+    let cameraY = playerPosition.y - viewportHeight / 2;
+    
+    // Clamp camera to map boundaries
+    cameraX = Math.max(0, Math.min(MAP_WIDTH - viewportWidth, cameraX));
+    cameraY = Math.max(0, Math.min(MAP_HEIGHT - viewportHeight, cameraY));
+    
+    return { x: cameraX, y: cameraY };
+  };
+
+  const cameraPosition = calculateCameraPosition();
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,16 +139,17 @@ const Game: React.FC = () => {
       let newX = playerPosition.x;
       let newY = playerPosition.y;
       
-      if ((keysPressed.w || keysPressed.arrowup) && playerPosition.y > 24) {
+      // Updated movement boundaries for the large map
+      if ((keysPressed.w || keysPressed.arrowup) && playerPosition.y > 32) {
         newY -= moveSpeed;
       }
-      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < 696) {
+      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < MAP_HEIGHT - 32) {
         newY += moveSpeed;
       }
-      if ((keysPressed.a || keysPressed.arrowleft) && playerPosition.x > 16) {
+      if ((keysPressed.a || keysPressed.arrowleft) && playerPosition.x > 32) {
         newX -= moveSpeed;
       }
-      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < 1264) {
+      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < MAP_WIDTH - 32) {
         newX += moveSpeed;
       }
       
@@ -200,85 +223,96 @@ const Game: React.FC = () => {
   }, [keysPressed, playerPosition, dispatch, teammates]);
   
   return (
-    <div className="game-container bg-gray-900">
-      <GameMap />
-      
-      <Player
-        position={playerPosition}
-        avatarId={playerAvatar}
-        name={playerName}
-        isMoving={
-          keysPressed.w || keysPressed.a || keysPressed.s || keysPressed.d ||
-          keysPressed.arrowup || keysPressed.arrowleft || keysPressed.arrowdown || keysPressed.arrowright
-        }
-        direction={
-          keysPressed.w || keysPressed.arrowup ? 'up' :
-          keysPressed.s || keysPressed.arrowdown ? 'down' :
-          keysPressed.a || keysPressed.arrowleft ? 'left' :
-          keysPressed.d || keysPressed.arrowright ? 'right' : 'down'
-        }
-      />
-      
-      {/* Town Hall */}
+    <div className="relative w-full h-full overflow-hidden bg-gray-900">
+      {/* Game World Container - This is what pans */}
       <div 
-        className="absolute"
+        className="absolute transition-transform duration-75 ease-linear"
         style={{
-          left: `${townHallPosition.x}px`,
-          top: `${townHallPosition.y}px`,
+          width: `${MAP_WIDTH}px`,
+          height: `${MAP_HEIGHT}px`,
+          transform: `translate(-${cameraPosition.x}px, -${cameraPosition.y}px)`,
         }}
       >
-        <div className="w-36 h-36 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
-          <div className="text-white text-sm font-pixel text-center">Town Hall</div>
+        <GameMap />
+        
+        <Player
+          position={playerPosition}
+          avatarId={playerAvatar}
+          name={playerName}
+          isMoving={
+            keysPressed.w || keysPressed.a || keysPressed.s || keysPressed.d ||
+            keysPressed.arrowup || keysPressed.arrowleft || keysPressed.arrowdown || keysPressed.arrowright
+          }
+          direction={
+            keysPressed.w || keysPressed.arrowup ? 'up' :
+            keysPressed.s || keysPressed.arrowdown ? 'down' :
+            keysPressed.a || keysPressed.arrowleft ? 'left' :
+            keysPressed.d || keysPressed.arrowright ? 'right' : 'down'
+          }
+        />
+        
+        {/* Town Hall */}
+        <div 
+          className="absolute"
+          style={{
+            left: `${townHallPosition.x}px`,
+            top: `${townHallPosition.y}px`,
+          }}
+        >
+          <div className="w-36 h-36 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
+            <div className="text-white text-sm font-pixel text-center">Town Hall</div>
+          </div>
         </div>
-      </div>
 
-      {/* Empty Lands */}
-      {emptyLands.map((land) => (
-        <div 
-          key={land.id}
-          className="absolute"
-          style={{
-            left: `${land.x}px`,
-            top: `${land.y}px`,
-          }}
-        >
-          <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500 flex items-center justify-center">
-            <div className="text-white text-xs font-pixel text-center">{land.name}</div>
+        {/* Empty Lands */}
+        {emptyLands.map((land) => (
+          <div 
+            key={land.id}
+            className="absolute"
+            style={{
+              left: `${land.x}px`,
+              top: `${land.y}px`,
+            }}
+          >
+            <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500 flex items-center justify-center">
+              <div className="text-white text-xs font-pixel text-center">{land.name}</div>
+            </div>
           </div>
-        </div>
-      ))}
-      
-      {/* All Houses (including player's house) */}
-      {teammates.map((teammate) => (
-        <div 
-          key={teammate.id}
-          className="absolute"
-          style={{
-            left: `${teammate.housePosition.x}px`,
-            top: `${teammate.housePosition.y}px`,
-          }}
-        >
-          <div className={`w-16 h-16 ${teammate.isPlayer ? 'bg-blue-500' : 'bg-red-500'} bg-opacity-50 border-2 ${teammate.isPlayer ? 'border-blue-700' : 'border-red-700'} flex items-center justify-center`}>
-            <div className="text-white text-xs font-pixel text-center">{teammate.name}</div>
+        ))}
+        
+        {/* All Houses (including player's house) */}
+        {teammates.map((teammate) => (
+          <div 
+            key={teammate.id}
+            className="absolute"
+            style={{
+              left: `${teammate.housePosition.x}px`,
+              top: `${teammate.housePosition.y}px`,
+            }}
+          >
+            <div className={`w-16 h-16 ${teammate.isPlayer ? 'bg-blue-500' : 'bg-red-500'} bg-opacity-50 border-2 ${teammate.isPlayer ? 'border-blue-700' : 'border-red-700'} flex items-center justify-center`}>
+              <div className="text-white text-xs font-pixel text-center">{teammate.name}</div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+        
+        {/* Interaction Prompt */}
+        {interactionPrompt.show && (
+          <div 
+            className="absolute bg-gray-800 bg-opacity-80 px-3 py-1 rounded-lg text-white text-sm font-pixel z-30 animate-bounce-slow"
+            style={{
+              left: `${interactionPrompt.x - 100}px`,
+              top: `${interactionPrompt.y}px`,
+              width: '200px',
+              textAlign: 'center',
+            }}
+          >
+            {interactionPrompt.message}
+          </div>
+        )}
+      </div>
       
-      {/* Interaction Prompt */}
-      {interactionPrompt.show && (
-        <div 
-          className="absolute bg-gray-800 bg-opacity-80 px-3 py-1 rounded-lg text-white text-sm font-pixel z-30 animate-bounce-slow"
-          style={{
-            left: `${interactionPrompt.x - 100}px`,
-            top: `${interactionPrompt.y}px`,
-            width: '200px',
-            textAlign: 'center',
-          }}
-        >
-          {interactionPrompt.message}
-        </div>
-      )}
-      
+      {/* Fixed UI Elements - These don't pan with the map */}
       <GameHUD />
       
       {isFormOpen && <ActivityForm onClose={closeForm} />}

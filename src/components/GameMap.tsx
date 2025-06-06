@@ -3,19 +3,20 @@ import React from 'react';
 const GameMap: React.FC = () => {
   return (
     <div className="absolute inset-0 z-0">
-      {/* Main map container */}
+      {/* Main map container - now fills the entire game world */}
       <div 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1280px] h-[720px]"
+        className="w-full h-full"
         style={{
-          backgroundImage: 'url("/game_map.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage: 'url("/game_map_large.png")',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'top left',
+          backgroundRepeat: 'no-repeat',
           imageRendering: 'pixelated',
         }}
       >
         {/* Optional grid overlay for debugging */}
         <div 
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-0"
           style={{
             backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
             backgroundSize: '32px 32px',
