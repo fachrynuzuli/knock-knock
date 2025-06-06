@@ -32,8 +32,8 @@ const emptyLands: EmptyLand[] = [
 ];
 
 const townHallPosition = {
-  x: 590,
-  y: 380
+  x: 900,
+  y: 620
 };
 
 // Map dimensions
@@ -315,7 +315,7 @@ const Game: React.FC = () => {
             top: `${townHallPosition.y}px`,
           }}
         >
-          <div className="w-36 h-36 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
+          <div className="w-150 h-80 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
             <div className="text-white text-sm font-pixel text-center">Town Hall</div>
           </div>
         </div>
