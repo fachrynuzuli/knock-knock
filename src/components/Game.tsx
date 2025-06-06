@@ -21,7 +21,7 @@ interface EmptyLand {
 }
 
 const emptyLands: EmptyLand[] = [
-  { id: '1', name: 'Riverside Plot', x: 450, y: 400 },
+  { id: '1', name: 'Riverside Plot', x: 450, y: 350 },
   { id: '2', name: 'Hilltop Haven', x: 850, y: 450 },
   { id: '3', name: 'Forest Edge', x: 200, y: 300 },
   { id: '4', name: 'Meadow View', x: 1100, y: 200 },
