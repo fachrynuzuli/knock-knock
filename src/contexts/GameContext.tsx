@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { updatePlayerInfo } from '../store/slices/teammatesSlice';
 
 interface GameContextType {
   playerName: string;
@@ -17,11 +19,22 @@ interface GameContextType {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [playerName, setPlayerName] = useState('Player');
-  const [playerAvatar, setPlayerAvatar] = useState(1);
+  const dispatch = useDispatch();
+  const [playerName, setPlayerNameState] = useState('Player');
+  const [playerAvatar, setPlayerAvatarState] = useState(1);
   const [currentWeek, setCurrentWeek] = useState('Week 1');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [viewingTeammate, setViewingTeammate] = useState<string | null>(null);
+
+  const setPlayerName = (name: string) => {
+    setPlayerNameState(name);
+    dispatch(updatePlayerInfo({ name, avatarId: playerAvatar }));
+  };
+
+  const setPlayerAvatar = (avatar: number) => {
+    setPlayerAvatarState(avatar);
+    dispatch(updatePlayerInfo({ name: playerName, avatarId: avatar }));
+  };
 
   const openForm = () => setIsFormOpen(true);
   const closeForm = () => setIsFormOpen(false);

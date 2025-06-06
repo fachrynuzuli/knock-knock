@@ -48,31 +48,36 @@ const Game: React.FC = () => {
     x: 0,
     y: 0
   });
+
+  // Get player's house from teammates array
+  const playerHouse = teammates.find(teammate => teammate.isPlayer);
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setKeysPressed(prev => ({ ...prev, [e.key.toLowerCase()]: true }));
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
+        // Check if near Town Hall
+        const dxTownHall = Math.abs(playerPosition.x - (townHallPosition.x + 48));
+        const dyTownHall = Math.abs(playerPosition.y - (townHallPosition.y + 48));
+        
+        if (dxTownHall < 96 && dyTownHall < 96) {
+          dispatch(toggleLeaderboard());
+          return;
+        }
+
+        // Find which teammate's house we're near
         const nearbyTeammate = teammates.find(teammate => {
-          const dx = Math.abs((playerPosition.x) - (teammate.housePosition.x + 32));
-          const dy = Math.abs((playerPosition.y) - (teammate.housePosition.y + 32));
+          const dx = Math.abs(playerPosition.x - (teammate.housePosition.x + 32));
+          const dy = Math.abs(playerPosition.y - (teammate.housePosition.y + 32));
           return dx < 64 && dy < 64;
         });
         
         if (nearbyTeammate) {
-          setViewingTeammate(nearbyTeammate.name);
-        } else {
-          const playerHouse = {
-            x: 782,
-            y: 232
-          };
-          
-          const dx = Math.abs((playerPosition.x) - (playerHouse.x + 32));
-          const dy = Math.abs((playerPosition.y) - (playerHouse.y + 32));
-          
-          if (dx < 64 && dy < 64) {
+          if (nearbyTeammate.isPlayer) {
             openForm();
+          } else {
+            setViewingTeammate(nearbyTeammate.name);
           }
         }
       }
@@ -132,8 +137,8 @@ const Game: React.FC = () => {
       let foundInteraction = false;
       
       // Check if near Town Hall
-      const dxTownHall = Math.abs((newX) - (townHallPosition.x + 48));
-      const dyTownHall = Math.abs((newY) - (townHallPosition.y + 48));
+      const dxTownHall = Math.abs(newX - (townHallPosition.x + 48));
+      const dyTownHall = Math.abs(newY - (townHallPosition.y + 48));
       
       if (dxTownHall < 96 && dyTownHall < 96) {
         setInteractionPrompt({
@@ -145,37 +150,18 @@ const Game: React.FC = () => {
         foundInteraction = true;
       }
       
-      // Check if near player's own board
-      if (!foundInteraction) {
-        const playerHouse = {
-          x: 782,
-          y: 232
-        };
-        
-        const dxPlayer = Math.abs((newX) - (playerHouse.x + 32));
-        const dyPlayer = Math.abs((newY) - (playerHouse.y + 32));
-        
-        if (dxPlayer < 64 && dyPlayer < 64) {
-          setInteractionPrompt({
-            show: true,
-            message: 'Press E to update your board',
-            x: playerHouse.x,
-            y: playerHouse.y - 40
-          });
-          foundInteraction = true;
-        }
-      }
-      
-      // Check if near teammate houses
+      // Check if near any teammate houses (including player's own house)
       if (!foundInteraction) {
         for (const teammate of teammates) {
-          const dx = Math.abs((newX) - (teammate.housePosition.x + 32));
-          const dy = Math.abs((newY) - (teammate.housePosition.y + 32));
+          const dx = Math.abs(newX - (teammate.housePosition.x + 32));
+          const dy = Math.abs(newY - (teammate.housePosition.y + 32));
           
           if (dx < 64 && dy < 64) {
             setInteractionPrompt({
               show: true,
-              message: `Press E to view ${teammate.name}'s board`,
+              message: teammate.isPlayer 
+                ? 'Press E to update your board'
+                : `Press E to view ${teammate.name}'s board`,
               x: teammate.housePosition.x,
               y: teammate.housePosition.y - 40
             });
@@ -188,8 +174,8 @@ const Game: React.FC = () => {
       // Check for nearby empty lands
       if (!foundInteraction) {
         for (const land of emptyLands) {
-          const dx = Math.abs((newX) - (land.x + 32));
-          const dy = Math.abs((newY) - (land.y + 32));
+          const dx = Math.abs(newX - (land.x + 32));
+          const dy = Math.abs(newY - (land.y + 32));
           
           if (dx < 64 && dy < 64) {
             setInteractionPrompt({
@@ -241,8 +227,8 @@ const Game: React.FC = () => {
           top: `${townHallPosition.y}px`,
         }}
       >
-        <div className="w-36 h-36 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg">
-          <div className="text-white text-xs font-pixel text-center mt-1">Town Hall</div>
+        <div className="w-36 h-36 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
+          <div className="text-white text-sm font-pixel text-center">Town Hall</div>
         </div>
       </div>
 
@@ -256,13 +242,13 @@ const Game: React.FC = () => {
             top: `${land.y}px`,
           }}
         >
-          <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
-            <div className="text-white text-xs font-pixel text-center mt-1">{land.name}</div>
+          <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500 flex items-center justify-center">
+            <div className="text-white text-xs font-pixel text-center">{land.name}</div>
           </div>
         </div>
       ))}
       
-      {/* Houses */}
+      {/* All Houses (including player's house) */}
       {teammates.map((teammate) => (
         <div 
           key={teammate.id}
@@ -272,24 +258,11 @@ const Game: React.FC = () => {
             top: `${teammate.housePosition.y}px`,
           }}
         >
-          <div className="w-16 h-16 bg-red-500 bg-opacity-50">
-            <div className="text-white text-xs font-pixel text-center mt-1">{teammate.name}</div>
+          <div className={`w-16 h-16 ${teammate.isPlayer ? 'bg-blue-500' : 'bg-red-500'} bg-opacity-50 border-2 ${teammate.isPlayer ? 'border-blue-700' : 'border-red-700'} flex items-center justify-center`}>
+            <div className="text-white text-xs font-pixel text-center">{teammate.name}</div>
           </div>
         </div>
       ))}
-      
-      {/* Player's house */}
-      <div 
-        className="absolute"
-        style={{
-          left: '750px',
-          top: '200px',
-        }}
-      >
-        <div className="w-16 h-16 bg-red-500 bg-opacity-50">
-          <div className="text-white text-xs font-pixel text-center mt-1">{playerName}</div>
-        </div>
-      </div>
       
       {/* Interaction Prompt */}
       {interactionPrompt.show && (
@@ -306,10 +279,8 @@ const Game: React.FC = () => {
         </div>
       )}
       
-      {/* HUD */}
       <GameHUD />
       
-      {/* Activity Forms and Boards */}
       {isFormOpen && <ActivityForm onClose={closeForm} />}
       
       {viewingTeammate && (
@@ -321,7 +292,6 @@ const Game: React.FC = () => {
       
       {isLeaderboardOpen && <Leaderboard />}
       
-      {/* Badge Notifications */}
       <BadgeNotification />
     </div>
   );

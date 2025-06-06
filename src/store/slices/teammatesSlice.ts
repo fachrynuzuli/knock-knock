@@ -16,6 +16,7 @@ export interface Teammate {
     routineCount: number;
     totalActivities: number;
   };
+  isPlayer?: boolean; // New field to identify the current player
 }
 
 interface TeammatesState {
@@ -24,6 +25,21 @@ interface TeammatesState {
 
 const initialState: TeammatesState = {
   items: [
+    {
+      id: 'player',
+      name: 'Player', // This will be updated when player sets their name
+      avatarId: 1,
+      houseLevel: 1,
+      housePosition: { x: 782, y: 232 },
+      houseType: 0,
+      isPlayer: true,
+      stats: {
+        projectCount: 0,
+        adhocCount: 0,
+        routineCount: 0,
+        totalActivities: 0,
+      },
+    },
     {
       id: '1',
       name: 'Alex',
@@ -106,6 +122,13 @@ const teammatesSlice = createSlice({
         state.items[index] = { ...state.items[index], ...updates };
       }
     },
+    updatePlayerInfo: (state, action: PayloadAction<{ name: string; avatarId: number }>) => {
+      const playerIndex = state.items.findIndex(teammate => teammate.isPlayer);
+      if (playerIndex !== -1) {
+        state.items[playerIndex].name = action.payload.name;
+        state.items[playerIndex].avatarId = action.payload.avatarId;
+      }
+    },
     incrementTeammateStats: (state, action: PayloadAction<{ id: string; category: 'project' | 'adhoc' | 'routine' }>) => {
       const { id, category } = action.payload;
       const index = state.items.findIndex(teammate => teammate.id === id);
@@ -125,6 +148,6 @@ const teammatesSlice = createSlice({
   },
 });
 
-export const { addTeammate, updateTeammate, incrementTeammateStats } = teammatesSlice.actions;
+export const { addTeammate, updateTeammate, updatePlayerInfo, incrementTeammateStats } = teammatesSlice.actions;
 
 export default teammatesSlice.reducer;
