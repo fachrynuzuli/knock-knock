@@ -39,6 +39,14 @@ const townHallPosition = {
 const MAP_WIDTH = 2368;
 const MAP_HEIGHT = 1792;
 
+// Zoom constants
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 2.0;
+const ZOOM_STEP = 0.1;
+
+// Camera panning speed
+const CAMERA_PAN_SPEED = 8;
+
 const Game: React.FC = () => {
   const dispatch = useDispatch();
   const { playerName, playerAvatar, isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
@@ -53,17 +61,22 @@ const Game: React.FC = () => {
     y: 0
   });
 
+  // Camera state
+  const [cameraOffsetX, setCameraOffsetX] = useState(0);
+  const [cameraOffsetY, setCameraOffsetY] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1.0);
+
   // Get player's house from teammates array
   const playerHouse = teammates.find(teammate => teammate.isPlayer);
   
   // Calculate camera position to center player on screen
   const calculateCameraPosition = () => {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth / zoomLevel;
+    const viewportHeight = window.innerHeight / zoomLevel;
     
-    // Center the camera on the player
-    let cameraX = playerPosition.x - viewportWidth / 2;
-    let cameraY = playerPosition.y - viewportHeight / 2;
+    // Center the camera on the player, then apply manual offset
+    let cameraX = playerPosition.x - viewportWidth / 2 + cameraOffsetX;
+    let cameraY = playerPosition.y - viewportHeight / 2 + cameraOffsetY;
     
     // Clamp camera to map boundaries
     cameraX = Math.max(0, Math.min(MAP_WIDTH - viewportWidth, cameraX));
@@ -74,9 +87,34 @@ const Game: React.FC = () => {
 
   const cameraPosition = calculateCameraPosition();
   
+  // Handle zoom with mouse wheel
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      
+      const zoomDirection = e.deltaY > 0 ? -1 : 1;
+      const newZoom = zoomLevel + (zoomDirection * ZOOM_STEP);
+      const clampedZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, newZoom));
+      
+      setZoomLevel(clampedZoom);
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, [zoomLevel]);
+  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setKeysPressed(prev => ({ ...prev, [e.key.toLowerCase()]: true }));
+      
+      // Reset camera offset when WASD is pressed (recenter on player)
+      if (['w', 'a', 's', 'd'].includes(e.key.toLowerCase())) {
+        setCameraOffsetX(0);
+        setCameraOffsetY(0);
+      }
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
         // Check if near Town Hall
@@ -138,23 +176,46 @@ const Game: React.FC = () => {
     const moveInterval = setInterval(() => {
       let newX = playerPosition.x;
       let newY = playerPosition.y;
+      let newCameraOffsetX = cameraOffsetX;
+      let newCameraOffsetY = cameraOffsetY;
       
-      // Updated movement boundaries for the large map
-      if ((keysPressed.w || keysPressed.arrowup) && playerPosition.y > 32) {
+      // WASD keys for player movement
+      if (keysPressed.w && playerPosition.y > 32) {
         newY -= moveSpeed;
       }
-      if ((keysPressed.s || keysPressed.arrowdown) && playerPosition.y < MAP_HEIGHT - 32) {
+      if (keysPressed.s && playerPosition.y < MAP_HEIGHT - 32) {
         newY += moveSpeed;
       }
-      if ((keysPressed.a || keysPressed.arrowleft) && playerPosition.x > 32) {
+      if (keysPressed.a && playerPosition.x > 32) {
         newX -= moveSpeed;
       }
-      if ((keysPressed.d || keysPressed.arrowright) && playerPosition.x < MAP_WIDTH - 32) {
+      if (keysPressed.d && playerPosition.x < MAP_WIDTH - 32) {
         newX += moveSpeed;
       }
       
+      // Arrow keys for camera panning
+      if (keysPressed.arrowup) {
+        newCameraOffsetY -= CAMERA_PAN_SPEED;
+      }
+      if (keysPressed.arrowdown) {
+        newCameraOffsetY += CAMERA_PAN_SPEED;
+      }
+      if (keysPressed.arrowleft) {
+        newCameraOffsetX -= CAMERA_PAN_SPEED;
+      }
+      if (keysPressed.arrowright) {
+        newCameraOffsetX += CAMERA_PAN_SPEED;
+      }
+      
+      // Update player position if changed
       if (newX !== playerPosition.x || newY !== playerPosition.y) {
         dispatch(updatePlayerPosition({ x: newX, y: newY }));
+      }
+      
+      // Update camera offset if changed
+      if (newCameraOffsetX !== cameraOffsetX || newCameraOffsetY !== cameraOffsetY) {
+        setCameraOffsetX(newCameraOffsetX);
+        setCameraOffsetY(newCameraOffsetY);
       }
       
       let foundInteraction = false;
@@ -220,17 +281,18 @@ const Game: React.FC = () => {
     }, 33);
     
     return () => clearInterval(moveInterval);
-  }, [keysPressed, playerPosition, dispatch, teammates]);
+  }, [keysPressed, playerPosition, cameraOffsetX, cameraOffsetY, dispatch, teammates]);
   
   return (
     <div className="relative w-full h-full overflow-hidden bg-gray-900">
-      {/* Game World Container - This is what pans */}
+      {/* Game World Container - This is what pans and zooms */}
       <div 
-        className="absolute transition-transform duration-75 ease-linear"
+        className="absolute transition-transform duration-150 ease-linear"
         style={{
           width: `${MAP_WIDTH}px`,
           height: `${MAP_HEIGHT}px`,
-          transform: `translate(-${cameraPosition.x}px, -${cameraPosition.y}px)`,
+          transform: `translate(-${cameraPosition.x}px, -${cameraPosition.y}px) scale(${zoomLevel})`,
+          transformOrigin: 'top left',
         }}
       >
         <GameMap />
@@ -240,14 +302,13 @@ const Game: React.FC = () => {
           avatarId={playerAvatar}
           name={playerName}
           isMoving={
-            keysPressed.w || keysPressed.a || keysPressed.s || keysPressed.d ||
-            keysPressed.arrowup || keysPressed.arrowleft || keysPressed.arrowdown || keysPressed.arrowright
+            keysPressed.w || keysPressed.a || keysPressed.s || keysPressed.d
           }
           direction={
-            keysPressed.w || keysPressed.arrowup ? 'up' :
-            keysPressed.s || keysPressed.arrowdown ? 'down' :
-            keysPressed.a || keysPressed.arrowleft ? 'left' :
-            keysPressed.d || keysPressed.arrowright ? 'right' : 'down'
+            keysPressed.w ? 'up' :
+            keysPressed.s ? 'down' :
+            keysPressed.a ? 'left' :
+            keysPressed.d ? 'right' : 'down'
           }
         />
         
@@ -314,6 +375,26 @@ const Game: React.FC = () => {
       
       {/* Fixed UI Elements - These don't pan with the map */}
       <GameHUD />
+      
+      {/* Zoom indicator */}
+      <div className="absolute top-20 right-4 bg-gray-800 bg-opacity-80 p-2 rounded-lg">
+        <div className="text-white font-pixel text-sm">
+          Zoom: {Math.round(zoomLevel * 100)}%
+        </div>
+        <div className="text-gray-400 font-pixel text-xs mt-1">
+          Scroll to zoom
+        </div>
+      </div>
+      
+      {/* Controls indicator */}
+      <div className="absolute bottom-4 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
+        <div className="text-white font-pixel text-sm mb-2">Camera Controls:</div>
+        <div className="text-gray-400 font-pixel text-xs space-y-1">
+          <div><kbd className="bg-gray-700 px-1">WASD</kbd> Move player</div>
+          <div><kbd className="bg-gray-700 px-1">Arrow Keys</kbd> Pan camera</div>
+          <div><kbd className="bg-gray-700 px-1">Mouse Wheel</kbd> Zoom</div>
+        </div>
+      </div>
       
       {isFormOpen && <ActivityForm onClose={closeForm} />}
       
