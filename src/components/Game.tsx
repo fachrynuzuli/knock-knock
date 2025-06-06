@@ -27,12 +27,12 @@ const emptyLands: EmptyLand[] = [
   { id: '4', name: 'Meadow View', x: 845, y: 170 },
   { id: '5', name: 'Valley Vista', x: 410, y: 500 },
   { id: '6', name: 'Mountain Peak', x: 740, y: 670 },
-  { id: '7', name: 'Lareina Valley', x: 425, y: 670 }
+  { id: '7', name: 'Lareina Valley', x: 450, y: 670 }
 ];
 
 const townHallPosition = {
-  x: 640,
-  y: 450
+  x: 590,
+  y: 380
 };
 
 const Game: React.FC = () => {
@@ -241,7 +241,7 @@ const Game: React.FC = () => {
           top: `${townHallPosition.y}px`,
         }}
       >
-        <div className="w-24 h-24 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg">
+        <div className="w-36 h-36 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg">
           <div className="text-white text-xs font-pixel text-center mt-1">Town Hall</div>
         </div>
       </div>
@@ -256,7 +256,7 @@ const Game: React.FC = () => {
             top: `${land.y}px`,
           }}
         >
-          <div className="w-16 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
+          <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500">
             <div className="text-white text-xs font-pixel text-center mt-1">{land.name}</div>
           </div>
         </div>
