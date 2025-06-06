@@ -19,7 +19,7 @@ const spriteConfig = {
     frameHeight: 64,
     frameCount: 6,
     rowCount: 4,
-    scale: 2,
+    scale: 3,
     offsetX: 0,
     offsetY: 0,
   },
@@ -149,8 +149,8 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
           className="absolute left-1/2 -translate-x-1/2 rounded-full bg-black/30"
           style={{
             width: `${scaledWidth * 0.2}px`,
-            height: `${4 * sprite.scale}px`,
-            bottom: '33px',
+            height: `${8 * sprite.scale}px`,
+            bottom: '50px',
           }}
         />
         
