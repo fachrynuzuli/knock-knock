@@ -7,7 +7,7 @@ const GameMap: React.FC = () => {
       <div 
         className="w-full h-full"
         style={{
-          backgroundImage: 'url("/game_map_large.png")',
+          backgroundImage: 'url("/game_map_large_0.png")',
           backgroundSize: '100% 100%',
           backgroundPosition: 'top left',
           backgroundRepeat: 'no-repeat',
