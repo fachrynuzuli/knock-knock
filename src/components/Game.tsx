@@ -32,8 +32,8 @@ const emptyLands: EmptyLand[] = [
 ];
 
 const townHallPosition = {
-  x: 900,
-  y: 620
+  x: 484,
+  y: 496
 };
 
 // Map dimensions
@@ -113,10 +113,10 @@ const Game: React.FC = () => {
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
         // Check if near Town Hall
-        const dxTownHall = Math.abs(playerPosition.x - (townHallPosition.x + 48));
-        const dyTownHall = Math.abs(playerPosition.y - (townHallPosition.y + 48));
+        const dxTownHall = Math.abs(playerPosition.x - (townHallPosition.x + 700));
+        const dyTownHall = Math.abs(playerPosition.y - (townHallPosition.y + 400));
         
-        if (dxTownHall < 96 && dyTownHall < 96) {
+        if (dxTownHall < 700 && dyTownHall < 400) {
           dispatch(toggleLeaderboard());
           return;
         }
@@ -216,15 +216,15 @@ const Game: React.FC = () => {
       let foundInteraction = false;
       
       // Check if near Town Hall
-      const dxTownHall = Math.abs(newX - (townHallPosition.x + 48));
-      const dyTownHall = Math.abs(newY - (townHallPosition.y + 48));
+      const dxTownHall = Math.abs(newX - (townHallPosition.x + 700));
+      const dyTownHall = Math.abs(newY - (townHallPosition.y + 400));
       
-      if (dxTownHall < 96 && dyTownHall < 96) {
+      if (dxTownHall < 700 && dyTownHall < 400) {
         setInteractionPrompt({
           show: true,
           message: 'Press E to enter Town Hall',
-          x: townHallPosition.x,
-          y: townHallPosition.y - 40
+          x: townHallPosition.x + 600,
+          y: townHallPosition.y - 80
         });
         foundInteraction = true;
       }
@@ -307,7 +307,7 @@ const Game: React.FC = () => {
           }
         />
         
-        {/* Town Hall - Now 10 times bigger! */}
+        {/* Town Hall - Now 10 times bigger with properly sized text! */}
         <div 
           className="absolute"
           style={{
@@ -315,8 +315,8 @@ const Game: React.FC = () => {
             top: `${townHallPosition.y}px`,
           }}
         >
-          <div className="w-1400 h-800 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
-            <div className="text-white text-sm font-pixel text-center">Town Hall</div>
+          <div className="w-[1400px] h-[800px] bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-6xl font-pixel text-center">Town Hall</div>
           </div>
         </div>
 
