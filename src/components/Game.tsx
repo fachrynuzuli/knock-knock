@@ -79,9 +79,22 @@ const Game: React.FC = () => {
     let cameraX = playerPosition.x - viewportWidth / 2 + cameraOffsetX;
     let cameraY = playerPosition.y - viewportHeight / 2 + cameraOffsetY;
     
-    // Clamp camera to map boundaries
-    cameraX = Math.max(0, Math.min(MAP_WIDTH - viewportWidth, cameraX));
-    cameraY = Math.max(0, Math.min(MAP_HEIGHT - viewportHeight, cameraY));
+    // Check if the viewport is larger than the map
+    if (viewportWidth >= MAP_WIDTH) {
+      // Center the map horizontally
+      cameraX = -(viewportWidth - MAP_WIDTH) / 2;
+    } else {
+      // Clamp camera to map boundaries horizontally
+      cameraX = Math.max(0, Math.min(MAP_WIDTH - viewportWidth, cameraX));
+    }
+    
+    if (viewportHeight >= MAP_HEIGHT) {
+      // Center the map vertically
+      cameraY = -(viewportHeight - MAP_HEIGHT) / 2;
+    } else {
+      // Clamp camera to map boundaries vertically
+      cameraY = Math.max(0, Math.min(MAP_HEIGHT - viewportHeight, cameraY));
+    }
     
     return { x: cameraX, y: cameraY };
   };
