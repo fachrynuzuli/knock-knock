@@ -307,7 +307,7 @@ const Game: React.FC = () => {
           }
         />
         
-        {/* Town Hall */}
+        {/* Town Hall - Now 10 times bigger! */}
         <div 
           className="absolute"
           style={{
@@ -315,7 +315,7 @@ const Game: React.FC = () => {
             top: `${townHallPosition.y}px`,
           }}
         >
-          <div className="w-140 h-80 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
+          <div className="w-1400 h-800 bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center">
             <div className="text-white text-sm font-pixel text-center">Town Hall</div>
           </div>
         </div>
