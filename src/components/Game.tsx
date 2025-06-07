@@ -22,23 +22,23 @@ interface EmptyLand {
 }
 
 const emptyLands: EmptyLand[] = [
-  { id: '1', name: 'Riverside Plot', x: 420, y: 350 },
-  { id: '2', name: 'Hilltop Haven', x: 770, y: 350 },
-  { id: '3', name: 'Forest Edge', x: 200, y: 670 },
-  { id: '4', name: 'Meadow View', x: 845, y: 170 },
-  { id: '5', name: 'Valley Vista', x: 410, y: 500 },
-  { id: '6', name: 'Mountain Peak', x: 740, y: 670 },
-  { id: '7', name: 'Lareina Valley', x: 450, y: 670 }
+  { id: '1', name: 'Riverside Plot', x: 520, y: 450 },
+  { id: '2', name: 'Hilltop Haven', x: 970, y: 450 },
+  { id: '3', name: 'Forest Edge', x: 300, y: 870 },
+  { id: '4', name: 'Meadow View', x: 1045, y: 270 },
+  { id: '5', name: 'Valley Vista', x: 610, y: 700 },
+  { id: '6', name: 'Mountain Peak', x: 940, y: 870 },
+  { id: '7', name: 'Lareina Valley', x: 650, y: 870 }
 ];
 
 const townHallPosition = {
-  x: 900,
-  y: 620
+  x: 1100,
+  y: 820
 };
 
-// Map dimensions
-const MAP_WIDTH = 2368;
-const MAP_HEIGHT = 1792;
+// Map dimensions - updated for your new background
+const MAP_WIDTH = 2048;
+const MAP_HEIGHT = 1342;
 
 // Zoom constants
 const MIN_ZOOM = 0.5;
@@ -320,7 +320,7 @@ const Game: React.FC = () => {
           }
         />
         
-        {/* Town Hall - Now 10 times bigger! */}
+        {/* Town Hall - Positioned for the new map */}
         <div 
           className="absolute"
           style={{
@@ -328,13 +328,12 @@ const Game: React.FC = () => {
             top: `${townHallPosition.y}px`,
           }}
         >
-          <div className="w-[600px] h-[320px] bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
-            
-            <div className="text-white text-sm font-pixel text-center">Town Hall</div>
+          <div className="w-[400px] h-[200px] bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
+            <div className="text-white text-lg font-pixel text-center">Town Hall</div>
           </div>
         </div>
 
-        {/* Empty Lands */}
+        {/* Empty Lands - Repositioned for new map */}
         {emptyLands.map((land) => (
           <div 
             key={land.id}

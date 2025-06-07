@@ -15,7 +15,7 @@ interface GameStateState {
 }
 
 const initialState: GameStateState = {
-  playerPosition: { x: 1184, y: 896 }, // Center of the large map (2368/2, 1792/2)
+  playerPosition: { x: 1024, y: 671 }, // Center of the new map (2048/2, 1342/2)
   currentWeek: 'Week 1',
   dayOfWeek: 5, // Starting on Friday
   playerHouseLevel: 1,
