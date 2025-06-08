@@ -219,7 +219,7 @@ export const avatars: Avatar[] = [
   {
     id: 5,
     name: 'Slime',
-    category: 'rogue',
+    category: 'mage',
     locked: true,
     unlockRequirement: {
       type: 'weeks',
