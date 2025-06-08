@@ -17,12 +17,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [selectedAvatarId, setSelectedAvatarId] = useState(1);
   const [lockedMessage, setLockedMessage] = useState('');
   const [isWaitingApproval, setIsWaitingApproval] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(false);
   
-  const avatarContainerRef = useRef<HTMLDivElement>(null);
+  // Carousel state
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [dragStart, setDragStart] = useState<{ x: number; index: number } | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const handleStartGame = () => {
     if (name.trim()) {
@@ -50,8 +51,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const avatarOptions = getAllAvatarIds();
-  const itemsPerPage = 3;
-  const totalPages = Math.ceil(avatarOptions.length / itemsPerPage);
+  
+  // Create extended array for infinite scroll
+  const extendedAvatars = [...avatarOptions, ...avatarOptions, ...avatarOptions];
+  const centerOffset = avatarOptions.length;
 
   const getAvatarName = (id: number) => {
     const avatar = getAvatarById(id);
@@ -63,57 +66,306 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     return stage?.spritePath || '/lv1_male_civilian.png';
   };
 
-  const handleAvatarClick = (id: number) => {
-    const avatar = getAvatarById(id);
-    if (avatar && !avatar.locked) {
-      setSelectedAvatarId(id);
+  const goToSlide = (index: number, smooth = true) => {
+    if (isTransitioning) return;
+    
+    setIsTransitioning(true);
+    setCurrentIndex(centerOffset + (index % avatarOptions.length));
+    
+    if (smooth) {
+      setTimeout(() => setIsTransitioning(false), 300);
     } else {
-      const requirement = avatar?.unlockRequirement;
-      let message = 'This avatar is locked. Play more to unlock!';
+      setIsTransitioning(false);
+    }
+  };
+
+  const nextSlide = () => {
+    const actualIndex = (currentIndex - centerOffset + 1) % avatarOptions.length;
+    goToSlide(actualIndex);
+  };
+
+  const prevSlide = () => {
+    const actualIndex = (currentIndex - centerOffset - 1 + avatarOptions.length) % avatarOptions.length;
+    goToSlide(actualIndex);
+  };
+
+  const handleAvatarClick = (index: number) => {
+    const relativeIndex = index - currentIndex;
+    if (relativeIndex === 0) {
+      // Center avatar clicked - select it
+      const actualIndex = (currentIndex - centerOffset) % avatarOptions.length;
+      const avatarId = avatarOptions[actualIndex];
+      const avatar = getAvatarById(avatarId);
       
-      if (requirement) {
-        switch (requirement.type) {
-          case 'activities':
-            message = `Complete ${requirement.count} activities to unlock this avatar!`;
-            break;
-          case 'badges':
-            message = `Earn ${requirement.count} badges to unlock this avatar!`;
-            break;
-          case 'weeks':
-            message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-            break;
+      if (avatar && !avatar.locked) {
+        setSelectedAvatarId(avatarId);
+      } else {
+        const requirement = avatar?.unlockRequirement;
+        let message = 'This avatar is locked. Play more to unlock!';
+        
+        if (requirement) {
+          switch (requirement.type) {
+            case 'activities':
+              message = `Complete ${requirement.count} activities to unlock this avatar!`;
+              break;
+            case 'badges':
+              message = `Earn ${requirement.count} badges to unlock this avatar!`;
+              break;
+            case 'weeks':
+              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
+              break;
+          }
         }
+        
+        setLockedMessage(message);
+        setTimeout(() => setLockedMessage(''), 3000);
       }
-      
-      setLockedMessage(message);
-      setTimeout(() => setLockedMessage(''), 3000);
+      return;
     }
+    
+    // Non-center avatar clicked - move it to center
+    const targetIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
+    goToSlide(targetIndex);
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 0 && !isAnimating) {
-      setIsAnimating(true);
-      setCurrentPage(prev => prev - 1);
-      setTimeout(() => setIsAnimating(false), 300);
-    }
-  };
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages - 1 && !isAnimating) {
-      setIsAnimating(true);
-      setCurrentPage(prev => prev + 1);
-      setTimeout(() => setIsAnimating(false), 300);
-    }
-  };
-
+  // Reset position when reaching boundaries for infinite scroll
   useEffect(() => {
-    setCanScrollLeft(currentPage > 0);
-    setCanScrollRight(currentPage < totalPages - 1);
-  }, [currentPage, totalPages]);
+    if (currentIndex <= 2) {
+      setTimeout(() => {
+        setCurrentIndex(currentIndex + avatarOptions.length);
+      }, 300);
+    } else if (currentIndex >= extendedAvatars.length - 3) {
+      setTimeout(() => {
+        setCurrentIndex(currentIndex - avatarOptions.length);
+      }, 300);
+    }
+  }, [currentIndex, avatarOptions.length, extendedAvatars.length]);
 
-  const visibleAvatars = avatarOptions.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
+  // Initialize currentIndex to center the first avatar
+  useEffect(() => {
+    setCurrentIndex(centerOffset);
+  }, [centerOffset]);
+
+  // Drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setDragStart({ x: e.clientX, index: currentIndex });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!dragStart) return;
+    const diff = e.clientX - dragStart.x;
+    setDragOffset(diff);
+  };
+
+  const handleMouseUp = () => {
+    if (!dragStart) return;
+    
+    const threshold = 50;
+    if (Math.abs(dragOffset) > threshold) {
+      if (dragOffset > 0) {
+        prevSlide();
+      } else {
+        nextSlide();
+      }
+    }
+    
+    setDragStart(null);
+    setDragOffset(0);
+  };
+
+  // Touch handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setDragStart({ x: e.touches[0].clientX, index: currentIndex });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!dragStart) return;
+    const diff = e.touches[0].clientX - dragStart.x;
+    setDragOffset(diff);
+  };
+
+  const handleTouchEnd = () => {
+    handleMouseUp();
+  };
+
+  const getAvatarStyle = (index: number) => {
+    const distance = Math.abs(index - currentIndex);
+    const relativePosition = index - currentIndex;
+    
+    let scale, opacity, zIndex, brightness;
+    
+    if (distance === 0) {
+      // Center avatar
+      scale = 1;
+      opacity = 1;
+      zIndex = 10;
+      brightness = 1;
+    } else if (distance === 1) {
+      // Adjacent avatars
+      scale = 0.7;
+      opacity = 0.8;
+      zIndex = 5;
+      brightness = 0.7;
+    } else if (distance === 2) {
+      // Second-level avatars
+      scale = 0.5;
+      opacity = 0.5;
+      zIndex = 2;
+      brightness = 0.5;
+    } else {
+      // Far avatars (mostly hidden)
+      scale = 0.3;
+      opacity = 0.2;
+      zIndex = 1;
+      brightness = 0.3;
+    }
+
+    const baseTranslateX = (relativePosition * 120) + (dragOffset * 0.5);
+    
+    return {
+      transform: `translateX(${baseTranslateX}px) scale(${scale})`,
+      opacity,
+      zIndex,
+      filter: `brightness(${brightness})`,
+      transition: isTransitioning && !dragStart ? 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+    };
+  };
+
+  const getCurrentAvatar = () => {
+    const actualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+    const avatarId = avatarOptions[actualIndex];
+    return getAvatarById(avatarId);
+  };
+
+  const renderAvatarCarousel = (isCreateMode: boolean = true) => (
+    <div className="mb-6">
+      <label className="block text-white font-pixel mb-2">
+        Select Avatar:
+      </label>
+      
+      {/* Carousel Container */}
+      <div className="relative h-40 mb-6">
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors"
+          disabled={isTransitioning}
+        >
+          <ChevronLeft className="text-white" size={24} />
+        </button>
+        
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors"
+          disabled={isTransitioning}
+        >
+          <ChevronRight className="text-white" size={24} />
+        </button>
+
+        {/* Carousel Track */}
+        <div
+          ref={carouselRef}
+          className="relative h-full flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {extendedAvatars.map((avatarId, index) => {
+            const avatar = getAvatarById(avatarId);
+            const style = getAvatarStyle(index);
+            const isLocked = avatar?.locked || false;
+            const distance = Math.abs(index - currentIndex);
+            
+            return (
+              <div
+                key={`${avatarId}-${index}`}
+                className="absolute flex flex-col items-center cursor-pointer"
+                style={style}
+                onClick={() => handleAvatarClick(index)}
+              >
+                {/* Avatar Container */}
+                <div 
+                  className={`relative bg-gray-700 p-3 rounded-lg border-2 transition-all duration-200 ${
+                    distance === 0 ? (isCreateMode ? 'border-primary-400' : 'border-secondary-400') : 'border-gray-600'
+                  } ${isLocked ? 'opacity-70' : ''}`}
+                  style={{ width: '80px', height: '80px' }}
+                >
+                  <div 
+                    className="w-full h-full flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
+                    style={{
+                      backgroundImage: isCreateMode 
+                        ? 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)'
+                        : 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                    }}
+                  >
+                    <div 
+                      className={`w-12 h-12 bg-cover bg-center ${isLocked ? 'grayscale' : ''}`}
+                      style={{
+                        backgroundImage: `url("${getAvatarSprite(avatarId)}")`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: '-20px -5px',
+                        transform: 'scale(1.75)',
+                        transformOrigin: 'center',
+                      }}
+                    />
+                    {isLocked && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                        <Lock className="text-white" size={16} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Avatar Name */}
+                <div className="mt-2 text-center" style={{ width: '100px' }}>
+                  <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded truncate block ${
+                    distance === 0 && !isLocked ? (isCreateMode ? 'text-primary-400' : 'text-secondary-400') : 'text-gray-400'
+                  }`}>
+                    {getAvatarName(avatarId)}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Current Selection Display */}
+      <div className="text-center mb-4">
+        <div className="bg-gray-800 rounded-lg p-4 inline-block">
+          <p className="text-gray-400 text-sm mb-1">Selected Character</p>
+          <p className={`font-semibold ${isCreateMode ? 'text-primary-400' : 'text-secondary-400'}`}>
+            {getCurrentAvatar()?.name}
+          </p>
+        </div>
+      </div>
+
+      {/* Pagination Dots */}
+      <div className="flex justify-center space-x-2">
+        {avatarOptions.map((_, index) => {
+          const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+          return (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === actualCurrentIndex ? (isCreateMode ? 'bg-primary-400' : 'bg-secondary-400') : 'bg-gray-600'
+              }`}
+            />
+          );
+        })}
+      </div>
+
+      {lockedMessage && (
+        <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
+          {lockedMessage}
+        </div>
+      )}
+    </div>
   );
 
   const renderInitialScreen = () => (
@@ -175,111 +427,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         />
       </div>
 
-      <div className="mb-6">
-        <label className="block text-white font-pixel mb-2">
-          Select Avatar:
-        </label>
-        
-        {/* Avatar Selection with Pagination */}
-        <div className="relative">
-          <div className="flex items-center justify-center gap-2">
-            {/* Previous Button */}
-            <button
-              onClick={handlePrevPage}
-              disabled={!canScrollLeft || isAnimating}
-              className={`p-2 rounded-lg transition-all ${
-                canScrollLeft && !isAnimating
-                  ? 'bg-primary-600 hover:bg-primary-700 text-white shadow-pixel button-pixel'
-                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
-              }`}
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            {/* Avatar Display Area */}
-            <div className="flex gap-3 justify-center min-w-0 flex-1">
-              {visibleAvatars.map((id) => {
-                const avatar = getAvatarById(id);
-                const isLocked = avatar?.locked || false;
-                
-                return (
-                  <div
-                    key={id}
-                    onClick={() => handleAvatarClick(id)}
-                    className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                      selectedAvatarId === id
-                        ? 'border-primary-400 transform scale-105'
-                        : 'border-gray-600'
-                    } ${isLocked ? 'opacity-50' : ''}`}
-                  >
-                    <div 
-                      className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
-                      style={{
-                        backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                      }}
-                    >
-                      <div 
-                        className={`character ${isLocked ? 'grayscale' : ''}`}
-                        style={{
-                          width: '32px',
-                          height: '48px',
-                          backgroundImage: `url("${getAvatarSprite(id)}")`,
-                          backgroundPosition: '-20px -5px',
-                          transform: 'scale(1.5)',
-                          transformOrigin: 'center',
-                        }}
-                      />
-                      {isLocked && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                          <Lock className="text-white\" size={20} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-center mt-2">
-                      <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg ${
-                        !isLocked ? 'text-primary-400' : 'text-gray-400'
-                      }`}>
-                        {getAvatarName(id)}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Next Button */}
-            <button
-              onClick={handleNextPage}
-              disabled={!canScrollRight || isAnimating}
-              className={`p-2 rounded-lg transition-all ${
-                canScrollRight && !isAnimating
-                  ? 'bg-primary-600 hover:bg-primary-700 text-white shadow-pixel button-pixel'
-                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
-              }`}
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-
-          {/* Page Indicator */}
-          <div className="flex justify-center mt-3 space-x-1">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentPage ? 'bg-primary-400' : 'bg-gray-600'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {lockedMessage && (
-          <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
-            {lockedMessage}
-          </div>
-        )}
-      </div>
+      {renderAvatarCarousel(true)}
 
       <button
         onClick={handleStartGame}
@@ -356,115 +504,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               />
             </div>
 
-            <div className="mb-6">
-              <label className="block text-white font-pixel mb-2">
-                Select Avatar:
-              </label>
-              <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mb-4 text-center">
-                <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
-                <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
-              </div>
-              
-              {/* Avatar Selection with Pagination */}
-              <div className="relative">
-                <div className="flex items-center justify-center gap-2">
-                  {/* Previous Button */}
-                  <button
-                    onClick={handlePrevPage}
-                    disabled={!canScrollLeft || isAnimating}
-                    className={`p-2 rounded-lg transition-all ${
-                      canScrollLeft && !isAnimating
-                        ? 'bg-secondary-600 hover:bg-secondary-700 text-white shadow-pixel button-pixel'
-                        : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
-                    }`}
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-
-                  {/* Avatar Display Area */}
-                  <div className="flex gap-3 justify-center min-w-0 flex-1">
-                    {visibleAvatars.map((id) => {
-                      const avatar = getAvatarById(id);
-                      const isLocked = avatar?.locked || false;
-                      
-                      return (
-                        <div
-                          key={id}
-                          onClick={() => handleAvatarClick(id)}
-                          className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                            selectedAvatarId === id
-                              ? 'border-secondary-400 transform scale-105'
-                              : 'border-gray-600'
-                          } ${isLocked ? 'opacity-50' : ''}`}
-                        >
-                          <div 
-                            className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
-                            style={{
-                              backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                            }}
-                          >
-                            <div 
-                              className={`character ${isLocked ? 'grayscale' : ''}`}
-                              style={{
-                                width: '32px',
-                                height: '48px',
-                                backgroundImage: `url("${getAvatarSprite(id)}")`,
-                                backgroundPosition: '-20px -5px',
-                                transform: 'scale(1.5)',
-                                transformOrigin: 'center',
-                              }}
-                            />
-                            {isLocked && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                                <Lock className="text-white\" size={20} />
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-center mt-2">
-                            <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg ${
-                              !isLocked ? 'text-secondary-400' : 'text-gray-400'
-                            }`}>
-                              {getAvatarName(id)}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Next Button */}
-                  <button
-                    onClick={handleNextPage}
-                    disabled={!canScrollRight || isAnimating}
-                    className={`p-2 rounded-lg transition-all ${
-                      canScrollRight && !isAnimating
-                        ? 'bg-secondary-600 hover:bg-secondary-700 text-white shadow-pixel button-pixel'
-                        : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
-                    }`}
-                  >
-                    <ChevronRight size={20} />
-                  </button>
-                </div>
-
-                {/* Page Indicator */}
-                <div className="flex justify-center mt-3 space-x-1">
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <div
-                      key={index}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentPage ? 'bg-secondary-400' : 'bg-gray-600'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {lockedMessage && (
-                <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
-                  {lockedMessage}
-                </div>
-              )}
+            <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mb-4 text-center">
+              <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
+              <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
             </div>
+
+            {renderAvatarCarousel(false)}
 
             <button
               onClick={handleJoinRequest}
