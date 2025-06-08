@@ -67,7 +67,7 @@ function App() {
       </GameProvider>
       
       {/* Built on Bolt Badge */}
-      <div className="fixed bottom-6 left-6 z-50">
+      <div className="fixed bottom-0 left-0 z-50">
         <div className="transform transition-transform hover:scale-105">
           <img 
             src="/built_on_bolt_new.png" 
