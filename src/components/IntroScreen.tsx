@@ -295,7 +295,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       backgroundImage: `url("${getAvatarSprite(avatarId)}")`,
                       backgroundSize: 'cover',
                       width: '64px',
-                      height: '80px',
+                      height: '64px',
                     }}
                   />
                   {/* Enhanced Lock Overlay */}
