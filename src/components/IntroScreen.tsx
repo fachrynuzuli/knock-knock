@@ -76,6 +76,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
+  const getAvatarPosition = (id: number) => {
+    switch (id) {
+      case 1: return '-16px -8px';  // Casual - adjusted position
+      case 3: return '-20px -5px';  // Orc Warrior
+      case 4: return '-20px -5px';  // Vampire Lord
+      case 5: return '-20px -5px';  // Orc Shaman
+      case 6: return '-20px -5px';  // Vampire Noble
+      case 7: return '-20px -5px';  // Orc Chief
+      default: return '-16px -8px';
+    }
+  };
+
   const handleAvatarClick = (id: number) => {
     if (id === 1) {
       setSelectedAvatarId(id);
@@ -197,7 +209,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     width: '32px',
                     height: '48px',
                     backgroundImage: `url("${getAvatarSprite(id)}")`,
-                    backgroundPosition: '-20px -5px',
+                    backgroundPosition: getAvatarPosition(id),
                     transform: 'scale(1.75)',
                     transformOrigin: 'center',
                   }}
@@ -332,7 +344,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                           width: '32px',
                           height: '48px',
                           backgroundImage: `url("${getAvatarSprite(id)}")`,
-                          backgroundPosition: '-20px -5px',
+                          backgroundPosition: getAvatarPosition(id),
                           transform: 'scale(1.75)',
                           transformOrigin: 'center',
                         }}
