@@ -60,7 +60,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const getAvatarSprite = (id: number) => {
     const stage = getAvatarStage(id, 1); // Always get level 1 sprite for intro
-    return stage?.spritePath || '/lv1_male_civilian.png';
+    return stage?.spritePath || '/lv1_male_civiliann.png';
   };
 
   const handleAvatarClick = (id: number) => {
