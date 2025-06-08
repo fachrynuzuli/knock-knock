@@ -77,7 +77,7 @@ export const avatars: Avatar[] = [
       {
         level: 1,
         name: 'Female Civilian',
-        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        spritePath: '/lv1_female_civilian.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -89,7 +89,7 @@ export const avatars: Avatar[] = [
       {
         level: 2,
         name: 'Swordswoman',
-        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        spritePath: '/lv2_swordswoman.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -117,7 +117,7 @@ export const avatars: Avatar[] = [
       {
         level: 3,
         name: 'Orc',
-        spritePath: '/orc1_walk_full.png',
+        spritePath: '/lv3_orc.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -129,7 +129,7 @@ export const avatars: Avatar[] = [
       {
         level: 4,
         name: 'Sage Orc',
-        spritePath: '/orc2_walk_full.png',
+        spritePath: '/lv4_sage_orc.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -145,7 +145,7 @@ export const avatars: Avatar[] = [
       {
         level: 5,
         name: 'Orc Shaman',
-        spritePath: '/orc3_walk_full.png',
+        spritePath: '/lv5_orc_shaman.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -173,7 +173,7 @@ export const avatars: Avatar[] = [
       {
         level: 3,
         name: 'Vampire',
-        spritePath: '/Vampires1_Walk_full.png',
+        spritePath: '/lv3_vampire.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -185,7 +185,7 @@ export const avatars: Avatar[] = [
       {
         level: 4,
         name: 'Blue Dracula',
-        spritePath: '/Vampires2_Walk_full.png',
+        spritePath: '/lv4_blue_dracula.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -201,7 +201,7 @@ export const avatars: Avatar[] = [
       {
         level: 5,
         name: 'Count Dracula',
-        spritePath: '/Vampires1_Walk_full.png', // Placeholder until you provide the sprite
+        spritePath: '/lv5_count_dracula.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -229,10 +229,10 @@ export const avatars: Avatar[] = [
       {
         level: 1,
         name: 'Slime',
-        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        spritePath: '/lv1_slime.png',
         frameWidth: 64,
         frameHeight: 64,
-        frameCount: 6,
+        frameCount: 8,
         rowCount: 4,
         scale: 2,
         offsetX: 0,
@@ -241,10 +241,10 @@ export const avatars: Avatar[] = [
       {
         level: 3,
         name: 'Bone Bobba',
-        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        spritePath: '/lv3_bone_bobba.png',
         frameWidth: 64,
         frameHeight: 64,
-        frameCount: 6,
+        frameCount: 8,
         rowCount: 4,
         scale: 2,
         offsetX: 0,
@@ -257,10 +257,10 @@ export const avatars: Avatar[] = [
       {
         level: 5,
         name: 'Lava Lime',
-        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        spritePath: '/lv5_lava_lime.png',
         frameWidth: 64,
         frameHeight: 64,
-        frameCount: 6,
+        frameCount: 8,
         rowCount: 4,
         scale: 2,
         offsetX: 0,
