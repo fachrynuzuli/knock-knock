@@ -50,7 +50,7 @@ const CAMERA_PAN_SPEED = 18;
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
-  const { playerName, playerAvatar, isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
+  const { playerName, playerAvatar, playerAvatarLevel, isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
   const { playerPosition, isLeaderboardOpen } = useSelector((state: RootState) => state.gameState);
   const teammates = useSelector((state: RootState) => state.teammates.items);
   
@@ -314,6 +314,7 @@ const Game: React.FC = () => {
         <Player
           position={playerPosition}
           avatarId={playerAvatar}
+          avatarLevel={playerAvatarLevel}
           name={playerName}
           isMoving={
             keysPressed.w || keysPressed.a || keysPressed.s || keysPressed.d

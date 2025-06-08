@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updatePlayerInfo } from '../store/slices/teammatesSlice';
+import { RootState } from '../store';
 
 interface GameContextType {
   playerName: string;
   playerAvatar: number;
+  playerAvatarLevel: number;
   setPlayerName: (name: string) => void;
   setPlayerAvatar: (avatar: number) => void;
   currentWeek: string;
@@ -26,6 +28,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [viewingTeammate, setViewingTeammate] = useState<string | null>(null);
 
+  // Get player's avatar level from Redux store
+  const playerData = useSelector((state: RootState) => 
+    state.teammates.items.find(teammate => teammate.isPlayer)
+  );
+  const playerAvatarLevel = playerData?.avatarLevel || 1;
+
   const setPlayerName = (name: string) => {
     setPlayerNameState(name);
     dispatch(updatePlayerInfo({ name, avatarId: playerAvatar }));
@@ -44,6 +52,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerName,
     playerAvatar,
     setPlayerAvatar,
+    playerAvatarLevel,
     currentWeek,
     setCurrentWeek,
     isFormOpen,

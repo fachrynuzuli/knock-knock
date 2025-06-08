@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getAvatarStage } from '../data/avatars';
 
 interface PlayerProps {
   position: {
@@ -9,76 +10,36 @@ interface PlayerProps {
   name: string;
   isMoving: boolean;
   direction: 'up' | 'down' | 'left' | 'right';
+  avatarLevel?: number; // New prop for avatar progression
 }
 
-// Sprite configuration for different character types
-const spriteConfig = {
-  1: {
-    path: '/Unarmed_Walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  },
-  3: {
-    path: '/orc1_walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  },
-  4: {
-    path: '/Vampires1_Walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  },
-  5: {
-    path: '/orc2_walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  },
-  6: {
-    path: '/Vampires2_Walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  },
-  7: {
-    path: '/orc3_walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  }
-};
-
-const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, direction }) => {
+const Player: React.FC<PlayerProps> = ({ 
+  position, 
+  avatarId, 
+  name, 
+  isMoving, 
+  direction, 
+  avatarLevel = 1 
+}) => {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [idleDirection, setIdleDirection] = useState<'up' | 'down' | 'left' | 'right'>('down');
-  const sprite = spriteConfig[avatarId as keyof typeof spriteConfig] || spriteConfig[1];
+  
+  // Get sprite configuration from centralized data
+  const sprite = getAvatarStage(avatarId, avatarLevel);
+  
+  // Fallback to default if avatar stage not found
+  const defaultSprite = {
+    spritePath: '/Unarmed_Walk_full.png',
+    frameWidth: 64,
+    frameHeight: 64,
+    frameCount: 6,
+    rowCount: 4,
+    scale: 2,
+    offsetX: 0,
+    offsetY: 0,
+  };
+  
+  const spriteConfig = sprite || defaultSprite;
   
   // Animation frame handling
   useEffect(() => {
@@ -93,7 +54,7 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
       
       if (elapsed > frameInterval) {
         if (isMoving) {
-          setCurrentFrame(prev => (prev + 1) % sprite.frameCount);
+          setCurrentFrame(prev => (prev + 1) % spriteConfig.frameCount);
           // Update idle direction only when moving
           setIdleDirection(direction);
         } else {
@@ -110,7 +71,7 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
     return () => {
       cancelAnimationFrame(animationFrame);
     };
-  }, [isMoving, direction, sprite.frameCount]);
+  }, [isMoving, direction, spriteConfig.frameCount]);
 
   // Get the row index based on direction
   const getDirectionRow = () => {
@@ -125,12 +86,12 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
     }
   };
 
-  const scaledWidth = sprite.frameWidth * sprite.scale;
-  const scaledHeight = sprite.frameHeight * sprite.scale;
+  const scaledWidth = spriteConfig.frameWidth * spriteConfig.scale;
+  const scaledHeight = spriteConfig.frameHeight * spriteConfig.scale;
   
   // Calculate background position
-  const x = currentFrame * sprite.frameWidth + sprite.offsetX;
-  const y = getDirectionRow() * sprite.frameHeight + sprite.offsetY;
+  const x = currentFrame * spriteConfig.frameWidth + spriteConfig.offsetX;
+  const y = getDirectionRow() * spriteConfig.frameHeight + spriteConfig.offsetY;
   
   return (
     <div 
@@ -149,7 +110,7 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
           className="absolute left-1/2 -translate-x-1/2 rounded-full bg-black/30"
           style={{
             width: `${scaledWidth * 0.2}px`,
-            height: `${5 * sprite.scale}px`,
+            height: `${5 * spriteConfig.scale}px`,
             bottom: '45px',
           }}
         />
@@ -158,9 +119,9 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
         <div 
           className="character absolute inset-0"
           style={{
-            backgroundImage: `url(${sprite.path})`,
-            backgroundPosition: `-${x * sprite.scale}px -${y * sprite.scale}px`,
-            backgroundSize: `${sprite.frameWidth * sprite.frameCount * sprite.scale}px ${sprite.frameHeight * sprite.rowCount * sprite.scale}px`,
+            backgroundImage: `url(${spriteConfig.spritePath})`,
+            backgroundPosition: `-${x * spriteConfig.scale}px -${y * spriteConfig.scale}px`,
+            backgroundSize: `${spriteConfig.frameWidth * spriteConfig.frameCount * spriteConfig.scale}px ${spriteConfig.frameHeight * spriteConfig.rowCount * spriteConfig.scale}px`,
           }}
         />
         

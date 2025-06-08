@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameContext } from '../contexts/GameContext';
 import { MapPin, Lock, ChevronLeft, ChevronRight, Users, UserPlus, ArrowLeft } from 'lucide-react';
+import { avatars, getAvatarById, getAvatarStage, getAllAvatarIds } from '../data/avatars';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -48,39 +49,43 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const avatarOptions = [1, 3, 4, 5, 6, 7];
+  const avatarOptions = getAllAvatarIds();
   const itemsPerPage = 3;
   const totalPages = Math.ceil(avatarOptions.length / itemsPerPage);
 
   const getAvatarName = (id: number) => {
-    switch (id) {
-      case 1: return 'Casual';
-      case 3: return 'Orc Warrior';
-      case 4: return 'Vampire Lord';
-      case 5: return 'Orc Shaman';
-      case 6: return 'Vampire Noble';
-      case 7: return 'Orc Chief';
-      default: return 'Unknown';
-    }
+    const avatar = getAvatarById(id);
+    return avatar?.name || 'Unknown';
   };
 
   const getAvatarSprite = (id: number) => {
-    switch (id) {
-      case 1: return '/Unarmed_Walk_full.png';
-      case 3: return '/orc1_walk_full.png';
-      case 4: return '/Vampires1_Walk_full.png';
-      case 5: return '/orc2_walk_full.png';
-      case 6: return '/Vampires2_Walk_full.png';
-      case 7: return '/orc3_walk_full.png';
-      default: return '/Unarmed_Walk_full.png';
-    }
+    const stage = getAvatarStage(id, 1); // Always get level 1 sprite for intro
+    return stage?.spritePath || '/Unarmed_Walk_full.png';
   };
 
   const handleAvatarClick = (id: number) => {
-    if (id === 1) {
+    const avatar = getAvatarById(id);
+    if (avatar && !avatar.locked) {
       setSelectedAvatarId(id);
     } else {
-      setLockedMessage('This avatar is locked. Play more to unlock!');
+      const requirement = avatar?.unlockRequirement;
+      let message = 'This avatar is locked. Play more to unlock!';
+      
+      if (requirement) {
+        switch (requirement.type) {
+          case 'activities':
+            message = `Complete ${requirement.count} activities to unlock this avatar!`;
+            break;
+          case 'badges':
+            message = `Earn ${requirement.count} badges to unlock this avatar!`;
+            break;
+          case 'weeks':
+            message = `Play for ${requirement.count} weeks to unlock this avatar!`;
+            break;
+        }
+      }
+      
+      setLockedMessage(message);
       setTimeout(() => setLockedMessage(''), 3000);
     }
   };
@@ -193,48 +198,53 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
             {/* Avatar Display Area */}
             <div className="flex gap-3 justify-center min-w-0 flex-1">
-              {visibleAvatars.map((id) => (
-                <div
-                  key={id}
-                  onClick={() => handleAvatarClick(id)}
-                  className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                    selectedAvatarId === id
-                      ? 'border-primary-400 transform scale-105'
-                      : 'border-gray-600'
-                  } ${id !== 1 ? 'opacity-50' : ''}`}
-                >
-                  <div 
-                    className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
-                    style={{
-                      backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                    }}
+              {visibleAvatars.map((id) => {
+                const avatar = getAvatarById(id);
+                const isLocked = avatar?.locked || false;
+                
+                return (
+                  <div
+                    key={id}
+                    onClick={() => handleAvatarClick(id)}
+                    className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                      selectedAvatarId === id
+                        ? 'border-primary-400 transform scale-105'
+                        : 'border-gray-600'
+                    } ${isLocked ? 'opacity-50' : ''}`}
                   >
                     <div 
-                      className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                      className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
                       style={{
-                        width: '32px',
-                        height: '48px',
-                        backgroundImage: `url("${getAvatarSprite(id)}")`,
-                        backgroundPosition: '-20px -5px',
-                        transform: 'scale(1.5)',
-                        transformOrigin: 'center',
+                        backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                       }}
-                    />
-                    {id !== 1 && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white\" size={20} />
-                      </div>
-                    )}
+                    >
+                      <div 
+                        className={`character ${isLocked ? 'grayscale' : ''}`}
+                        style={{
+                          width: '32px',
+                          height: '48px',
+                          backgroundImage: `url("${getAvatarSprite(id)}")`,
+                          backgroundPosition: '-20px -5px',
+                          transform: 'scale(1.5)',
+                          transformOrigin: 'center',
+                        }}
+                      />
+                      {isLocked && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                          <Lock className="text-white" size={20} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-center mt-2">
+                      <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                        !isLocked ? 'text-primary-400' : 'text-gray-400'
+                      }`}>
+                        {getAvatarName(id)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-center mt-2">
-                    <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
-                      id === 1 ? 'text-primary-400' : 'text-gray-400'
-                    }`}>
-                      {getAvatarName(id)}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Next Button */}
@@ -373,48 +383,53 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
                   {/* Avatar Display Area */}
                   <div className="flex gap-3 justify-center min-w-0 flex-1">
-                    {visibleAvatars.map((id) => (
-                      <div
-                        key={id}
-                        onClick={() => handleAvatarClick(id)}
-                        className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                          selectedAvatarId === id
-                            ? 'border-secondary-400 transform scale-105'
-                            : 'border-gray-600'
-                        } ${id !== 1 ? 'opacity-50' : ''}`}
-                      >
-                        <div 
-                          className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
-                          style={{
-                            backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                          }}
+                    {visibleAvatars.map((id) => {
+                      const avatar = getAvatarById(id);
+                      const isLocked = avatar?.locked || false;
+                      
+                      return (
+                        <div
+                          key={id}
+                          onClick={() => handleAvatarClick(id)}
+                          className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                            selectedAvatarId === id
+                              ? 'border-secondary-400 transform scale-105'
+                              : 'border-gray-600'
+                          } ${isLocked ? 'opacity-50' : ''}`}
                         >
                           <div 
-                            className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                            className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
                             style={{
-                              width: '32px',
-                              height: '48px',
-                              backgroundImage: `url("${getAvatarSprite(id)}")`,
-                              backgroundPosition: '-20px -5px',
-                              transform: 'scale(1.5)',
-                              transformOrigin: 'center',
+                              backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                             }}
-                          />
-                          {id !== 1 && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                              <Lock className="text-white\" size={20} />
-                            </div>
-                          )}
+                          >
+                            <div 
+                              className={`character ${isLocked ? 'grayscale' : ''}`}
+                              style={{
+                                width: '32px',
+                                height: '48px',
+                                backgroundImage: `url("${getAvatarSprite(id)}")`,
+                                backgroundPosition: '-20px -5px',
+                                transform: 'scale(1.5)',
+                                transformOrigin: 'center',
+                              }}
+                            />
+                            {isLocked && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                <Lock className="text-white" size={20} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="text-center mt-2">
+                            <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                              !isLocked ? 'text-secondary-400' : 'text-gray-400'
+                            }`}>
+                              {getAvatarName(id)}
+                            </span>
+                          </div>
                         </div>
-                        <div className="text-center mt-2">
-                          <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
-                            id === 1 ? 'text-secondary-400' : 'text-gray-400'
-                          }`}>
-                            {getAvatarName(id)}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {/* Next Button */}

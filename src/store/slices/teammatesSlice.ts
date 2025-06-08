@@ -4,6 +4,7 @@ export interface Teammate {
   id: string;
   name: string;
   avatarId: number;
+  avatarLevel: number; // New field for avatar progression
   houseLevel: number;
   housePosition: {
     x: number;
@@ -29,6 +30,7 @@ const initialState: TeammatesState = {
       id: 'player',
       name: 'Player', // This will be updated when player sets their name
       avatarId: 1,
+      avatarLevel: 1,
       houseLevel: 1,
       housePosition: { x: 782, y: 232 },
       houseType: 0,
@@ -44,6 +46,7 @@ const initialState: TeammatesState = {
       id: '1',
       name: 'Alex',
       avatarId: 1,
+      avatarLevel: 2,
       houseLevel: 2,
       housePosition: { x: 375, y: 180 },
       houseType: 1,
@@ -57,7 +60,8 @@ const initialState: TeammatesState = {
     {
       id: '2',
       name: 'Taylor',
-      avatarId: 2,
+      avatarId: 3,
+      avatarLevel: 1,
       houseLevel: 1,
       housePosition: { x: 1000, y: 300 },
       houseType: 2,
@@ -72,6 +76,7 @@ const initialState: TeammatesState = {
       id: '3',
       name: 'Prabowski',
       avatarId: 3,
+      avatarLevel: 3,
       houseLevel: 3,
       housePosition: { x: 220, y: 520 },
       houseType: 3,
@@ -86,6 +91,7 @@ const initialState: TeammatesState = {
       id: '4',
       name: 'Morgan',
       avatarId: 4,
+      avatarLevel: 2,
       houseLevel: 2,
       housePosition: { x: 1210, y: 550 },
       houseType: 4,
@@ -103,9 +109,10 @@ const teammatesSlice = createSlice({
   name: 'teammates',
   initialState,
   reducers: {
-    addTeammate: (state, action: PayloadAction<Omit<Teammate, 'stats'>>) => {
+    addTeammate: (state, action: PayloadAction<Omit<Teammate, 'stats' | 'avatarLevel'>>) => {
       const newTeammate = {
         ...action.payload,
+        avatarLevel: 1, // Start at level 1
         stats: {
           projectCount: 0,
           adhocCount: 0,
@@ -127,6 +134,17 @@ const teammatesSlice = createSlice({
       if (playerIndex !== -1) {
         state.items[playerIndex].name = action.payload.name;
         state.items[playerIndex].avatarId = action.payload.avatarId;
+        // Reset avatar level when changing avatar
+        state.items[playerIndex].avatarLevel = 1;
+      }
+    },
+    upgradeAvatarLevel: (state, action: PayloadAction<{ id: string }>) => {
+      const { id } = action.payload;
+      const index = state.items.findIndex(teammate => teammate.id === id);
+      
+      if (index !== -1) {
+        // Increment avatar level (you can add logic here to check if upgrade is available)
+        state.items[index].avatarLevel += 1;
       }
     },
     incrementTeammateStats: (state, action: PayloadAction<{ id: string; category: 'project' | 'adhoc' | 'routine' }>) => {
@@ -143,11 +161,22 @@ const teammatesSlice = createSlice({
         if (state.items[index].stats.totalActivities % 10 === 0 && state.items[index].houseLevel < 3) {
           state.items[index].houseLevel += 1;
         }
+        
+        // Check if avatar level should be upgraded (every 15 activities)
+        if (state.items[index].stats.totalActivities % 15 === 0) {
+          state.items[index].avatarLevel += 1;
+        }
       }
     },
   },
 });
 
-export const { addTeammate, updateTeammate, updatePlayerInfo, incrementTeammateStats } = teammatesSlice.actions;
+export const { 
+  addTeammate, 
+  updateTeammate, 
+  updatePlayerInfo, 
+  upgradeAvatarLevel,
+  incrementTeammateStats 
+} = teammatesSlice.actions;
 
 export default teammatesSlice.reducer;
