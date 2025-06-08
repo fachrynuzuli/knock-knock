@@ -236,7 +236,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       )}
                     </div>
                     <div className="text-center mt-2">
-                      <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                      <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg ${
                         !isLocked ? 'text-primary-400' : 'text-gray-400'
                       }`}>
                         {getAvatarName(id)}
@@ -421,7 +421,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                             )}
                           </div>
                           <div className="text-center mt-2">
-                            <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                            <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg ${
                               !isLocked ? 'text-secondary-400' : 'text-gray-400'
                             }`}>
                               {getAvatarName(id)}
