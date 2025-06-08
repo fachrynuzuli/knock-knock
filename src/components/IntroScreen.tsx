@@ -178,7 +178,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   } ${id !== 3 ? 'opacity-50' : ''}`}
                 >
                   <div 
-                    className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 3 ? 'grayscale' : ''}`}
+                    className={`w-20 h-20 flex items-center justify-center rounded-full relative ${getAvatarColor(id)} ${id !== 3 ? 'grayscale' : ''}`}
                   >
                     <span className="text-white text-xl font-bold">{id}</span>
                     {id !== 3 && (
