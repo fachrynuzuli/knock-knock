@@ -314,7 +314,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     />
                     {isLocked && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white" size={16} />
+                        <Lock className="text-white\" size={16} />
                       </div>
                     )}
                   </div>
