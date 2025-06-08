@@ -70,7 +70,7 @@ function App() {
       <div className="fixed bottom-6 left-6 z-50">
         <div className="transform transition-transform hover:scale-105">
           <img 
-            src="/Built-on-bolt-no-bg.png" 
+            src="/built_on_bolt_new.png" 
             alt="Built on Bolt" 
             className="h-32 w-auto"
           />
