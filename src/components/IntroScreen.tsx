@@ -93,7 +93,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     const relativeIndex = index - currentIndex;
     if (relativeIndex === 0) {
       // Center avatar clicked - select it
-      const actualIndex = (currentIndex - centerOffset) % avatarOptions.length;
+      const actualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
       const avatarId = avatarOptions[actualIndex];
       const avatar = getAvatarById(avatarId);
       
@@ -123,9 +123,26 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       return;
     }
     
-    // Non-center avatar clicked - move it to center
-    const targetIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
-    goToSlide(targetIndex);
+    // Non-center avatar clicked - move it to center with smart direction
+    const currentActualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+    const targetActualIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
+    
+    // Calculate shortest path
+    const forwardDistance = (targetActualIndex - currentActualIndex + avatarOptions.length) % avatarOptions.length;
+    const backwardDistance = (currentActualIndex - targetActualIndex + avatarOptions.length) % avatarOptions.length;
+    
+    let newIndex;
+    if (forwardDistance <= backwardDistance) {
+      // Go forward - find the closest forward target in extended array
+      newIndex = currentIndex + forwardDistance;
+    } else {
+      // Go backward - find the closest backward target in extended array  
+      newIndex = currentIndex - backwardDistance;
+    }
+    
+    setIsTransitioning(true);
+    setCurrentIndex(newIndex);
+    setTimeout(() => setIsTransitioning(false), 300);
   };
 
   // Reset position when reaching boundaries for infinite scroll
@@ -301,7 +318,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   {/* Enhanced Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={20} />
+                      <Lock className="text-white drop-shadow-lg" size={20} />
                     </div>
                   )}
                   {/* Selection Glow Effect */}
