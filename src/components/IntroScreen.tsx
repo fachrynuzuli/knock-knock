@@ -192,32 +192,28 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     const distance = Math.abs(index - currentIndex);
     const relativePosition = index - currentIndex;
     
-    let scale, opacity, zIndex, brightness;
+    let scale, opacity, zIndex;
     
     if (distance === 0) {
-      // Center avatar
-      scale = 1;
+      // Center avatar - larger and prominent
+      scale = 1.2;
       opacity = 1;
       zIndex = 10;
-      brightness = 1;
     } else if (distance === 1) {
       // Adjacent avatars
-      scale = 0.7;
-      opacity = 0.8;
+      scale = 0.8;
+      opacity = 0.7;
       zIndex = 5;
-      brightness = 0.7;
     } else if (distance === 2) {
       // Second-level avatars
-      scale = 0.5;
-      opacity = 0.5;
+      scale = 0.6;
+      opacity = 0.4;
       zIndex = 2;
-      brightness = 0.5;
     } else {
       // Far avatars (mostly hidden)
-      scale = 0.3;
+      scale = 0.4;
       opacity = 0.2;
       zIndex = 1;
-      brightness = 0.3;
     }
 
     const baseTranslateX = (relativePosition * 120) + (dragOffset * 0.5);
@@ -226,7 +222,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       transform: `translateX(${baseTranslateX}px) scale(${scale})`,
       opacity,
       zIndex,
-      filter: `brightness(${brightness})`,
       transition: isTransitioning && !dragStart ? 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
     };
   };
@@ -248,7 +243,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         {/* Navigation Arrows */}
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors shadow-lg"
           disabled={isTransitioning}
         >
           <ChevronLeft className="text-white" size={24} />
@@ -256,7 +251,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors shadow-lg"
           disabled={isTransitioning}
         >
           <ChevronRight className="text-white" size={24} />
@@ -279,6 +274,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             const style = getAvatarStyle(index);
             const isLocked = avatar?.locked || false;
             const distance = Math.abs(index - currentIndex);
+            const isCenterAvatar = distance === 0;
             
             return (
               <div
@@ -289,44 +285,29 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               >
                 {/* Avatar Container */}
                 <div 
-                  className={`relative bg-gray-700 p-3 rounded-lg border-2 transition-all duration-200 ${
-                    distance === 0 ? (isCreateMode ? 'border-primary-400' : 'border-secondary-400') : 'border-gray-600'
-                  } ${isLocked ? 'opacity-70' : ''}`}
-                  style={{ width: '80px', height: '80px' }}
+                  className={`relative ${isLocked ? 'grayscale' : ''} ${
+                    isCenterAvatar && !isLocked ? 'ring-4 ring-blue-400 ring-opacity-60 animate-pulse' : ''
+                  }`}
                 >
                   <div 
-                    className="w-full h-full flex items-center justify-center bg-gray-800 rounded-lg overflow-hidden"
+                    className="bg-cover bg-center rounded-lg"
                     style={{
-                      backgroundImage: isCreateMode 
-                        ? 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)'
-                        : 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                      backgroundImage: `url("${getAvatarSprite(avatarId)}")`,
+                      backgroundSize: 'cover',
+                      width: '80px',
+                      height: '80px',
                     }}
-                  >
-                    <div 
-                      className={`w-12 h-12 bg-cover bg-center ${isLocked ? 'grayscale' : ''}`}
-                      style={{
-                        backgroundImage: `url("${getAvatarSprite(avatarId)}")`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: '-20px -5px',
-                        transform: 'scale(1.75)',
-                        transformOrigin: 'center',
-                      }}
-                    />
-                    {isLocked && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white\" size={16} />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Avatar Name */}
-                <div className="mt-2 text-center" style={{ width: '100px' }}>
-                  <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded truncate block ${
-                    distance === 0 && !isLocked ? (isCreateMode ? 'text-primary-400' : 'text-secondary-400') : 'text-gray-400'
-                  }`}>
-                    {getAvatarName(avatarId)}
-                  </span>
+                  />
+                  {/* Enhanced Lock Overlay */}
+                  {isLocked && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-lg backdrop-blur-sm">
+                      <Lock className="text-white drop-shadow-lg" size={20} />
+                    </div>
+                  )}
+                  {/* Selection Glow Effect */}
+                  {isCenterAvatar && !isLocked && (
+                    <div className="absolute inset-0 rounded-lg bg-blue-400 bg-opacity-20 animate-pulse"></div>
+                  )}
                 </div>
               </div>
             );
@@ -336,24 +317,28 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
       {/* Current Selection Display */}
       <div className="text-center mb-4">
-        <div className="bg-gray-800 rounded-lg p-4 inline-block">
+        <div className="bg-gray-800 rounded-lg p-4 inline-block shadow-lg border border-gray-700">
           <p className="text-gray-400 text-sm mb-1">Selected Character</p>
-          <p className={`font-semibold ${isCreateMode ? 'text-primary-400' : 'text-secondary-400'}`}>
-            {getCurrentAvatar()?.name}
-          </p>
+          <p className="text-blue-400 font-semibold text-lg">{getCurrentAvatar()?.name}</p>
+          {getCurrentAvatar()?.locked && (
+            <p className="text-red-400 text-xs mt-1 flex items-center justify-center gap-1">
+              <Lock size={12} />
+              Locked
+            </p>
+          )}
         </div>
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center space-x-2">
+      <div className="flex justify-center mt-4 space-x-2">
         {avatarOptions.map((_, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           return (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === actualCurrentIndex ? (isCreateMode ? 'bg-primary-400' : 'bg-secondary-400') : 'bg-gray-600'
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                index === actualCurrentIndex ? 'bg-blue-400 scale-125' : 'bg-gray-600 hover:bg-gray-500'
               }`}
             />
           );
