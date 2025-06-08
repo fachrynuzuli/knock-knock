@@ -49,7 +49,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const avatarOptions = [1, 3, 4, 5, 6, 7];
-  const itemsPerPage = 4;
+  const itemsPerPage = 3;
   const totalPages = Math.ceil(avatarOptions.length / itemsPerPage);
 
   const getAvatarName = (id: number) => {
@@ -174,49 +174,94 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         <label className="block text-white font-pixel mb-2">
           Select Avatar:
         </label>
-        <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
-          {avatarOptions.map((id) => (
-            <div
-              key={id}
-              onClick={() => handleAvatarClick(id)}
-              className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                selectedAvatarId === id
-                  ? 'border-primary-400 transform scale-105'
-                  : 'border-gray-600'
-              } ${id !== 1 ? 'opacity-50' : ''}`}
+        
+        {/* Avatar Selection with Pagination */}
+        <div className="relative">
+          <div className="flex items-center justify-center gap-2">
+            {/* Previous Button */}
+            <button
+              onClick={handlePrevPage}
+              disabled={!canScrollLeft || isAnimating}
+              className={`p-2 rounded-lg transition-all ${
+                canScrollLeft && !isAnimating
+                  ? 'bg-primary-600 hover:bg-primary-700 text-white shadow-pixel button-pixel'
+                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+              }`}
             >
-              <div 
-                className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
-                style={{
-                  backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                }}
-              >
-                <div 
-                  className={`character ${id !== 1 ? 'grayscale' : ''}`}
-                  style={{
-                    width: '32px',
-                    height: '48px',
-                    backgroundImage: `url("${getAvatarSprite(id)}")`,
-                    backgroundPosition: '-20px -5px',
-                    transform: 'scale(1.75)',
-                    transformOrigin: 'center',
-                  }}
-                />
-                {id !== 1 && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                    <Lock className="text-white\" size={24} />
+              <ChevronLeft size={20} />
+            </button>
+
+            {/* Avatar Display Area */}
+            <div className="flex gap-4 justify-center min-w-0 flex-1">
+              {visibleAvatars.map((id) => (
+                <div
+                  key={id}
+                  onClick={() => handleAvatarClick(id)}
+                  className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                    selectedAvatarId === id
+                      ? 'border-primary-400 transform scale-105'
+                      : 'border-gray-600'
+                  } ${id !== 1 ? 'opacity-50' : ''}`}
+                >
+                  <div 
+                    className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                    style={{
+                      backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                    }}
+                  >
+                    <div 
+                      className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                      style={{
+                        width: '32px',
+                        height: '48px',
+                        backgroundImage: `url("${getAvatarSprite(id)}")`,
+                        backgroundPosition: '-20px -5px',
+                        transform: 'scale(1.75)',
+                        transformOrigin: 'center',
+                      }}
+                    />
+                    {id !== 1 && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                        <Lock className="text-white" size={24} />
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="text-center mt-2">
-                <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
-                  id === 1 ? 'text-primary-400' : 'text-gray-400'
-                }`}>
-                  {getAvatarName(id)}
-                </span>
-              </div>
+                  <div className="text-center mt-2">
+                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                      id === 1 ? 'text-primary-400' : 'text-gray-400'
+                    }`}>
+                      {getAvatarName(id)}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+
+            {/* Next Button */}
+            <button
+              onClick={handleNextPage}
+              disabled={!canScrollRight || isAnimating}
+              className={`p-2 rounded-lg transition-all ${
+                canScrollRight && !isAnimating
+                  ? 'bg-primary-600 hover:bg-primary-700 text-white shadow-pixel button-pixel'
+                  : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          {/* Page Indicator */}
+          <div className="flex justify-center mt-3 space-x-1">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === currentPage ? 'bg-primary-400' : 'bg-gray-600'
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         {lockedMessage && (
@@ -309,49 +354,94 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
                 <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
               </div>
-              <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
-                {avatarOptions.map((id) => (
-                  <div
-                    key={id}
-                    onClick={() => handleAvatarClick(id)}
-                    className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                      selectedAvatarId === id
-                        ? 'border-secondary-400 transform scale-105'
-                        : 'border-gray-600'
-                    } ${id !== 1 ? 'opacity-50' : ''}`}
+              
+              {/* Avatar Selection with Pagination */}
+              <div className="relative">
+                <div className="flex items-center justify-center gap-2">
+                  {/* Previous Button */}
+                  <button
+                    onClick={handlePrevPage}
+                    disabled={!canScrollLeft || isAnimating}
+                    className={`p-2 rounded-lg transition-all ${
+                      canScrollLeft && !isAnimating
+                        ? 'bg-secondary-600 hover:bg-secondary-700 text-white shadow-pixel button-pixel'
+                        : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                    }`}
                   >
-                    <div 
-                      className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
-                      style={{
-                        backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                      }}
-                    >
-                      <div 
-                        className={`character ${id !== 1 ? 'grayscale' : ''}`}
-                        style={{
-                          width: '32px',
-                          height: '48px',
-                          backgroundImage: `url("${getAvatarSprite(id)}")`,
-                          backgroundPosition: '-20px -5px',
-                          transform: 'scale(1.75)',
-                          transformOrigin: 'center',
-                        }}
-                      />
-                      {id !== 1 && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                          <Lock className="text-white\" size={24} />
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {/* Avatar Display Area */}
+                  <div className="flex gap-4 justify-center min-w-0 flex-1">
+                    {visibleAvatars.map((id) => (
+                      <div
+                        key={id}
+                        onClick={() => handleAvatarClick(id)}
+                        className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                          selectedAvatarId === id
+                            ? 'border-secondary-400 transform scale-105'
+                            : 'border-gray-600'
+                        } ${id !== 1 ? 'opacity-50' : ''}`}
+                      >
+                        <div 
+                          className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                          style={{
+                            backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                          }}
+                        >
+                          <div 
+                            className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                            style={{
+                              width: '32px',
+                              height: '48px',
+                              backgroundImage: `url("${getAvatarSprite(id)}")`,
+                              backgroundPosition: '-20px -5px',
+                              transform: 'scale(1.75)',
+                              transformOrigin: 'center',
+                            }}
+                          />
+                          {id !== 1 && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                              <Lock className="text-white" size={24} />
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <div className="text-center mt-2">
-                      <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
-                        id === 1 ? 'text-secondary-400' : 'text-gray-400'
-                      }`}>
-                        {getAvatarName(id)}
-                      </span>
-                    </div>
+                        <div className="text-center mt-2">
+                          <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                            id === 1 ? 'text-secondary-400' : 'text-gray-400'
+                          }`}>
+                            {getAvatarName(id)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+
+                  {/* Next Button */}
+                  <button
+                    onClick={handleNextPage}
+                    disabled={!canScrollRight || isAnimating}
+                    className={`p-2 rounded-lg transition-all ${
+                      canScrollRight && !isAnimating
+                        ? 'bg-secondary-600 hover:bg-secondary-700 text-white shadow-pixel button-pixel'
+                        : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+
+                {/* Page Indicator */}
+                <div className="flex justify-center mt-3 space-x-1">
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-all ${
+                        index === currentPage ? 'bg-secondary-400' : 'bg-gray-600'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
 
               {lockedMessage && (
