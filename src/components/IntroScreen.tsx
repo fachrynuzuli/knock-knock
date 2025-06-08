@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameContext } from '../contexts/GameContext';
-import { MapPin, Lock, ChevronLeft, ChevronRight, Users, UserPlus, ArrowLeft } from 'lucide-react';
+import { MapPin, Lock, Users, UserPlus, ArrowLeft } from 'lucide-react';
 import { avatars, getAvatarById, getAvatarStage, getAllAvatarIds } from '../data/avatars';
 
 interface IntroScreenProps {
@@ -257,23 +257,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       
       {/* Carousel Container */}
       <div className="relative h-40 mb-6">
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors shadow-lg"
-          disabled={isTransitioning}
-        >
-          <ChevronLeft className="text-white" size={24} />
-        </button>
-        
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-gray-700 hover:bg-gray-600 p-2 rounded-full transition-colors shadow-lg"
-          disabled={isTransitioning}
-        >
-          <ChevronRight className="text-white" size={24} />
-        </button>
-
         {/* Carousel Track */}
         <div
           ref={carouselRef}
@@ -318,7 +301,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   {/* Enhanced Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={20} />
+                      <Lock className="text-white drop-shadow-lg" size={20} />
                     </div>
                   )}
                   {/* Selection Glow Effect */}
