@@ -4,7 +4,7 @@ import { RootState } from '../store';
 import { updatePlayerPosition, toggleActivityForm, toggleLeaderboard } from '../store/slices/gameStateSlice';
 import { useGameContext } from '../contexts/GameContext';
 import { addBadge } from '../store/slices/badgesSlice';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, RotateCcw } from 'lucide-react';
 
 import GameMap from './GameMap';
 import Player from './Player';
@@ -112,6 +112,12 @@ const Game: React.FC = () => {
     const newZoom = zoomLevel - ZOOM_STEP;
     const clampedZoom = Math.max(MIN_ZOOM, newZoom);
     setZoomLevel(clampedZoom);
+  };
+
+  const handleZoomReset = () => {
+    setZoomLevel(1.0);
+    setCameraOffsetX(0);
+    setCameraOffsetY(0);
   };
   
   useEffect(() => {
@@ -400,6 +406,18 @@ const Game: React.FC = () => {
             }`}
           >
             <Minus size={16} />
+          </button>
+          <button
+            onClick={handleZoomReset}
+            disabled={zoomLevel === 1.0 && cameraOffsetX === 0 && cameraOffsetY === 0}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
+              zoomLevel === 1.0 && cameraOffsetX === 0 && cameraOffsetY === 0
+                ? 'bg-gray-600 cursor-not-allowed opacity-50' 
+                : 'bg-secondary-600 hover:bg-secondary-700 shadow-pixel button-pixel'
+            }`}
+            title="Reset to 100%"
+          >
+            <RotateCcw size={16} />
           </button>
           <button
             onClick={handleZoomIn}
