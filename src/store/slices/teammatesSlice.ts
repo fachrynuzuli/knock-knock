@@ -28,7 +28,7 @@ const initialState: TeammatesState = {
     {
       id: 'player',
       name: 'Player', // This will be updated when player sets their name
-      avatarId: 3, // Changed from 1 to 3
+      avatarId: 1,
       houseLevel: 1,
       housePosition: { x: 782, y: 232 },
       houseType: 0,
@@ -43,7 +43,7 @@ const initialState: TeammatesState = {
     {
       id: '1',
       name: 'Alex',
-      avatarId: 3, // Changed from 1 to 3
+      avatarId: 1,
       houseLevel: 2,
       housePosition: { x: 375, y: 180 },
       houseType: 1,
@@ -57,7 +57,7 @@ const initialState: TeammatesState = {
     {
       id: '2',
       name: 'Taylor',
-      avatarId: 4, // Changed from 2 to 4
+      avatarId: 2,
       houseLevel: 1,
       housePosition: { x: 1000, y: 300 },
       houseType: 2,
@@ -71,7 +71,7 @@ const initialState: TeammatesState = {
     {
       id: '3',
       name: 'Prabowski',
-      avatarId: 5, // Changed from 3 to 5
+      avatarId: 3,
       houseLevel: 3,
       housePosition: { x: 220, y: 520 },
       houseType: 3,
@@ -85,7 +85,7 @@ const initialState: TeammatesState = {
     {
       id: '4',
       name: 'Morgan',
-      avatarId: 6, // Changed from 4 to 6
+      avatarId: 4,
       houseLevel: 2,
       housePosition: { x: 1210, y: 550 },
       houseType: 4,

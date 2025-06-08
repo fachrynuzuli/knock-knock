@@ -13,6 +13,16 @@ interface PlayerProps {
 
 // Sprite configuration for different character types
 const spriteConfig = {
+  1: {
+    path: '/Unarmed_Walk_full.png',
+    frameWidth: 64,
+    frameHeight: 64,
+    frameCount: 6,
+    rowCount: 4,
+    scale: 2.5,
+    offsetX: 0,
+    offsetY: 0,
+  },
   3: {
     path: '/orc1_walk_full.png',
     frameWidth: 64,
@@ -65,26 +75,12 @@ const spriteConfig = {
   }
 };
 
-// Helper function to get avatar color for circle display
-const getAvatarColor = (id: number) => {
-  switch (id) {
-    case 3: return 'bg-green-500';
-    case 4: return 'bg-red-500';
-    case 5: return 'bg-yellow-500';
-    case 6: return 'bg-purple-500';
-    case 7: return 'bg-orange-500';
-    default: return 'bg-gray-500';
-  }
-};
-
 const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, direction }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [idleDirection, setIdleDirection] = useState<'up' | 'down' | 'left' | 'right'>('down');
+  const sprite = spriteConfig[avatarId as keyof typeof spriteConfig] || spriteConfig[1];
   
-  // For now, we'll display circles instead of sprites
-  const avatarColor = getAvatarColor(avatarId);
-  
-  // Animation frame handling (simplified for circles)
+  // Animation frame handling
   useEffect(() => {
     let animationFrame: number;
     let lastTimestamp = 0;
@@ -97,7 +93,7 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
       
       if (elapsed > frameInterval) {
         if (isMoving) {
-          setCurrentFrame(prev => (prev + 1) % 6);
+          setCurrentFrame(prev => (prev + 1) % sprite.frameCount);
           // Update idle direction only when moving
           setIdleDirection(direction);
         } else {
@@ -114,10 +110,27 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
     return () => {
       cancelAnimationFrame(animationFrame);
     };
-  }, [isMoving, direction]);
+  }, [isMoving, direction, sprite.frameCount]);
 
-  const scaledWidth = 64;
-  const scaledHeight = 64;
+  // Get the row index based on direction
+  const getDirectionRow = () => {
+    const directionToUse = isMoving ? direction : idleDirection;
+    
+    switch (directionToUse) {
+      case 'down': return 0;
+      case 'left': return 1;
+      case 'right': return 2;
+      case 'up': return 3;
+      default: return 0;
+    }
+  };
+
+  const scaledWidth = sprite.frameWidth * sprite.scale;
+  const scaledHeight = sprite.frameHeight * sprite.scale;
+  
+  // Calculate background position
+  const x = currentFrame * sprite.frameWidth + sprite.offsetX;
+  const y = getDirectionRow() * sprite.frameHeight + sprite.offsetY;
   
   return (
     <div 
@@ -135,27 +148,21 @@ const Player: React.FC<PlayerProps> = ({ position, avatarId, name, isMoving, dir
         <div 
           className="absolute left-1/2 -translate-x-1/2 rounded-full bg-black/30"
           style={{
-            width: `${scaledWidth * 0.3}px`,
-            height: `8px`,
-            bottom: '8px',
+            width: `${scaledWidth * 0.2}px`,
+            height: `${5 * sprite.scale}px`,
+            bottom: '45px',
           }}
         />
         
-        {/* Character circle */}
+        {/* Character sprite */}
         <div 
-          className={`absolute inset-0 rounded-full ${avatarColor} flex items-center justify-center border-4 border-white ${
-            isMoving ? 'animate-pulse' : ''
-          }`}
+          className="character absolute inset-0"
           style={{
-            width: '48px',
-            height: '48px',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
+            backgroundImage: `url(${sprite.path})`,
+            backgroundPosition: `-${x * sprite.scale}px -${y * sprite.scale}px`,
+            backgroundSize: `${sprite.frameWidth * sprite.frameCount * sprite.scale}px ${sprite.frameHeight * sprite.rowCount * sprite.scale}px`,
           }}
-        >
-          <span className="text-white text-lg font-bold">{avatarId}</span>
-        </div>
+        />
         
         {/* Player name */}
         <div className="absolute left-1/2 -translate-x-1/2 -top-6 whitespace-nowrap px-2 py-0.5 bg-gray-800/75 text-white text-xs rounded-md font-pixel">

@@ -13,7 +13,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [screenMode, setScreenMode] = useState<ScreenMode>('initial');
   const [name, setName] = useState('');
   const [inviteCode, setInviteCode] = useState('');
-  const [selectedAvatarId, setSelectedAvatarId] = useState(3);
+  const [selectedAvatarId, setSelectedAvatarId] = useState(1);
   const [lockedMessage, setLockedMessage] = useState('');
   const [isWaitingApproval, setIsWaitingApproval] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -48,12 +48,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const avatarOptions = [3, 4, 5, 6, 7];
-  const itemsPerPage = 3; // Reduced to 3 for better spacing
+  const avatarOptions = [1, 3, 4, 5, 6, 7];
+  const itemsPerPage = 4;
   const totalPages = Math.ceil(avatarOptions.length / itemsPerPage);
 
   const getAvatarName = (id: number) => {
     switch (id) {
+      case 1: return 'Casual';
       case 3: return 'Orc Warrior';
       case 4: return 'Vampire Lord';
       case 5: return 'Orc Shaman';
@@ -63,19 +64,20 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const getAvatarColor = (id: number) => {
+  const getAvatarSprite = (id: number) => {
     switch (id) {
-      case 3: return 'bg-green-500';
-      case 4: return 'bg-red-500';
-      case 5: return 'bg-yellow-500';
-      case 6: return 'bg-purple-500';
-      case 7: return 'bg-orange-500';
-      default: return 'bg-gray-500';
+      case 1: return '/Unarmed_Walk_full.png';
+      case 3: return '/orc1_walk_full.png';
+      case 4: return '/Vampires1_Walk_full.png';
+      case 5: return '/orc2_walk_full.png';
+      case 6: return '/Vampires2_Walk_full.png';
+      case 7: return '/orc3_walk_full.png';
+      default: return '/Unarmed_Walk_full.png';
     }
   };
 
   const handleAvatarClick = (id: number) => {
-    if (id === 3) {
+    if (id === 1) {
       setSelectedAvatarId(id);
     } else {
       setLockedMessage('This avatar is locked. Play more to unlock!');
@@ -142,98 +144,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     </div>
   );
 
-  const renderAvatarSelection = (themeColor: string) => (
-    <div className="mb-6">
-      <label className="block text-white font-pixel mb-2">
-        Select Avatar:
-      </label>
-      
-      {/* Avatar pagination container */}
-      <div className="bg-gray-900 bg-opacity-50 p-4 rounded-lg">
-        <div className="flex items-center justify-between">
-          {/* Previous button */}
-          <button
-            onClick={handlePrevPage}
-            disabled={!canScrollLeft || isAnimating}
-            className={`p-2 rounded-lg transition-all ${
-              canScrollLeft && !isAnimating
-                ? `bg-${themeColor}-600 hover:bg-${themeColor}-700 text-white`
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          {/* Avatar display area */}
-          <div className="flex-1 mx-4">
-            <div className="flex justify-center gap-4">
-              {visibleAvatars.map((id) => (
-                <div
-                  key={id}
-                  onClick={() => handleAvatarClick(id)}
-                  className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
-                    selectedAvatarId === id
-                      ? `border-${themeColor}-400 transform scale-105`
-                      : 'border-gray-600'
-                  } ${id !== 3 ? 'opacity-50' : ''}`}
-                >
-                  <div 
-                    className={`w-20 h-20 flex items-center justify-center rounded-full relative ${getAvatarColor(id)} ${id !== 3 ? 'grayscale' : ''}`}
-                  >
-                    <span className="text-white text-xl font-bold">{id}</span>
-                    {id !== 3 && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
-                        <Lock className="text-white" size={24} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-center mt-2">
-                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
-                      id === 3 ? `text-${themeColor}-400` : 'text-gray-400'
-                    }`}>
-                      {getAvatarName(id)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Next button */}
-          <button
-            onClick={handleNextPage}
-            disabled={!canScrollRight || isAnimating}
-            className={`p-2 rounded-lg transition-all ${
-              canScrollRight && !isAnimating
-                ? `bg-${themeColor}-600 hover:bg-${themeColor}-700 text-white`
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-
-        {/* Page indicator */}
-        <div className="flex justify-center mt-3 space-x-2">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === currentPage ? `bg-${themeColor}-400` : 'bg-gray-600'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {lockedMessage && (
-        <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
-          {lockedMessage}
-        </div>
-      )}
-    </div>
-  );
-
   const renderCreateScreen = () => (
     <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full border-4 border-primary-600">
       <div className="flex items-center mb-4">
@@ -260,7 +170,61 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         />
       </div>
 
-      {renderAvatarSelection('primary')}
+      <div className="mb-6">
+        <label className="block text-white font-pixel mb-2">
+          Select Avatar:
+        </label>
+        <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+          {avatarOptions.map((id) => (
+            <div
+              key={id}
+              onClick={() => handleAvatarClick(id)}
+              className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                selectedAvatarId === id
+                  ? 'border-primary-400 transform scale-105'
+                  : 'border-gray-600'
+              } ${id !== 1 ? 'opacity-50' : ''}`}
+            >
+              <div 
+                className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                style={{
+                  backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                }}
+              >
+                <div 
+                  className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                  style={{
+                    width: '32px',
+                    height: '48px',
+                    backgroundImage: `url("${getAvatarSprite(id)}")`,
+                    backgroundPosition: '-20px -5px',
+                    transform: 'scale(1.75)',
+                    transformOrigin: 'center',
+                  }}
+                />
+                {id !== 1 && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                    <Lock className="text-white" size={24} />
+                  </div>
+                )}
+              </div>
+              <div className="text-center mt-2">
+                <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                  id === 1 ? 'text-primary-400' : 'text-gray-400'
+                }`}>
+                  {getAvatarName(id)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {lockedMessage && (
+          <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
+            {lockedMessage}
+          </div>
+        )}
+      </div>
 
       <button
         onClick={handleStartGame}
@@ -337,12 +301,65 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               />
             </div>
 
-            <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mb-4 text-center">
-              <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
-              <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
-            </div>
+            <div className="mb-6">
+              <label className="block text-white font-pixel mb-2">
+                Select Avatar:
+              </label>
+              <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg mb-4 text-center">
+                <p className="text-xs font-pixel text-gray-400">Enter "HACKATHON" to queue into a new team</p>
+                <p className="text-xs font-pixel text-gray-400">Enter "HACKED" to directly teleport into a neighborhood</p>
+              </div>
+              <div className="flex items-center justify-start gap-4 overflow-x-auto pb-4">
+                {avatarOptions.map((id) => (
+                  <div
+                    key={id}
+                    onClick={() => handleAvatarClick(id)}
+                    className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                      selectedAvatarId === id
+                        ? 'border-secondary-400 transform scale-105'
+                        : 'border-gray-600'
+                    } ${id !== 1 ? 'opacity-50' : ''}`}
+                  >
+                    <div 
+                      className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                      style={{
+                        backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
+                      }}
+                    >
+                      <div 
+                        className={`character ${id !== 1 ? 'grayscale' : ''}`}
+                        style={{
+                          width: '32px',
+                          height: '48px',
+                          backgroundImage: `url("${getAvatarSprite(id)}")`,
+                          backgroundPosition: '-20px -5px',
+                          transform: 'scale(1.75)',
+                          transformOrigin: 'center',
+                        }}
+                      />
+                      {id !== 1 && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                          <Lock className="text-white" size={24} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-center mt-2">
+                      <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                        id === 1 ? 'text-secondary-400' : 'text-gray-400'
+                      }`}>
+                        {getAvatarName(id)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-            {renderAvatarSelection('secondary')}
+              {lockedMessage && (
+                <div className="mt-2 text-warning-400 text-sm font-pixel text-center">
+                  {lockedMessage}
+                </div>
+              )}
+            </div>
 
             <button
               onClick={handleJoinRequest}
