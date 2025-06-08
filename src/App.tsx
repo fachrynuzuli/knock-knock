@@ -72,7 +72,7 @@ function App() {
           <img 
             src="/built_on_bolt_new.png" 
             alt="Built on Bolt" 
-            className="max-w-24"
+            className="max-w-32"
           />
         </div>
       </div>
