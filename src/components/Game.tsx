@@ -37,8 +37,8 @@ const townHallPosition = {
 };
 
 // Map dimensions - updated for your new background
-const MAP_WIDTH = 1777;
-const MAP_HEIGHT = 1178;
+const MAP_WIDTH = 2048;
+const MAP_HEIGHT = 1342;
 
 // Zoom constants
 const MIN_ZOOM = 0.5;
