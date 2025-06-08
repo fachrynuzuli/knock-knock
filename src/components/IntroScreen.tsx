@@ -13,7 +13,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [screenMode, setScreenMode] = useState<ScreenMode>('initial');
   const [name, setName] = useState('');
   const [inviteCode, setInviteCode] = useState('');
-  const [selectedAvatarId, setSelectedAvatarId] = useState(1);
+  const [selectedAvatarId, setSelectedAvatarId] = useState(3); // Changed from 1 to 3
   const [lockedMessage, setLockedMessage] = useState('');
   const [isWaitingApproval, setIsWaitingApproval] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -48,13 +48,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const avatarOptions = [1, 3, 4, 5, 6, 7];
+  const avatarOptions = [3, 4, 5, 6, 7]; // Removed 1 from the array
+
   const itemsPerPage = 4;
   const totalPages = Math.ceil(avatarOptions.length / itemsPerPage);
 
   const getAvatarName = (id: number) => {
     switch (id) {
-      case 1: return 'Casual';
       case 3: return 'Orc Warrior';
       case 4: return 'Vampire Lord';
       case 5: return 'Orc Shaman';
@@ -66,7 +66,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const getAvatarColor = (id: number) => {
     switch (id) {
-      case 1: return 'bg-blue-500';
       case 3: return 'bg-green-500';
       case 4: return 'bg-red-500';
       case 5: return 'bg-yellow-500';
@@ -77,7 +76,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const handleAvatarClick = (id: number) => {
-    if (id === 1) {
+    if (id === 3) { // Changed from 1 to 3
       setSelectedAvatarId(id);
     } else {
       setLockedMessage('This avatar is locked. Play more to unlock!');
@@ -183,13 +182,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 selectedAvatarId === id
                   ? 'border-primary-400 transform scale-105'
                   : 'border-gray-600'
-              } ${id !== 1 ? 'opacity-50' : ''}`}
+              } ${id !== 3 ? 'opacity-50' : ''}`} // Changed from id !== 1 to id !== 3
             >
               <div 
-                className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 1 ? 'grayscale' : ''}`}
+                className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 3 ? 'grayscale' : ''}`} // Changed from id !== 1 to id !== 3
               >
                 <span className="text-white text-xl font-bold">{id}</span>
-                {id !== 1 && (
+                {id !== 3 && ( // Changed from id !== 1 to id !== 3
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
                     <Lock className="text-white" size={24} />
                   </div>
@@ -197,7 +196,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               </div>
               <div className="text-center mt-2">
                 <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
-                  id === 1 ? 'text-primary-400' : 'text-gray-400'
+                  id === 3 ? 'text-primary-400' : 'text-gray-400' // Changed from id === 1 to id === 3
                 }`}>
                   {getAvatarName(id)}
                 </span>
@@ -305,13 +304,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                       selectedAvatarId === id
                         ? 'border-secondary-400 transform scale-105'
                         : 'border-gray-600'
-                    } ${id !== 1 ? 'opacity-50' : ''}`}
+                    } ${id !== 3 ? 'opacity-50' : ''}`} // Changed from id !== 1 to id !== 3
                   >
                     <div 
-                      className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 1 ? 'grayscale' : ''}`}
+                      className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 3 ? 'grayscale' : ''}`} // Changed from id !== 1 to id !== 3
                     >
                       <span className="text-white text-xl font-bold">{id}</span>
-                      {id !== 1 && (
+                      {id !== 3 && ( // Changed from id !== 1 to id !== 3
                         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
                           <Lock className="text-white" size={24} />
                         </div>
@@ -319,7 +318,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     </div>
                     <div className="text-center mt-2">
                       <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
-                        id === 1 ? 'text-secondary-400' : 'text-gray-400'
+                        id === 3 ? 'text-secondary-400' : 'text-gray-400' // Changed from id === 1 to id === 3
                       }`}>
                         {getAvatarName(id)}
                       </span>
