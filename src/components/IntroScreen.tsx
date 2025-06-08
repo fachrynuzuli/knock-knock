@@ -64,27 +64,15 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const getAvatarSprite = (id: number) => {
+  const getAvatarColor = (id: number) => {
     switch (id) {
-      case 1: return '/Unarmed_Walk_full.png';
-      case 3: return '/orc1_walk_full.png';
-      case 4: return '/Vampires1_Walk_full.png';
-      case 5: return '/orc2_walk_full.png';
-      case 6: return '/Vampires2_Walk_full.png';
-      case 7: return '/orc3_walk_full.png';
-      default: return '/Unarmed_Walk_full.png';
-    }
-  };
-
-  const getAvatarPosition = (id: number) => {
-    switch (id) {
-      case 1: return '-16px -8px';  // Casual - adjusted position
-      case 3: return '-20px -5px';  // Orc Warrior
-      case 4: return '-20px -5px';  // Vampire Lord
-      case 5: return '-20px -5px';  // Orc Shaman
-      case 6: return '-20px -5px';  // Vampire Noble
-      case 7: return '-20px -5px';  // Orc Chief
-      default: return '-16px -8px';
+      case 1: return 'bg-blue-500';
+      case 3: return 'bg-green-500';
+      case 4: return 'bg-red-500';
+      case 5: return 'bg-yellow-500';
+      case 6: return 'bg-purple-500';
+      case 7: return 'bg-orange-500';
+      default: return 'bg-gray-500';
     }
   };
 
@@ -198,25 +186,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               } ${id !== 1 ? 'opacity-50' : ''}`}
             >
               <div 
-                className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
-                style={{
-                  backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                }}
+                className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 1 ? 'grayscale' : ''}`}
               >
-                <div 
-                  className={`character ${id !== 1 ? 'grayscale' : ''}`}
-                  style={{
-                    width: '32px',
-                    height: '48px',
-                    backgroundImage: `url("${getAvatarSprite(id)}")`,
-                    backgroundPosition: getAvatarPosition(id),
-                    transform: 'scale(1.75)',
-                    transformOrigin: 'center',
-                  }}
-                />
+                <span className="text-white text-xl font-bold">{id}</span>
                 {id !== 1 && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                    <Lock className="text-white\" size={24} />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                    <Lock className="text-white" size={24} />
                   </div>
                 )}
               </div>
@@ -333,25 +308,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     } ${id !== 1 ? 'opacity-50' : ''}`}
                   >
                     <div 
-                      className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
-                      style={{
-                        backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
-                      }}
+                      className={`w-20 h-20 flex items-center justify-center rounded-full ${getAvatarColor(id)} ${id !== 1 ? 'grayscale' : ''}`}
                     >
-                      <div 
-                        className={`character ${id !== 1 ? 'grayscale' : ''}`}
-                        style={{
-                          width: '32px',
-                          height: '48px',
-                          backgroundImage: `url("${getAvatarSprite(id)}")`,
-                          backgroundPosition: getAvatarPosition(id),
-                          transform: 'scale(1.75)',
-                          transformOrigin: 'center',
-                        }}
-                      />
+                      <span className="text-white text-xl font-bold">{id}</span>
                       {id !== 1 && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                          <Lock className="text-white\" size={24} />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                          <Lock className="text-white" size={24} />
                         </div>
                       )}
                     </div>
