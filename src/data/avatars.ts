@@ -68,11 +68,7 @@ export const avatars: Avatar[] = [
     id: 2,
     name: 'Female Civilian',
     category: 'civilian',
-    locked: true,
-    unlockRequirement: {
-      type: 'activities',
-      count: 10,
-    },
+    locked: false, // Unlocked
     stages: [
       {
         level: 1,
@@ -105,10 +101,62 @@ export const avatars: Avatar[] = [
     ],
   },
   {
+    id: 5,
+    name: 'Slime',
+    category: 'mage',
+    locked: false, // Unlocked and moved to front
+    stages: [
+      {
+        level: 1,
+        name: 'Slime',
+        spritePath: '/lv1_slime.png',
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 8,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+      },
+      {
+        level: 3,
+        name: 'Bone Bobba',
+        spritePath: '/lv3_bone_bobba.png',
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 8,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+        unlockRequirement: {
+          type: 'weeks',
+          count: 4,
+        },
+      },
+      {
+        level: 5,
+        name: 'Lava Lime',
+        spritePath: '/lv5_lava_lime.png',
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 8,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+        unlockRequirement: {
+          type: 'weeks',
+          count: 6,
+        },
+      },
+    ],
+  },
+  {
     id: 3,
     name: 'Orc',
     category: 'warrior',
-    locked: true,
+    locked: true, // Moved to back
     unlockRequirement: {
       type: 'activities',
       count: 25,
@@ -164,7 +212,7 @@ export const avatars: Avatar[] = [
     id: 4,
     name: 'Vampire',
     category: 'noble',
-    locked: true,
+    locked: true, // Moved to back
     unlockRequirement: {
       type: 'badges',
       count: 3,
@@ -212,62 +260,6 @@ export const avatars: Avatar[] = [
         unlockRequirement: {
           type: 'badges',
           count: 8,
-        },
-      },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Slime',
-    category: 'mage',
-    locked: true,
-    unlockRequirement: {
-      type: 'weeks',
-      count: 2,
-    },
-    stages: [
-      {
-        level: 1,
-        name: 'Slime',
-        spritePath: '/lv1_slime.png',
-        frameWidth: 64,
-        frameHeight: 64,
-        frameCount: 8,
-        rowCount: 4,
-        scale: 2,
-        offsetX: 0,
-        offsetY: 0,
-      },
-      {
-        level: 3,
-        name: 'Bone Bobba',
-        spritePath: '/lv3_bone_bobba.png',
-        frameWidth: 64,
-        frameHeight: 64,
-        frameCount: 8,
-        rowCount: 4,
-        scale: 2,
-        offsetX: 0,
-        offsetY: 0,
-        unlockRequirement: {
-          type: 'weeks',
-          count: 4,
-        },
-      },
-      {
-        level: 5,
-        name: 'Lava Lime',
-        spritePath: '/lv5_lava_lime.png',
-        frameWidth: 64,
-        frameHeight: 64,
-        frameCount: 8,
-        rowCount: 4,
-        scale: 2,
-        offsetX: 0,
-        offsetY: 0,
-        unlockRequirement: {
-          type: 'weeks',
-          count: 6,
         },
       },
     ],
