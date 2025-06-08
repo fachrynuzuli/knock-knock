@@ -19,7 +19,7 @@ const spriteConfig = {
     frameHeight: 64,
     frameCount: 6,
     rowCount: 4,
-    scale: 2.5,
+    scale: 2,
     offsetX: 0,
     offsetY: 0,
   },
