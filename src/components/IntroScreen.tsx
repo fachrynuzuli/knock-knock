@@ -192,19 +192,19 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             </button>
 
             {/* Avatar Display Area */}
-            <div className="flex gap-4 justify-center min-w-0 flex-1">
+            <div className="flex gap-3 justify-center min-w-0 flex-1">
               {visibleAvatars.map((id) => (
                 <div
                   key={id}
                   onClick={() => handleAvatarClick(id)}
-                  className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                  className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
                     selectedAvatarId === id
                       ? 'border-primary-400 transform scale-105'
                       : 'border-gray-600'
                   } ${id !== 1 ? 'opacity-50' : ''}`}
                 >
                   <div 
-                    className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                    className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
                     style={{
                       backgroundImage: 'radial-gradient(circle at center, rgba(99, 102, 241, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                     }}
@@ -216,18 +216,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                         height: '48px',
                         backgroundImage: `url("${getAvatarSprite(id)}")`,
                         backgroundPosition: '-20px -5px',
-                        transform: 'scale(1.75)',
+                        transform: 'scale(1.5)',
                         transformOrigin: 'center',
                       }}
                     />
                     {id !== 1 && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white\" size={24} />
+                        <Lock className="text-white" size={20} />
                       </div>
                     )}
                   </div>
                   <div className="text-center mt-2">
-                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                    <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
                       id === 1 ? 'text-primary-400' : 'text-gray-400'
                     }`}>
                       {getAvatarName(id)}
@@ -372,19 +372,19 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   </button>
 
                   {/* Avatar Display Area */}
-                  <div className="flex gap-4 justify-center min-w-0 flex-1">
+                  <div className="flex gap-3 justify-center min-w-0 flex-1">
                     {visibleAvatars.map((id) => (
                       <div
                         key={id}
                         onClick={() => handleAvatarClick(id)}
-                        className={`relative flex-shrink-0 bg-gray-700 p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
+                        className={`relative flex-shrink-0 bg-gray-700 p-2 rounded-lg border-2 transition-all duration-200 cursor-pointer hover:bg-gray-600 ${
                           selectedAvatarId === id
                             ? 'border-secondary-400 transform scale-105'
                             : 'border-gray-600'
                         } ${id !== 1 ? 'opacity-50' : ''}`}
                       >
                         <div 
-                          className="w-20 h-20 flex items-center justify-center bg-gray-800 rounded-lg"
+                          className="w-16 h-16 flex items-center justify-center bg-gray-800 rounded-lg"
                           style={{
                             backgroundImage: 'radial-gradient(circle at center, rgba(20, 184, 166, 0.1) 0%, rgba(17, 24, 39, 0.2) 100%)',
                           }}
@@ -396,18 +396,18 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                               height: '48px',
                               backgroundImage: `url("${getAvatarSprite(id)}")`,
                               backgroundPosition: '-20px -5px',
-                              transform: 'scale(1.75)',
+                              transform: 'scale(1.5)',
                               transformOrigin: 'center',
                             }}
                           />
                           {id !== 1 && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                              <Lock className="text-white\" size={24} />
+                              <Lock className="text-white" size={20} />
                             </div>
                           )}
                         </div>
                         <div className="text-center mt-2">
-                          <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
+                          <span className={`font-pixel text-xs px-2 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
                             id === 1 ? 'text-secondary-400' : 'text-gray-400'
                           }`}>
                             {getAvatarName(id)}
