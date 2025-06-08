@@ -78,7 +78,7 @@ export const avatars: Avatar[] = [
         frameHeight: 64,
         frameCount: 6,
         rowCount: 4,
-        scale: 20,
+        scale: 2,
         offsetX: 0,
         offsetY: 0,
       },
