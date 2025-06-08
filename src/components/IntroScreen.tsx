@@ -89,43 +89,112 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     goToSlide(actualIndex);
   };
 
-  const handleAvatarClick = (index: number) => {
-    const relativeIndex = index - currentIndex;
-    if (relativeIndex === 0) {
-      // Center avatar clicked - select it
-      const actualIndex = (currentIndex - centerOffset) % avatarOptions.length;
-      const avatarId = avatarOptions[actualIndex];
-      const avatar = getAvatarById(avatarId);
-      
-      if (avatar && !avatar.locked) {
-        setSelectedAvatarId(avatarId);
-      } else {
-        const requirement = avatar?.unlockRequirement;
-        let message = 'This avatar is locked. Play more to unlock!';
-        
-        if (requirement) {
-          switch (requirement.type) {
-            case 'activities':
-              message = `Complete ${requirement.count} activities to unlock this avatar!`;
-              break;
-            case 'badges':
-              message = `Earn ${requirement.count} badges to unlock this avatar!`;
-              break;
-            case 'weeks':
-              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-              break;
-          }
-        }
-        
-        setLockedMessage(message);
-        setTimeout(() => setLockedMessage(''), 3000);
+  /**
+   * Enhanced handleAvatarClick with shortest path calculation
+   * @param index - The index of the clicked avatar in the extended array
+   */
+  const handleAvatarClick = (index: number): void => {
+    try {
+      // Input validation
+      if (typeof index !== 'number' || index < 0 || index >= extendedAvatars.length) {
+        console.warn('Invalid avatar index provided:', index);
+        return;
       }
-      return;
+
+      // Prevent interaction during transitions
+      if (isTransitioning) {
+        return;
+      }
+
+      // Calculate relative position from current center
+      const relativeIndex = index - currentIndex;
+      
+      // Handle center avatar selection (clicked avatar is already centered)
+      if (relativeIndex === 0) {
+        const actualIndex = (currentIndex - centerOffset) % avatarOptions.length;
+        const avatarId = avatarOptions[actualIndex];
+        const avatar = getAvatarById(avatarId);
+        
+        if (!avatar) {
+          console.error('Avatar not found for ID:', avatarId);
+          return;
+        }
+
+        // Check if avatar is unlocked
+        if (!avatar.locked) {
+          setSelectedAvatarId(avatarId);
+          console.log('Selected avatar:', avatar);
+        } else {
+          // Handle locked avatar feedback
+          const requirement = avatar.unlockRequirement;
+          let message = 'This avatar is locked. Play more to unlock!';
+          
+          if (requirement) {
+            switch (requirement.type) {
+              case 'activities':
+                message = `Complete ${requirement.count} activities to unlock this avatar!`;
+                break;
+              case 'badges':
+                message = `Earn ${requirement.count} badges to unlock this avatar!`;
+                break;
+              case 'weeks':
+                message = `Play for ${requirement.count} weeks to unlock this avatar!`;
+                break;
+              default:
+                message = 'This avatar is locked. Play more to unlock!';
+            }
+          }
+          
+          setLockedMessage(message);
+          setTimeout(() => setLockedMessage(''), 3000);
+        }
+        return;
+      }
+      
+      // Handle non-center avatar click - move it to center with optimal path
+      
+      // Calculate actual indices in the circular array (without extended duplicates)
+      const currentActualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+      const targetActualIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
+      
+      // Calculate distances for both directions
+      const forwardDistance = (targetActualIndex - currentActualIndex + avatarOptions.length) % avatarOptions.length;
+      const backwardDistance = (currentActualIndex - targetActualIndex + avatarOptions.length) % avatarOptions.length;
+      
+      // Determine optimal rotation direction and calculate new index
+      let newIndex: number;
+      
+      if (forwardDistance <= backwardDistance) {
+        // Go forward - more efficient path
+        newIndex = currentIndex + forwardDistance;
+        console.log(`Moving forward ${forwardDistance} steps to reach target`);
+      } else {
+        // Go backward - more efficient path
+        newIndex = currentIndex - backwardDistance;
+        console.log(`Moving backward ${backwardDistance} steps to reach target`);
+      }
+      
+      // Boundary checking for extended array
+      if (newIndex < 0) {
+        newIndex = 0;
+      } else if (newIndex >= extendedAvatars.length) {
+        newIndex = extendedAvatars.length - 1;
+      }
+      
+      // Execute smooth transition
+      setIsTransitioning(true);
+      setCurrentIndex(newIndex);
+      
+      // Reset transition state after animation completes
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300);
+      
+    } catch (error) {
+      console.error('Error in handleAvatarClick:', error);
+      // Graceful fallback - reset to safe state
+      setIsTransitioning(false);
     }
-    
-    // Non-center avatar clicked - move it to center
-    const targetIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
-    goToSlide(targetIndex);
   };
 
   // Reset position when reaching boundaries for infinite scroll
