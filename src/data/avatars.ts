@@ -30,14 +30,14 @@ export interface Avatar {
 export const avatars: Avatar[] = [
   {
     id: 1,
-    name: 'Civilian',
+    name: 'Male Civilian',
     category: 'civilian',
     locked: false,
     stages: [
       {
         level: 1,
-        name: 'Unarmed Civilian',
-        spritePath: '/Unarmed_Walk_full.png',
+        name: 'Male Civilian',
+        spritePath: '/lv1_male_civilian.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -48,48 +48,8 @@ export const avatars: Avatar[] = [
       },
       {
         level: 2,
-        name: 'Armed Civilian',
-        spritePath: '/suittie_walk_full.png',
-        frameWidth: 64,
-        frameHeight: 64,
-        frameCount: 6,
-        rowCount: 4,
-        scale: 2,
-        offsetX: 0,
-        offsetY: 0,
-        unlockRequirement: {
-          type: 'activities',
-          count: 10,
-        },
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Orc Warrior',
-    category: 'warrior',
-    locked: true,
-    unlockRequirement: {
-      type: 'activities',
-      count: 25,
-    },
-    stages: [
-      {
-        level: 1,
-        name: 'Orc Recruit',
-        spritePath: '/orc1_walk_full.png',
-        frameWidth: 64,
-        frameHeight: 64,
-        frameCount: 6,
-        rowCount: 4,
-        scale: 2,
-        offsetX: 0,
-        offsetY: 0,
-      },
-      {
-        level: 2,
-        name: 'Orc Veteran',
-        spritePath: '/orc2_walk_full.png',
+        name: 'Swordsman',
+        spritePath: '/lv2_swordsman.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -102,10 +62,74 @@ export const avatars: Avatar[] = [
           count: 15,
         },
       },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Female Civilian',
+    category: 'civilian',
+    locked: true,
+    unlockRequirement: {
+      type: 'activities',
+      count: 10,
+    },
+    stages: [
+      {
+        level: 1,
+        name: 'Female Civilian',
+        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 6,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+      },
+      {
+        level: 2,
+        name: 'Swordswoman',
+        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 6,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+        unlockRequirement: {
+          type: 'activities',
+          count: 15,
+        },
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Orc',
+    category: 'warrior',
+    locked: true,
+    unlockRequirement: {
+      type: 'activities',
+      count: 25,
+    },
+    stages: [
       {
         level: 3,
-        name: 'Orc Champion',
-        spritePath: '/orc3_walk_full.png',
+        name: 'Orc',
+        spritePath: '/orc1_walk_full.png',
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 6,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+      },
+      {
+        level: 4,
+        name: 'Sage Orc',
+        spritePath: '/orc2_walk_full.png',
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -118,21 +142,37 @@ export const avatars: Avatar[] = [
           count: 30,
         },
       },
+      {
+        level: 5,
+        name: 'Orc Shaman',
+        spritePath: '/orc3_walk_full.png',
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 6,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+        unlockRequirement: {
+          type: 'activities',
+          count: 45,
+        },
+      },
     ],
   },
   {
     id: 4,
-    name: 'Vampire Lord',
+    name: 'Vampire',
     category: 'noble',
     locked: true,
     unlockRequirement: {
       type: 'badges',
-      count: 5,
+      count: 3,
     },
     stages: [
       {
-        level: 1,
-        name: 'Vampire Initiate',
+        level: 3,
+        name: 'Vampire',
         spritePath: '/Vampires1_Walk_full.png',
         frameWidth: 64,
         frameHeight: 64,
@@ -143,8 +183,8 @@ export const avatars: Avatar[] = [
         offsetY: 0,
       },
       {
-        level: 2,
-        name: 'Vampire Noble',
+        level: 4,
+        name: 'Blue Dracula',
         spritePath: '/Vampires2_Walk_full.png',
         frameWidth: 64,
         frameHeight: 64,
@@ -155,25 +195,41 @@ export const avatars: Avatar[] = [
         offsetY: 0,
         unlockRequirement: {
           type: 'badges',
-          count: 3,
+          count: 5,
+        },
+      },
+      {
+        level: 5,
+        name: 'Count Dracula',
+        spritePath: '/Vampires1_Walk_full.png', // Placeholder until you provide the sprite
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 6,
+        rowCount: 4,
+        scale: 2,
+        offsetX: 0,
+        offsetY: 0,
+        unlockRequirement: {
+          type: 'badges',
+          count: 8,
         },
       },
     ],
   },
   {
     id: 5,
-    name: 'Orc Shaman',
-    category: 'mage',
+    name: 'Slime',
+    category: 'rogue',
     locked: true,
     unlockRequirement: {
       type: 'weeks',
-      count: 4,
+      count: 2,
     },
     stages: [
       {
         level: 1,
-        name: 'Apprentice Shaman',
-        spritePath: '/orc2_walk_full.png',
+        name: 'Slime',
+        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -182,22 +238,10 @@ export const avatars: Avatar[] = [
         offsetX: 0,
         offsetY: 0,
       },
-    ],
-  },
-  {
-    id: 6,
-    name: 'Vampire Noble',
-    category: 'noble',
-    locked: true,
-    unlockRequirement: {
-      type: 'activities',
-      count: 50,
-    },
-    stages: [
       {
-        level: 1,
-        name: 'Vampire Aristocrat',
-        spritePath: '/Vampires2_Walk_full.png',
+        level: 3,
+        name: 'Bone Bobba',
+        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -205,23 +249,15 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        unlockRequirement: {
+          type: 'weeks',
+          count: 4,
+        },
       },
-    ],
-  },
-  {
-    id: 7,
-    name: 'Orc Chief',
-    category: 'warrior',
-    locked: true,
-    unlockRequirement: {
-      type: 'activities',
-      count: 75,
-    },
-    stages: [
       {
-        level: 1,
-        name: 'Orc Warlord',
-        spritePath: '/orc3_walk_full.png',
+        level: 5,
+        name: 'Lava Lime',
+        spritePath: '/Unarmed_Walk_full.png', // Placeholder until you provide the sprite
         frameWidth: 64,
         frameHeight: 64,
         frameCount: 6,
@@ -229,6 +265,10 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        unlockRequirement: {
+          type: 'weeks',
+          count: 6,
+        },
       },
     ],
   },
@@ -241,7 +281,20 @@ export const getAvatarById = (id: number): Avatar | undefined => {
 
 export const getAvatarStage = (avatarId: number, level: number = 1): AvatarStage | undefined => {
   const avatar = getAvatarById(avatarId);
-  return avatar?.stages.find(stage => stage.level === level) || avatar?.stages[0];
+  if (!avatar) return undefined;
+  
+  // Find the exact level or the closest available level
+  const exactStage = avatar.stages.find(stage => stage.level === level);
+  if (exactStage) return exactStage;
+  
+  // If exact level not found, return the highest available level that's <= requested level
+  const availableStages = avatar.stages.filter(stage => stage.level <= level);
+  if (availableStages.length > 0) {
+    return availableStages.sort((a, b) => b.level - a.level)[0];
+  }
+  
+  // Fallback to first stage
+  return avatar.stages[0];
 };
 
 export const getAvailableAvatars = (): Avatar[] => {
@@ -250,4 +303,12 @@ export const getAvailableAvatars = (): Avatar[] => {
 
 export const getAllAvatarIds = (): number[] => {
   return avatars.map(avatar => avatar.id);
+};
+
+export const getNextAvatarStage = (avatarId: number, currentLevel: number): AvatarStage | undefined => {
+  const avatar = getAvatarById(avatarId);
+  if (!avatar) return undefined;
+  
+  const nextStage = avatar.stages.find(stage => stage.level > currentLevel);
+  return nextStage;
 };
