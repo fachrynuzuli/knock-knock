@@ -188,7 +188,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     )}
                   </div>
                   <div className="text-center mt-2">
-                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-full ${
+                    <span className={`font-pixel text-sm px-3 py-1 bg-gray-800 rounded-lg whitespace-nowrap ${
                       id === 3 ? `text-${themeColor}-400` : 'text-gray-400'
                     }`}>
                       {getAvatarName(id)}
