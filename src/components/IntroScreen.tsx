@@ -222,7 +222,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     />
                     {id !== 1 && (
                       <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <Lock className="text-white" size={20} />
+                        <Lock className="text-white\" size={20} />
                       </div>
                     )}
                   </div>
@@ -402,7 +402,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                           />
                           {id !== 1 && (
                             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                              <Lock className="text-white" size={20} />
+                              <Lock className="text-white\" size={20} />
                             </div>
                           )}
                         </div>
