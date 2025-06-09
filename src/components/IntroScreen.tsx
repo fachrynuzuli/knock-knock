@@ -216,21 +216,25 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const handleAvatarClick = (index: number) => {
+    // Get the avatar ID for the clicked avatar
+    const clickedAvatarId = extendedAvatars[index];
+    
+    // CRITICAL: First validate if the clicked avatar is unlocked
+    const validation = validateAvatarSelection(clickedAvatarId);
+    if (!validation.isValid) {
+      setLockedMessage(validation.message || 'This avatar is locked.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+    
+    // If avatar is unlocked, select it immediately
+    setSelectedAvatarId(clickedAvatarId);
+    console.log('AVATAR SELECTION: Selected avatar:', clickedAvatarId, getAvatarById(clickedAvatarId)?.name);
+    
+    // Then handle carousel movement if needed
     const relativeIndex = index - currentIndex;
     if (relativeIndex === 0) {
-      // Center avatar clicked - attempt to select it
-      const actualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
-      const avatarId = avatarOptions[actualIndex];
-      
-      // CRITICAL: Validate before selection
-      const validation = validateAvatarSelection(avatarId);
-      if (validation.isValid) {
-        setSelectedAvatarId(avatarId);
-        console.log('AVATAR SELECTION: Selected avatar:', avatarId, getAvatarById(avatarId)?.name);
-      } else {
-        setLockedMessage(validation.message || 'This avatar is locked.');
-        setTimeout(() => setLockedMessage(''), 3000);
-      }
+      // Already centered, just selected
       return;
     }
     
