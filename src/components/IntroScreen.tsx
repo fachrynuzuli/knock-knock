@@ -267,13 +267,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         setTimeout(() => {
           setLockedMessage(validation.message || 'This avatar is locked.');
           setTimeout(() => setLockedMessage(''), 3000);
-        }, 100);
+        }, 1);
       } else {
         // If unlocked, select it after centering
         setTimeout(() => {
           setSelectedAvatarId(clickedAvatarId);
           console.log('AVATAR SELECTION: Selected avatar after centering:', clickedAvatarId, avatar?.name);
-        }, 100);
+        }, 1);
       }
     }
   };
