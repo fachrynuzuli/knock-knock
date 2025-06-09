@@ -167,4 +167,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **Built with ❤️ for teams who want to make reporting actually enjoyable**
 
 *Transform your team's weekly check-ins from mundane status updates into an engaging neighborhood experience where every accomplishment matters.*
-(*Built on Bolt.new*)
+(Built on Bolt.new)
