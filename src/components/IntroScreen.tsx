@@ -218,46 +218,64 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const handleAvatarClick = (index: number) => {
     // Get the avatar ID for the clicked avatar
     const clickedAvatarId = extendedAvatars[index];
+    const avatar = getAvatarById(clickedAvatarId);
     
-    // CRITICAL: First validate if the clicked avatar is unlocked
-    const validation = validateAvatarSelection(clickedAvatarId);
-    if (!validation.isValid) {
-      setLockedMessage(validation.message || 'This avatar is locked.');
-      setTimeout(() => setLockedMessage(''), 3000);
-      return;
-    }
-    
-    // If avatar is unlocked, select it immediately
-    setSelectedAvatarId(clickedAvatarId);
-    console.log('AVATAR SELECTION: Selected avatar:', clickedAvatarId, getAvatarById(clickedAvatarId)?.name);
-    
-    // Then handle carousel movement if needed
+    // ALWAYS handle carousel movement first, regardless of lock status
     const relativeIndex = index - currentIndex;
+    
+    if (relativeIndex !== 0) {
+      // Non-center avatar clicked - move it to center with smart direction
+      const currentActualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+      const targetActualIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
+      
+      // Calculate shortest path
+      const forwardDistance = (targetActualIndex - currentActualIndex + avatarOptions.length) % avatarOptions.length;
+      const backwardDistance = (currentActualIndex - targetActualIndex + avatarOptions.length) % avatarOptions.length;
+      
+      let newIndex;
+      if (forwardDistance <= backwardDistance) {
+        // Go forward - find the closest forward target in extended array
+        newIndex = currentIndex + forwardDistance;
+      } else {
+        // Go backward - find the closest backward target in extended array  
+        newIndex = currentIndex - backwardDistance;
+      }
+      
+      setIsTransitioning(true);
+      setCurrentIndex(newIndex);
+      setTimeout(() => setIsTransitioning(false), 300);
+    }
+    
+    // THEN handle avatar selection validation (only for center clicks or after centering)
     if (relativeIndex === 0) {
-      // Already centered, just selected
-      return;
-    }
-    
-    // Non-center avatar clicked - move it to center with smart direction
-    const currentActualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
-    const targetActualIndex = (index - centerOffset + avatarOptions.length) % avatarOptions.length;
-    
-    // Calculate shortest path
-    const forwardDistance = (targetActualIndex - currentActualIndex + avatarOptions.length) % avatarOptions.length;
-    const backwardDistance = (currentActualIndex - targetActualIndex + avatarOptions.length) % avatarOptions.length;
-    
-    let newIndex;
-    if (forwardDistance <= backwardDistance) {
-      // Go forward - find the closest forward target in extended array
-      newIndex = currentIndex + forwardDistance;
+      // Avatar is already centered, handle selection
+      const validation = validateAvatarSelection(clickedAvatarId);
+      if (!validation.isValid) {
+        setLockedMessage(validation.message || 'This avatar is locked.');
+        setTimeout(() => setLockedMessage(''), 3000);
+        return;
+      }
+      
+      // If avatar is unlocked, select it
+      setSelectedAvatarId(clickedAvatarId);
+      console.log('AVATAR SELECTION: Selected avatar:', clickedAvatarId, avatar?.name);
     } else {
-      // Go backward - find the closest backward target in extended array  
-      newIndex = currentIndex - backwardDistance;
+      // Avatar will be centered, check if it's locked and show message
+      const validation = validateAvatarSelection(clickedAvatarId);
+      if (!validation.isValid) {
+        // Show message after a brief delay to allow centering animation
+        setTimeout(() => {
+          setLockedMessage(validation.message || 'This avatar is locked.');
+          setTimeout(() => setLockedMessage(''), 3000);
+        }, 350);
+      } else {
+        // If unlocked, select it after centering
+        setTimeout(() => {
+          setSelectedAvatarId(clickedAvatarId);
+          console.log('AVATAR SELECTION: Selected avatar after centering:', clickedAvatarId, avatar?.name);
+        }, 350);
+      }
     }
-    
-    setIsTransitioning(true);
-    setCurrentIndex(newIndex);
-    setTimeout(() => setIsTransitioning(false), 300);
   };
 
   // Reset position when reaching boundaries for infinite scroll
@@ -406,9 +424,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             return (
               <div
                 key={`${avatarId}-${index}`}
-                className={`absolute flex flex-col items-center ${
-                  isLocked ? 'cursor-not-allowed' : 'cursor-pointer'
-                }`}
+                className={`absolute flex flex-col items-center cursor-pointer`}
                 style={style}
                 onClick={() => handleAvatarClick(index)}
                 title={isLocked ? `Locked: ${avatar?.unlockRequirement ? 
