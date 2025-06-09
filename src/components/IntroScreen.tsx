@@ -25,78 +25,126 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [dragOffset, setDragOffset] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
-  const handleStartGame = () => {
-    if (name.trim()) {
-      // Check if selected avatar is locked
-      const selectedAvatar = getAvatarById(selectedAvatarId);
-      if (selectedAvatar?.locked) {
-        const requirement = selectedAvatar.unlockRequirement;
-        let message = 'This avatar is locked. Play more to unlock!';
-        
-        if (requirement) {
-          switch (requirement.type) {
-            case 'activities':
-              message = `Complete ${requirement.count} activities to unlock this avatar!`;
-              break;
-            case 'badges':
-              message = `Earn ${requirement.count} badges to unlock this avatar!`;
-              break;
-            case 'weeks':
-              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-              break;
-          }
+  // Portrait loading state
+  const [portraitErrors, setPortraitErrors] = useState<Record<number, boolean>>({});
+
+  // CRITICAL: Strict validation for locked avatars
+  const validateAvatarSelection = (avatarId: number): { isValid: boolean; message?: string } => {
+    const avatar = getAvatarById(avatarId);
+    
+    if (!avatar) {
+      return { isValid: false, message: 'Invalid avatar selection. Please choose a different character.' };
+    }
+    
+    if (avatar.locked) {
+      const requirement = avatar.unlockRequirement;
+      let message = 'This avatar is locked. Play more to unlock!';
+      
+      if (requirement) {
+        switch (requirement.type) {
+          case 'activities':
+            message = `Complete ${requirement.count} activities to unlock this avatar!`;
+            break;
+          case 'badges':
+            message = `Earn ${requirement.count} badges to unlock this avatar!`;
+            break;
+          case 'weeks':
+            message = `Play for ${requirement.count} weeks to unlock this avatar!`;
+            break;
         }
-        
-        setLockedMessage(message);
+      }
+      
+      return { isValid: false, message };
+    }
+    
+    return { isValid: true };
+  };
+
+  const handleStartGame = () => {
+    // CRITICAL: Gate-keeping logic - validate everything before proceeding
+    if (!name.trim()) {
+      setLockedMessage('Please enter your name to continue.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+
+    // CRITICAL: Strict avatar validation
+    const validation = validateAvatarSelection(selectedAvatarId);
+    if (!validation.isValid) {
+      setLockedMessage(validation.message || 'Invalid avatar selection.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+
+    // Additional safety check - verify avatar exists and is unlocked
+    const selectedAvatar = getAvatarById(selectedAvatarId);
+    if (!selectedAvatar || selectedAvatar.locked) {
+      setLockedMessage('Selected avatar is not available. Please choose an unlocked character.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+
+    console.log('AVATAR SELECTION: Starting game with validated avatar:', {
+      avatarId: selectedAvatarId,
+      avatarName: selectedAvatar.name,
+      playerName: name,
+      isLocked: selectedAvatar.locked
+    });
+
+    // Only proceed if all validations pass
+    setPlayerName(name);
+    setPlayerAvatar(selectedAvatarId);
+    onStartGame();
+  };
+
+  const handleJoinRequest = () => {
+    // CRITICAL: Same validation for join flow
+    if (!name.trim()) {
+      setLockedMessage('Please enter your name to continue.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+
+    if (!inviteCode.trim()) {
+      setLockedMessage('Please enter an invitation code.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+
+    // CRITICAL: Strict avatar validation for join flow
+    const validation = validateAvatarSelection(selectedAvatarId);
+    if (!validation.isValid) {
+      setLockedMessage(validation.message || 'Invalid avatar selection.');
+      setTimeout(() => setLockedMessage(''), 3000);
+      return;
+    }
+
+    const upperCode = inviteCode.trim().toUpperCase();
+    
+    if (upperCode === 'HACKED') {
+      // Additional safety check even for demo codes
+      const selectedAvatar = getAvatarById(selectedAvatarId);
+      if (!selectedAvatar || selectedAvatar.locked) {
+        setLockedMessage('Selected avatar is not available. Please choose an unlocked character.');
         setTimeout(() => setLockedMessage(''), 3000);
         return;
       }
+
+      console.log('AVATAR SELECTION: Joining with validated avatar:', {
+        avatarId: selectedAvatarId,
+        avatarName: selectedAvatar.name,
+        playerName: name,
+        isLocked: selectedAvatar.locked
+      });
 
       setPlayerName(name);
       setPlayerAvatar(selectedAvatarId);
       onStartGame();
-    }
-  };
-
-  const handleJoinRequest = () => {
-    if (name.trim() && inviteCode.trim()) {
-      // Check if selected avatar is locked
-      const selectedAvatar = getAvatarById(selectedAvatarId);
-      if (selectedAvatar?.locked) {
-        const requirement = selectedAvatar.unlockRequirement;
-        let message = 'This avatar is locked. Play more to unlock!';
-        
-        if (requirement) {
-          switch (requirement.type) {
-            case 'activities':
-              message = `Complete ${requirement.count} activities to unlock this avatar!`;
-              break;
-            case 'badges':
-              message = `Earn ${requirement.count} badges to unlock this avatar!`;
-              break;
-            case 'weeks':
-              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-              break;
-          }
-        }
-        
-        setLockedMessage(message);
-        setTimeout(() => setLockedMessage(''), 3000);
-        return;
-      }
-
-      const upperCode = inviteCode.trim().toUpperCase();
-      
-      if (upperCode === 'HACKED') {
-        setPlayerName(name);
-        setPlayerAvatar(selectedAvatarId);
-        onStartGame();
-      } else if (upperCode === 'HACKATHON') {
-        setIsWaitingApproval(true);
-      } else {
-        setLockedMessage('Invalid invitation code. Please try again.');
-        setTimeout(() => setLockedMessage(''), 3000);
-      }
+    } else if (upperCode === 'HACKATHON') {
+      setIsWaitingApproval(true);
+    } else {
+      setLockedMessage('Invalid invitation code. Please try again.');
+      setTimeout(() => setLockedMessage(''), 3000);
     }
   };
 
@@ -109,6 +157,15 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const getAvatarName = (id: number) => {
     const avatar = getAvatarById(id);
     return avatar?.name || 'Unknown';
+  };
+
+  // Enhanced portrait loading with fallback
+  const getPortraitPath = (avatarId: number): string => {
+    return `/portraits/avatar_${avatarId}_portrait.png`;
+  };
+
+  const handlePortraitError = (avatarId: number) => {
+    setPortraitErrors(prev => ({ ...prev, [avatarId]: true }));
   };
 
   const getAvatarDisplayInfo = (id: number) => {
@@ -161,32 +218,17 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const handleAvatarClick = (index: number) => {
     const relativeIndex = index - currentIndex;
     if (relativeIndex === 0) {
-      // Center avatar clicked - select it
+      // Center avatar clicked - attempt to select it
       const actualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
       const avatarId = avatarOptions[actualIndex];
-      const avatar = getAvatarById(avatarId);
       
-      if (avatar && !avatar.locked) {
+      // CRITICAL: Validate before selection
+      const validation = validateAvatarSelection(avatarId);
+      if (validation.isValid) {
         setSelectedAvatarId(avatarId);
+        console.log('AVATAR SELECTION: Selected avatar:', avatarId, getAvatarById(avatarId)?.name);
       } else {
-        const requirement = avatar?.unlockRequirement;
-        let message = 'This avatar is locked. Play more to unlock!';
-        
-        if (requirement) {
-          switch (requirement.type) {
-            case 'activities':
-              message = `Complete ${requirement.count} activities to unlock this avatar!`;
-              break;
-            case 'badges':
-              message = `Earn ${requirement.count} badges to unlock this avatar!`;
-              break;
-            case 'weeks':
-              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-              break;
-          }
-        }
-        
-        setLockedMessage(message);
+        setLockedMessage(validation.message || 'This avatar is locked.');
         setTimeout(() => setLockedMessage(''), 3000);
       }
       return;
@@ -230,6 +272,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   // Initialize currentIndex to center the first avatar
   useEffect(() => {
     setCurrentIndex(centerOffset);
+    // Set initial selected avatar to first unlocked avatar
+    const firstUnlockedAvatar = avatarOptions.find(id => {
+      const avatar = getAvatarById(id);
+      return avatar && !avatar.locked;
+    });
+    if (firstUnlockedAvatar) {
+      setSelectedAvatarId(firstUnlockedAvatar);
+    }
   }, [centerOffset]);
 
   // Drag handlers
@@ -345,39 +395,66 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             const isLocked = avatar?.locked || false;
             const distance = Math.abs(index - currentIndex);
             const isCenterAvatar = distance === 0;
+            const isSelected = selectedAvatarId === avatarId;
+            const portraitPath = getPortraitPath(avatarId);
+            const hasPortraitError = portraitErrors[avatarId];
             
             return (
               <div
                 key={`${avatarId}-${index}`}
-                className="absolute flex flex-col items-center cursor-pointer"
+                className={`absolute flex flex-col items-center ${
+                  isLocked ? 'cursor-not-allowed' : 'cursor-pointer'
+                }`}
                 style={style}
                 onClick={() => handleAvatarClick(index)}
+                title={isLocked ? `Locked: ${avatar?.unlockRequirement ? 
+                  `${avatar.unlockRequirement.type === 'activities' ? 'Complete' : 
+                    avatar.unlockRequirement.type === 'badges' ? 'Earn' : 'Play for'} ${avatar.unlockRequirement.count} ${avatar.unlockRequirement.type}` : 
+                  'Play more to unlock'}` : avatar?.name}
               >
                 {/* Avatar Container */}
                 <div 
                   className={`relative ${isLocked ? 'grayscale' : ''} ${
-                    isCenterAvatar && !isLocked ? 'ring-4 ring-blue-400 ring-opacity-60 animate-pulse' : ''
+                    isCenterAvatar && isSelected && !isLocked ? 'ring-4 ring-blue-400 ring-opacity-60 animate-pulse' : ''
                   }`}
                 >
-                  <div 
-                    className="rounded-lg overflow-hidden"
-                    style={{
-                      backgroundImage: `url("${avatarDisplayInfo.spritePath}")`,
-                      backgroundSize: `${avatarDisplayInfo.frameWidth * avatarDisplayInfo.frameCount}px ${avatarDisplayInfo.frameHeight * avatarDisplayInfo.rowCount}px`,
-                      backgroundPosition: '0 0', // Show only top-left frame
-                      width: '80px',
-                      height: '80px',
-                    }}
-                  />
+                  {/* Use portrait if available, fallback to sprite */}
+                  {!hasPortraitError ? (
+                    <img
+                      src={portraitPath}
+                      alt={avatar?.name || 'Avatar'}
+                      className="w-20 h-20 rounded-lg object-cover"
+                      onError={() => handlePortraitError(avatarId)}
+                      onLoad={() => console.log('Portrait loaded for avatar:', avatarId)}
+                    />
+                  ) : (
+                    <div 
+                      className="rounded-lg overflow-hidden"
+                      style={{
+                        backgroundImage: `url("${avatarDisplayInfo.spritePath}")`,
+                        backgroundSize: `${avatarDisplayInfo.frameWidth * avatarDisplayInfo.frameCount}px ${avatarDisplayInfo.frameHeight * avatarDisplayInfo.rowCount}px`,
+                        backgroundPosition: '0 0', // Show only top-left frame
+                        width: '80px',
+                        height: '80px',
+                      }}
+                    />
+                  )}
+                  
                   {/* Enhanced Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={20} />
+                      <Lock className="text-white drop-shadow-lg" size={20} />
                     </div>
                   )}
+                  
                   {/* Selection Glow Effect */}
-                  {isCenterAvatar && !isLocked && (
+                  {isCenterAvatar && isSelected && !isLocked && (
                     <div className="absolute inset-0 rounded-lg bg-blue-400 bg-opacity-20 animate-pulse"></div>
+                  )}
+                  
+                  {/* Disabled overlay for locked avatars */}
+                  {isLocked && (
+                    <div className="absolute inset-0 rounded-lg border-2 border-red-500 border-opacity-50"></div>
                   )}
                 </div>
               </div>
@@ -390,11 +467,20 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       <div className="text-center mb-6">
         <div className="bg-gray-800 rounded-lg p-4 inline-block shadow-lg border border-gray-700">
           <p className="text-gray-400 text-sm mb-1">Selected Character</p>
-          <p className="text-blue-400 font-semibold text-lg">{getCurrentAvatar()?.name}</p>
+          <p className={`font-semibold text-lg ${
+            getCurrentAvatar()?.locked ? 'text-red-400' : 'text-blue-400'
+          }`}>
+            {getCurrentAvatar()?.name}
+          </p>
           {getCurrentAvatar()?.locked && (
             <p className="text-red-400 text-xs mt-1 flex items-center justify-center gap-1">
               <Lock size={12} />
               Locked
+            </p>
+          )}
+          {selectedAvatarId !== avatarOptions[(currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length] && (
+            <p className="text-yellow-400 text-xs mt-1">
+              Click center avatar to select
             </p>
           )}
         </div>
@@ -402,15 +488,21 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
       {/* Pagination Dots */}
       <div className="flex justify-center mt-4 space-x-2">
-        {avatarOptions.map((_, index) => {
+        {avatarOptions.map((avatarId, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+          const avatar = getAvatarById(avatarId);
+          const isLocked = avatar?.locked || false;
           return (
             <button
               key={index}
               onClick={() => goToSlide(index)}
+              disabled={isLocked}
               className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                index === actualCurrentIndex ? 'bg-blue-400 scale-125' : 'bg-gray-600 hover:bg-gray-500'
+                index === actualCurrentIndex ? 'bg-blue-400 scale-125' : 
+                isLocked ? 'bg-red-600 opacity-50 cursor-not-allowed' :
+                'bg-gray-600 hover:bg-gray-500'
               }`}
+              title={isLocked ? 'Locked Avatar' : avatar?.name}
             />
           );
         })}
