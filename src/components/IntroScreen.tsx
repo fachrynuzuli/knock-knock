@@ -27,6 +27,31 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const handleStartGame = () => {
     if (name.trim()) {
+      // Check if selected avatar is locked
+      const selectedAvatar = getAvatarById(selectedAvatarId);
+      if (selectedAvatar?.locked) {
+        const requirement = selectedAvatar.unlockRequirement;
+        let message = 'This avatar is locked. Play more to unlock!';
+        
+        if (requirement) {
+          switch (requirement.type) {
+            case 'activities':
+              message = `Complete ${requirement.count} activities to unlock this avatar!`;
+              break;
+            case 'badges':
+              message = `Earn ${requirement.count} badges to unlock this avatar!`;
+              break;
+            case 'weeks':
+              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
+              break;
+          }
+        }
+        
+        setLockedMessage(message);
+        setTimeout(() => setLockedMessage(''), 3000);
+        return;
+      }
+
       setPlayerName(name);
       setPlayerAvatar(selectedAvatarId);
       onStartGame();
@@ -35,6 +60,31 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const handleJoinRequest = () => {
     if (name.trim() && inviteCode.trim()) {
+      // Check if selected avatar is locked
+      const selectedAvatar = getAvatarById(selectedAvatarId);
+      if (selectedAvatar?.locked) {
+        const requirement = selectedAvatar.unlockRequirement;
+        let message = 'This avatar is locked. Play more to unlock!';
+        
+        if (requirement) {
+          switch (requirement.type) {
+            case 'activities':
+              message = `Complete ${requirement.count} activities to unlock this avatar!`;
+              break;
+            case 'badges':
+              message = `Earn ${requirement.count} badges to unlock this avatar!`;
+              break;
+            case 'weeks':
+              message = `Play for ${requirement.count} weeks to unlock this avatar!`;
+              break;
+          }
+        }
+        
+        setLockedMessage(message);
+        setTimeout(() => setLockedMessage(''), 3000);
+        return;
+      }
+
       const upperCode = inviteCode.trim().toUpperCase();
       
       if (upperCode === 'HACKED') {
@@ -61,11 +111,29 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     return avatar?.name || 'Unknown';
   };
 
-  const getAvatarSprite = (id: number) => {
-  const avatar = getAvatarById(id);
-  const stage = avatar?.stages[0]; // Get first available stage
-  return stage?.spritePath || '/lv1_male_civilian.png';
-};
+  const getAvatarDisplayInfo = (id: number) => {
+    const avatar = getAvatarById(id);
+    const stage = avatar?.stages[0]; // Get first available stage
+    
+    // Fallback to default if avatar or stage not found
+    if (!stage) {
+      return {
+        spritePath: '/lv1_male_civilian.png',
+        frameWidth: 64,
+        frameHeight: 64,
+        frameCount: 6,
+        rowCount: 4,
+      };
+    }
+    
+    return {
+      spritePath: stage.spritePath,
+      frameWidth: stage.frameWidth,
+      frameHeight: stage.frameHeight,
+      frameCount: stage.frameCount,
+      rowCount: stage.rowCount,
+    };
+  };
 
   const goToSlide = (index: number, smooth = true) => {
     if (isTransitioning) return;
@@ -272,6 +340,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         >
           {extendedAvatars.map((avatarId, index) => {
             const avatar = getAvatarById(avatarId);
+            const avatarDisplayInfo = getAvatarDisplayInfo(avatarId);
             const style = getAvatarStyle(index);
             const isLocked = avatar?.locked || false;
             const distance = Math.abs(index - currentIndex);
@@ -293,9 +362,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   <div 
                     className="rounded-lg overflow-hidden"
                     style={{
-                      backgroundImage: `url("${getAvatarSprite(avatarId)}")`,
-                      backgroundSize: '512px 256px',
-                      backgroundPosition: '2 0', // Show only top-left frame
+                      backgroundImage: `url("${avatarDisplayInfo.spritePath}")`,
+                      backgroundSize: `${avatarDisplayInfo.frameWidth * avatarDisplayInfo.frameCount}px ${avatarDisplayInfo.frameHeight * avatarDisplayInfo.rowCount}px`,
+                      backgroundPosition: '0 0', // Show only top-left frame
                       width: '80px',
                       height: '80px',
                     }}
@@ -303,7 +372,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   {/* Enhanced Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={20} />
+                      <Lock className="text-white drop-shadow-lg" size={20} />
                     </div>
                   )}
                   {/* Selection Glow Effect */}
