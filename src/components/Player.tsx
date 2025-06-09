@@ -25,21 +25,13 @@ const Player: React.FC<PlayerProps> = ({
   const [idleDirection, setIdleDirection] = useState<'up' | 'down' | 'left' | 'right'>('down');
   
   // Get sprite configuration from centralized data
-  const sprite = getAvatarStage(avatarId, avatarLevel);
+  const spriteConfig = getAvatarStage(avatarId, avatarLevel);
   
-  // Fallback to default if avatar stage not found
-  const defaultSprite = {
-    spritePath: '/Unarmed_Walk_full.png',
-    frameWidth: 64,
-    frameHeight: 64,
-    frameCount: 6,
-    rowCount: 4,
-    scale: 2,
-    offsetX: 0,
-    offsetY: 0,
-  };
-  
-  const spriteConfig = sprite || defaultSprite;
+  // If no sprite config found, this indicates a data issue that should be addressed
+  if (!spriteConfig) {
+    console.error(`No sprite configuration found for avatarId: ${avatarId}, level: ${avatarLevel}`);
+    return null;
+  }
   
   // Animation frame handling
   useEffect(() => {
