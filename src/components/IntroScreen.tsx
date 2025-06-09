@@ -474,7 +474,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   
                   {/* Disabled overlay for locked avatars */}
                   {isLocked && (
-                    <div className="absolute inset-0 rounded-lg border-2 border-red-500 border-opacity-50"></div>
+                    <div className="absolute inset-0 rounded-lg border-2 border-red-500 border-opacity-30"></div>
                   )}
                 </div>
               </div>
