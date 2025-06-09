@@ -62,9 +62,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const getAvatarSprite = (id: number) => {
-    const stage = getAvatarStage(id, 0); // Get first available stage
-    return stage?.spritePath || '/lv1_male_civilian.png';
-  };
+  const avatar = getAvatarById(id);
+  const stage = avatar?.stages[0]; // Get first available stage
+  return stage?.spritePath || '/lv1_male_civilian.png';
+};
 
   const goToSlide = (index: number, smooth = true) => {
     if (isTransitioning) return;
