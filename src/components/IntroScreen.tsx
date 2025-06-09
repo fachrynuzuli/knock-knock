@@ -295,7 +295,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                     style={{
                       backgroundImage: `url("${getAvatarSprite(avatarId)}")`,
                       backgroundSize: '512px 256px',
-                      backgroundPosition: '0 0', // Show only top-left frame
+                      backgroundPosition: '2 0', // Show only top-left frame
                       width: '80px',
                       height: '80px',
                     }}
