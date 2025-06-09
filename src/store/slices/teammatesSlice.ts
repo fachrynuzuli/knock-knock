@@ -134,8 +134,9 @@ const teammatesSlice = createSlice({
       if (playerIndex !== -1) {
         state.items[playerIndex].name = action.payload.name;
         state.items[playerIndex].avatarId = action.payload.avatarId;
-        // Reset avatar level when changing avatar
-        state.items[playerIndex].avatarLevel = 1;
+        // CRITICAL FIX: Do NOT reset avatar level when updating player info
+        // Avatar level should persist based on player progress
+        console.log('Updated player info - Name:', action.payload.name, 'Avatar ID:', action.payload.avatarId, 'Current Avatar Level:', state.items[playerIndex].avatarLevel);
       }
     },
     upgradeAvatarLevel: (state, action: PayloadAction<{ id: string }>) => {

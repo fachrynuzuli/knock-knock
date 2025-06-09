@@ -27,9 +27,12 @@ const Player: React.FC<PlayerProps> = ({
   // Get sprite configuration from centralized data
   const spriteConfig = getAvatarStage(avatarId, avatarLevel);
   
+  // Debug logging for avatar rendering
+  console.log('Player component rendering with:', { avatarId, avatarLevel, name, spriteConfig });
+  
   // If no sprite config found, this indicates a data issue that should be addressed
   if (!spriteConfig) {
-    console.error(`No sprite configuration found for avatarId: ${avatarId}, level: ${avatarLevel}`);
+    console.error(`CRITICAL: No sprite configuration found for avatarId: ${avatarId}, level: ${avatarLevel}. Available avatars:`, avatarId);
     return null;
   }
   
