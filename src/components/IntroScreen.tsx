@@ -715,5 +715,3 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 };
 
 export default IntroScreen;
-
-export default IntroScreen
