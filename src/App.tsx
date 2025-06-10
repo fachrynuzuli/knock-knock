@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Game from './components/Game';
 import IntroScreen from './components/IntroScreen';
+import LoadingScreen from './components/LoadingScreen';
 import { GameProvider } from './contexts/GameContext';
 import { Maximize2 } from 'lucide-react';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(true);
   // Commented out screen size warning state and check
   // const [showSizeWarning, setShowSizeWarning] = useState(false);
 
@@ -32,6 +34,20 @@ function App() {
       console.error('Could not enter fullscreen mode:', err);
     }
   };
+
+  // Loading screen effect
+  useEffect(() => {
+    const loadingTimer = setTimeout(() => {
+      setIsLoadingAssets(false);
+    }, 3000); // 3 second loading simulation
+
+    return () => clearTimeout(loadingTimer);
+  }, []);
+
+  // Show loading screen first
+  if (isLoadingAssets) {
+    return <LoadingScreen />;
+  }
 
   // Commented out screen size warning render
   // if (showSizeWarning) {

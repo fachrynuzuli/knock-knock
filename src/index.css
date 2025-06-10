@@ -12,6 +12,7 @@ html, body {
   overflow: hidden;
   height: 100%;
   font-family: 'Silkscreen', cursive;
+  cursor: default; /* Changed from crosshair to default */
 }
 
 body {
@@ -124,4 +125,62 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+/* Enhanced gradient animations */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Beautiful gradient overlay for carousel depth */
+.carousel-gradient {
+  background: linear-gradient(90deg, 
+    rgba(17, 24, 39, 0.95) 0%, 
+    rgba(17, 24, 39, 0.7) 8%, 
+    rgba(79, 70, 229, 0.1) 15%, 
+    rgba(99, 102, 241, 0.05) 25%, 
+    transparent 35%, 
+    transparent 65%, 
+    rgba(99, 102, 241, 0.05) 75%, 
+    rgba(79, 70, 229, 0.1) 85%, 
+    rgba(17, 24, 39, 0.7) 92%, 
+    rgba(17, 24, 39, 0.95) 100%);
+}
+
+/* Gradient utilities for enhanced visual appeal */
+.gradient-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 50%, #3b82f6 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 50%, #ef4444 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+}
+
+.gradient-dark {
+  background: linear-gradient(135deg, #374151 0%, #4b5563 50%, #6b7280 100%);
+}
+
+/* Radial gradient for spotlight effects */
+.gradient-spotlight {
+  background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+}
+
+/* Multi-stop gradient for depth */
+.gradient-depth {
+  background: linear-gradient(180deg, 
+    rgba(17, 24, 39, 0.9) 0%, 
+    rgba(31, 41, 55, 0.7) 25%, 
+    rgba(55, 65, 81, 0.5) 50%, 
+    rgba(75, 85, 99, 0.7) 75%, 
+    rgba(17, 24, 39, 0.9) 100%);
 }
