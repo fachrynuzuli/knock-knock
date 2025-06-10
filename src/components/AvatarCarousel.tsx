@@ -318,7 +318,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
         />
         
         {/* Spotlight Effect for Center Avatar */}
-        /*<div 
+        <div 
           className="absolute inset-0 pointer-events-none z-15"
           style={{
             background: `
@@ -329,7 +329,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               )
             `
           }}
-        />*/
+        />
         
         {/* Carousel Track */}
         <div
