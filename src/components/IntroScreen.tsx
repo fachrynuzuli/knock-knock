@@ -3,6 +3,7 @@ import { useGameContext } from '../contexts/GameContext';
 import { MapPin, Lock, Users, UserPlus, ArrowLeft } from 'lucide-react';
 import { getAvatarById, getAllAvatarIds } from '../data/avatars';
 import AvatarCarousel from './AvatarCarousel';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface IntroScreenProps {
   onStartGame: () => void;
@@ -149,14 +150,28 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   }, []);
 
+  // Screen transition variants
+  const screenVariants = {
+    initial: { opacity: 0, scale: 0.95 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.95 }
+  };
+
   const renderInitialScreen = () => (
-    <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600">
+    <motion.div 
+      variants={screenVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-4xl w-full border-4 border-primary-600"
+    >
       <h2 className="text-2xl font-heading text-white mb-8 text-center">Welcome to the Neighborhood!</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <button
           onClick={() => setScreenMode('create')}
-          className="bg-primary-600 hover:bg-primary-700 p-8 rounded-lg text-white transition-all transform hover:scale-105 border-2 border-primary-400"
+          className="bg-primary-600 hover:bg-primary-700 p-8 rounded-lg text-white transition-all transform hover:scale-105 border-2 border-primary-400 shadow-pixel button-pixel"
         >
           <Users className="w-16 h-16 mx-auto mb-4" />
           <h3 className="text-xl font-heading mb-2">Create Neighborhood</h3>
@@ -165,7 +180,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         
         <button
           onClick={() => setScreenMode('join')}
-          className="bg-secondary-600 hover:bg-secondary-700 p-8 rounded-lg text-white transition-all transform hover:scale-105 border-2 border-secondary-400"
+          className="bg-secondary-600 hover:bg-secondary-700 p-8 rounded-lg text-white transition-all transform hover:scale-105 border-2 border-secondary-400 shadow-pixel button-pixel"
         >
           <UserPlus className="w-16 h-16 mx-auto mb-4" />
           <h3 className="text-xl font-heading mb-2">Join Neighborhood</h3>
@@ -175,16 +190,23 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       
       <button
         onClick={() => setScreenMode('instructions')}
-        className="mt-6 w-full py-3 rounded-lg font-heading text-white bg-gray-600 hover:bg-gray-700 shadow-pixel button-pixel"
+        className="mt-8 w-full py-4 rounded-lg font-heading text-white bg-gray-600 hover:bg-gray-700 shadow-pixel button-pixel transition-all"
       >
         How To Play
       </button>
-    </div>
+    </motion.div>
   );
 
   const renderCreateScreen = () => (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full border-4 border-primary-600">
-      <div className="flex items-center mb-4">
+    <motion.div 
+      variants={screenVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full border-4 border-primary-600 max-h-[90vh] overflow-y-auto"
+    >
+      <div className="flex items-center mb-8">
         <button
           onClick={() => setScreenMode('initial')}
           className="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -194,46 +216,60 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         <h2 className="text-xl font-heading text-white">Create Your Character</h2>
       </div>
       
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-white font-pixel mb-2">
-          Your Name:
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500"
-          placeholder="Enter your name"
-        />
-      </div>
-
-      <AvatarCarousel
-        selectedAvatarId={selectedAvatarId}
-        onAvatarSelect={handleAvatarSelect}
-        onLockedMessage={handleLockedMessage}
-      />
-
-      {lockedMessage && (
-        <div className="mt-4 text-warning-400 text-sm font-pixel text-center bg-warning-900 bg-opacity-20 p-3 rounded-lg border border-warning-700">
-          {lockedMessage}
+      <div className="space-y-6">
+        <div>
+          <label htmlFor="name" className="block text-white font-pixel mb-3 text-base">
+            Your Name: <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+            placeholder="Enter your name"
+            required
+          />
         </div>
-      )}
 
-      <button
-        onClick={handleStartGame}
-        disabled={!name.trim()}
-        className={`w-full py-3 rounded-lg font-heading text-white shadow-pixel button-pixel ${
-          name.trim() ? 'bg-primary-600 hover:bg-primary-700' : 'bg-gray-600 cursor-not-allowed'
-        }`}
-      >
-        Create Neighborhood
-      </button>
-    </div>
+        <div>
+          <AvatarCarousel
+            selectedAvatarId={selectedAvatarId}
+            onAvatarSelect={handleAvatarSelect}
+            onLockedMessage={handleLockedMessage}
+          />
+        </div>
+
+        {lockedMessage && (
+          <div className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 px-4 py-3 rounded-lg font-pixel text-sm">
+            {lockedMessage}
+          </div>
+        )}
+
+        <button
+          onClick={handleStartGame}
+          disabled={!name.trim()}
+          className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel button-pixel text-lg transition-all ${
+            name.trim() 
+              ? 'bg-primary-600 hover:bg-primary-700 transform hover:scale-105' 
+              : 'bg-gray-600 cursor-not-allowed opacity-50'
+          }`}
+        >
+          Create Neighborhood
+        </button>
+      </div>
+    </motion.div>
   );
 
   const renderJoinScreen = () => (
-    <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full border-4 border-secondary-600 max-h-[90vh] overflow-y-auto">
+    <motion.div 
+      variants={screenVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full border-4 border-secondary-600 max-h-[90vh] overflow-y-auto"
+    >
       {isWaitingApproval ? (
         <div className="text-center py-8">
           <div className="animate-pulse mb-6">
@@ -249,7 +285,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               setIsWaitingApproval(false);
               setScreenMode('initial');
             }}
-            className="px-6 py-2 bg-secondary-600 hover:bg-secondary-700 text-white rounded-lg font-pixel shadow-pixel button-pixel"
+            className="px-6 py-3 bg-secondary-600 hover:bg-secondary-700 text-white rounded-lg font-pixel shadow-pixel button-pixel"
           >
             Back to Home
           </button>
@@ -375,12 +411,19 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           </div>
         </>
       )}
-    </div>
+    </motion.div>
   );
 
   const renderInstructionsScreen = () => (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-2xl w-full border-4 border-secondary-600 text-white font-pixel">
-      <div className="flex items-center mb-4">
+    <motion.div 
+      variants={screenVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-2xl w-full border-4 border-secondary-600 text-white font-pixel max-h-[90vh] overflow-y-auto"
+    >
+      <div className="flex items-center mb-6">
         <button
           onClick={() => setScreenMode('initial')}
           className="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -392,12 +435,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </h2>
       </div>
       
-      <div className="space-y-4 mb-6">
+      <div className="space-y-6 mb-8">
         <p>Welcome to <span className="text-primary-400">"Knock Knock, Shippers!"</span> - a team management game where you track your weekly accomplishments!</p>
         
         <div>
-          <h3 className="font-heading text-secondary-400 mb-1">Game Basics:</h3>
-          <ul className="list-disc pl-5 space-y-1">
+          <h3 className="font-heading text-secondary-400 mb-3">Game Basics:</h3>
+          <ul className="list-disc pl-5 space-y-2">
             <li>Walk around the neighborhood to see other team members' houses</li>
             <li>Each house has a board showing weekly accomplishments</li>
             <li>Update your board every Friday with tasks you completed</li>
@@ -407,8 +450,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
         
         <div>
-          <h3 className="font-heading text-secondary-400 mb-1">Controls:</h3>
-          <ul className="list-disc pl-5 space-y-1">
+          <h3 className="font-heading text-secondary-400 mb-3">Controls:</h3>
+          <ul className="list-disc pl-5 space-y-2">
             <li>Use arrow keys or WASD to move your character</li>
             <li>Press Space or E to interact with boards and objects</li>
             <li>Press ESC to open menu</li>
@@ -416,8 +459,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
         
         <div>
-          <h3 className="font-heading text-secondary-400 mb-1">Task Categories:</h3>
-          <ul className="list-disc pl-5 space-y-1">
+          <h3 className="font-heading text-secondary-400 mb-3">Task Categories:</h3>
+          <ul className="list-disc pl-5 space-y-2">
             <li><span className="text-success-400">Project</span>: Major tasks moving your projects forward</li>
             <li><span className="text-warning-400">Ad Hoc</span>: One-time tasks not related to main projects</li>
             <li><span className="text-primary-400">Routine</span>: Recurring tasks and maintenance work</li>
@@ -427,11 +470,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       
       <button
         onClick={() => setScreenMode('initial')}
-        className="w-full py-3 rounded-lg font-heading text-white bg-secondary-600 hover:bg-secondary-700 shadow-pixel button-pixel"
+        className="w-full py-4 rounded-lg font-heading text-white bg-secondary-600 hover:bg-secondary-700 shadow-pixel button-pixel transition-all"
       >
         Back to Home
       </button>
-    </div>
+    </motion.div>
   );
 
   return (
@@ -445,10 +488,28 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </p>
       </div>
 
-      {screenMode === 'initial' && renderInitialScreen()}
-      {screenMode === 'create' && renderCreateScreen()}
-      {screenMode === 'join' && renderJoinScreen()}
-      {screenMode === 'instructions' && renderInstructionsScreen()}
+      <AnimatePresence mode="wait">
+        {screenMode === 'initial' && (
+          <motion.div key="initial">
+            {renderInitialScreen()}
+          </motion.div>
+        )}
+        {screenMode === 'create' && (
+          <motion.div key="create">
+            {renderCreateScreen()}
+          </motion.div>
+        )}
+        {screenMode === 'join' && (
+          <motion.div key="join">
+            {renderJoinScreen()}
+          </motion.div>
+        )}
+        {screenMode === 'instructions' && (
+          <motion.div key="instructions">
+            {renderInstructionsScreen()}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

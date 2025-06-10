@@ -12,6 +12,7 @@ html, body {
   overflow: hidden;
   height: 100%;
   font-family: 'Silkscreen', cursive;
+  cursor: crosshair; /* Pixelated cursor theme */
 }
 
 body {
@@ -124,4 +125,13 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+/* Carousel gradient overlay */
+.carousel-gradient {
+  background: linear-gradient(90deg, 
+    rgba(17, 24, 39, 0.8) 0%, 
+    transparent 15%, 
+    transparent 85%, 
+    rgba(17, 24, 39, 0.8) 100%);
 }
