@@ -69,19 +69,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       return;
     }
 
-    // Additional safety check - verify avatar exists and is unlocked
-    const selectedAvatar = getAvatarById(selectedAvatarId);
-    if (!selectedAvatar || selectedAvatar.locked) {
-      setLockedMessage('Selected avatar is not available. Please choose an unlocked character.');
-      setTimeout(() => setLockedMessage(''), 3000);
-      return;
-    }
-
     console.log('AVATAR SELECTION: Starting game with validated avatar:', {
       avatarId: selectedAvatarId,
-      avatarName: selectedAvatar.name,
+      avatarName: getAvatarById(selectedAvatarId)?.name,
       playerName: name,
-      isLocked: selectedAvatar.locked
+      isLocked: getAvatarById(selectedAvatarId)?.locked
     });
 
     // Only proceed if all validations pass
@@ -115,19 +107,11 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     const upperCode = inviteCode.trim().toUpperCase();
     
     if (upperCode === 'HACKED') {
-      // Additional safety check even for demo codes
-      const selectedAvatar = getAvatarById(selectedAvatarId);
-      if (!selectedAvatar || selectedAvatar.locked) {
-        setLockedMessage('Selected avatar is not available. Please choose an unlocked character.');
-        setTimeout(() => setLockedMessage(''), 3000);
-        return;
-      }
-
       console.log('AVATAR SELECTION: Joining with validated avatar:', {
         avatarId: selectedAvatarId,
-        avatarName: selectedAvatar.name,
+        avatarName: getAvatarById(selectedAvatarId)?.name,
         playerName: name,
-        isLocked: selectedAvatar.locked
+        isLocked: getAvatarById(selectedAvatarId)?.locked
       });
 
       setPlayerName(name);
@@ -142,13 +126,16 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   };
 
   const handleAvatarSelect = (avatarId: number) => {
+    // Simply update the selected avatar ID - no validation here
     setSelectedAvatarId(avatarId);
     console.log('AVATAR SELECTION: Selected avatar:', avatarId, getAvatarById(avatarId)?.name);
   };
 
   const handleLockedMessage = (message: string) => {
     setLockedMessage(message);
-    setTimeout(() => setLockedMessage(''), 3000);
+    if (message) {
+      setTimeout(() => setLockedMessage(''), 3000);
+    }
   };
 
   // Initialize selected avatar to first unlocked avatar

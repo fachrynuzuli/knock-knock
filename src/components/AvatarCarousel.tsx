@@ -54,20 +54,20 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
   // Auto-select centered avatar and manage locked messages
   useEffect(() => {
     if (!isTransitioning) {
-      // Clear any existing locked message immediately
-      onLockedMessage('');
-      
       // Get the avatar currently in the center
       const actualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
       const centeredAvatarId = avatarOptions[actualIndex];
       
-      // Validate the centered avatar
+      // ALWAYS notify parent of the centered avatar, regardless of lock status
+      onAvatarSelect(centeredAvatarId);
+      
+      // Handle locked message display
       const validation = validateAvatarSelection(centeredAvatarId);
       if (validation.isValid) {
-        // Auto-select if unlocked
-        onAvatarSelect(centeredAvatarId);
+        // Clear any existing locked message for unlocked avatars
+        onLockedMessage('');
       } else {
-        // Show locked message if locked
+        // Show locked message for locked avatars
         onLockedMessage(validation.message || 'This avatar is locked.');
       }
     }
