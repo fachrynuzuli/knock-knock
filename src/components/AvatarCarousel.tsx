@@ -282,13 +282,13 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
   };
 
   return (
-    <div className="mb-8">
-      <label className="block text-white font-pixel mb-6 text-lg">
+    <div className="mb-6">
+      <label className="block text-white font-pixel mb-4 text-lg">
         Select Avatar:
       </label>
       
       {/* Carousel Container */}
-      <div className="relative h-48 mb-8">
+      <div className="relative h-48 mb-6">
         {/* Enhanced Multi-Layer Gradient Overlay */}
         <div 
           className="absolute inset-0 pointer-events-none z-20"
@@ -367,9 +367,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               >
                 {/* Avatar Container with Enhanced Styling */}
                 <div 
-                  className={`relative ${isLocked ? 'grayscale' : ''} ${
-                    isCenterAvatar && isSelected && !isLocked ? 'ring-4 ring-primary-400 ring-opacity-60' : ''
-                  }`}
+                  className={`relative ${isLocked ? 'grayscale' : ''}`}
                   style={{
                     filter: isCenterAvatar && !isLocked ? 'drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3))' : 'none'
                   }}
@@ -434,22 +432,22 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       </div>
 
       {/* Current Selection Display */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-6">
         <div 
-          className="bg-gray-800 rounded-lg p-6 inline-block shadow-pixel border border-gray-700"
+          className="bg-gray-800 rounded-lg p-4 inline-block shadow-pixel border border-gray-700"
           style={{
             background: 'linear-gradient(135deg, rgba(55, 65, 81, 0.9) 0%, rgba(75, 85, 99, 0.9) 100%)',
             boxShadow: '0 4px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}
         >
-          <p className="text-gray-400 text-sm mb-2">Selected Character</p>
+          <p className="text-gray-400 text-sm mb-1">Selected Character</p>
           <p className={`font-semibold text-xl ${
             getCurrentAvatar()?.locked ? 'text-red-400' : 'text-primary-400'
           }`}>
             {getCurrentAvatar()?.name}
           </p>
           {getCurrentAvatar()?.locked && (
-            <p className="text-red-400 text-sm mt-2 flex items-center justify-center gap-2">
+            <p className="text-red-400 text-sm mt-1 flex items-center justify-center gap-2">
               <Lock size={14} />
               Locked
             </p>
@@ -458,7 +456,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center mt-6 space-x-3">
+      <div className="flex justify-center mt-4 space-x-3">
         {avatarOptions.map((avatarId, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           const avatar = getAvatarById(avatarId);

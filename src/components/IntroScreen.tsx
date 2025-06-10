@@ -204,9 +204,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full border-4 border-primary-600 max-h-[90vh] overflow-y-auto"
+      className="bg-gray-800 p-4 rounded-lg shadow-lg max-w-lg w-full border-4 border-primary-600 max-h-[90vh] overflow-y-auto"
     >
-      <div className="flex items-center mb-8">
+      <div className="flex items-center mb-4">
         <button
           onClick={() => setScreenMode('initial')}
           className="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -216,9 +216,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         <h2 className="text-xl font-heading text-white">Create Your Character</h2>
       </div>
       
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-white font-pixel mb-3 text-base">
+          <label htmlFor="name" className="block text-white font-pixel mb-2 text-base">
             Your Name: <span className="text-red-400">*</span>
           </label>
           <input
@@ -268,7 +268,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-lg w-full border-4 border-secondary-600 max-h-[90vh] overflow-y-auto"
+      className="bg-gray-800 p-4 rounded-lg shadow-lg max-w-lg w-full border-4 border-secondary-600 max-h-[90vh] overflow-y-auto"
     >
       {isWaitingApproval ? (
         <div className="text-center py-8">
@@ -293,7 +293,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       ) : (
         <>
           {/* Header Section */}
-          <div className="flex items-center mb-8">
+          <div className="flex items-center mb-4">
             <button
               onClick={() => setScreenMode('initial')}
               className="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -305,15 +305,15 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           </div>
 
           {/* Form Section */}
-          <div className="space-y-8">
+          <div className="space-y-4">
             {/* Personal Information Section */}
-            <div className="space-y-6">
+            <div className="space-y-3">
               <h3 className="text-lg font-pixel text-secondary-400 border-b border-gray-700 pb-2">
                 Personal Information
               </h3>
               
               <div>
-                <label htmlFor="name" className="block text-white font-pixel mb-3 text-base">
+                <label htmlFor="name" className="block text-white font-pixel mb-2 text-base">
                   Your Name: <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -326,20 +326,20 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   required
                   aria-describedby="name-help"
                 />
-                <p id="name-help" className="mt-2 text-xs text-gray-400 font-pixel">
+                <p id="name-help" className="mt-1 text-xs text-gray-400 font-pixel">
                   This will be displayed to your teammates
                 </p>
               </div>
             </div>
 
             {/* Invitation Section */}
-            <div className="space-y-6">
+            <div className="space-y-3">
               <h3 className="text-lg font-pixel text-secondary-400 border-b border-gray-700 pb-2">
                 Neighborhood Access
               </h3>
               
               <div>
-                <label htmlFor="inviteCode" className="block text-white font-pixel mb-3 text-base">
+                <label htmlFor="inviteCode" className="block text-white font-pixel mb-2 text-base">
                   Invitation Code: <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -352,13 +352,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   required
                   aria-describedby="invite-help"
                 />
-                <p id="invite-help" className="mt-2 text-xs text-gray-400 font-pixel">
+                <p id="invite-help" className="mt-1 text-xs text-gray-400 font-pixel">
                   Get this code from your team lead
                 </p>
               </div>
 
               {/* Demo Codes Info */}
-              <div className="bg-gray-900 bg-opacity-75 px-4 py-4 rounded-lg border border-gray-700">
+              <div className="bg-gray-900 bg-opacity-75 px-3 py-3 rounded-lg border border-gray-700">
                 <h4 className="text-sm font-pixel text-gray-300 mb-2">Demo Codes:</h4>
                 <div className="space-y-1">
                   <p className="text-xs font-pixel text-gray-400">
@@ -379,7 +379,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             </div>
 
             {/* Avatar Selection Section */}
-            <div className="space-y-6">
+            <div className="space-y-3">
               <h3 className="text-lg font-pixel text-secondary-400 border-b border-gray-700 pb-2">
                 Character Selection
               </h3>
@@ -391,7 +391,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             </div>
 
             {/* Submit Section */}
-            <div className="pt-6 border-t border-gray-700">
+            <div className="pt-4 border-t border-gray-700">
               <button
                 onClick={handleJoinRequest}
                 disabled={!name.trim() || !inviteCode.trim()}
@@ -404,7 +404,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               >
                 Submit Join Request
               </button>
-              <p id="submit-help" className="mt-3 text-xs text-gray-400 font-pixel text-center">
+              <p id="submit-help" className="mt-2 text-xs text-gray-400 font-pixel text-center">
                 Your request will be sent to the team lead for approval
               </p>
             </div>

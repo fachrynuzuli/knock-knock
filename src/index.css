@@ -12,7 +12,7 @@ html, body {
   overflow: hidden;
   height: 100%;
   font-family: 'Silkscreen', cursive;
-  cursor: crosshair; /* Pixelated cursor theme */
+  cursor: default; /* Changed from crosshair to default */
 }
 
 body {
