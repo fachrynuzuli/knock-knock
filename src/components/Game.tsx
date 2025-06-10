@@ -335,7 +335,7 @@ const Game: React.FC = () => {
             top: `${townHallPosition.y}px`,
           }}
         >
-          <div className="w-[400px] h-[300px] bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
+          <div className="w-[420px] h-[300px] bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
             <div className="text-white text-lg font-pixel text-center">Town Hall</div>
           </div>
         </div>
