@@ -223,7 +223,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       zIndex = 1;
     }
 
-    const baseTranslateX = (relativePosition * 140) + (dragOffset * 0.5);
+    const baseTranslateX = (relativePosition * 160) + (dragOffset * 0.5); // Increased spacing from 140px to 160px
     
     return {
       transform: `translateX(${baseTranslateX}px) scale(${scale})`,
@@ -294,37 +294,37 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
           className="absolute inset-0 pointer-events-none z-20"
           style={{
             background: `
-              radial-gradient(ellipse 60% 100% at 50% 50%, transparent 40%, rgba(17, 24, 39, 0.3) 60%, rgba(17, 24, 39, 0.8) 85%),
+              radial-gradient(ellipse 65% 100% at 50% 50%, transparent 35%, rgba(17, 24, 39, 0.2) 55%, rgba(17, 24, 39, 0.6) 80%),
               linear-gradient(90deg, 
-                rgba(17, 24, 39, 0.95) 0%, 
-                rgba(17, 24, 39, 0.7) 8%, 
-                rgba(79, 70, 229, 0.1) 15%, 
-                rgba(99, 102, 241, 0.05) 25%, 
-                transparent 35%, 
-                transparent 65%, 
-                rgba(99, 102, 241, 0.05) 75%, 
-                rgba(79, 70, 229, 0.1) 85%, 
-                rgba(17, 24, 39, 0.7) 92%, 
-                rgba(17, 24, 39, 0.95) 100%
+                rgba(17, 24, 39, 0.9) 0%, 
+                rgba(17, 24, 39, 0.5) 12%, 
+                rgba(79, 70, 229, 0.06) 20%, 
+                rgba(99, 102, 241, 0.03) 30%, 
+                transparent 40%, 
+                transparent 60%, 
+                rgba(99, 102, 241, 0.03) 70%, 
+                rgba(79, 70, 229, 0.06) 80%, 
+                rgba(17, 24, 39, 0.5) 88%, 
+                rgba(17, 24, 39, 0.9) 100%
               ),
               linear-gradient(180deg, 
-                rgba(17, 24, 39, 0.4) 0%, 
-                transparent 20%, 
-                transparent 80%, 
-                rgba(17, 24, 39, 0.4) 100%
+                rgba(17, 24, 39, 0.3) 0%, 
+                transparent 25%, 
+                transparent 75%, 
+                rgba(17, 24, 39, 0.3) 100%
               )
             `
           }}
         />
         
-        {/* Spotlight Effect for Center Avatar */}
+        {/* Refined Spotlight Effect for Center Avatar */}
         <div 
           className="absolute inset-0 pointer-events-none z-15"
           style={{
             background: `
-              radial-gradient(ellipse 25% 60% at 50% 50%, 
-                rgba(99, 102, 241, 0.15) 0%, 
-                rgba(79, 70, 229, 0.08) 30%, 
+              radial-gradient(ellipse 30% 65% at 50% 50%, 
+                rgba(99, 102, 241, 0.12) 0%, 
+                rgba(79, 70, 229, 0.06) 35%, 
                 transparent 70%
               )
             `
