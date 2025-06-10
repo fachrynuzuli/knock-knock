@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { getAvatarById, getAllAvatarIds } from '../data/avatars';
 
 interface AvatarCarouselProps {
@@ -34,6 +34,44 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       setCurrentIndex(centerOffset + selectedIndex);
     }
   }, [selectedAvatarId, centerOffset]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextSlide();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Auto-select centered avatar and manage locked messages
+  useEffect(() => {
+    if (!isTransitioning) {
+      // Clear any existing locked message immediately
+      onLockedMessage('');
+      
+      // Get the avatar currently in the center
+      const actualIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
+      const centeredAvatarId = avatarOptions[actualIndex];
+      
+      // Validate the centered avatar
+      const validation = validateAvatarSelection(centeredAvatarId);
+      if (validation.isValid) {
+        // Auto-select if unlocked
+        onAvatarSelect(centeredAvatarId);
+      } else {
+        // Show locked message if locked
+        onLockedMessage(validation.message || 'This avatar is locked.');
+      }
+    }
+  }, [currentIndex, isTransitioning, onAvatarSelect, onLockedMessage]);
 
   // Reset position when reaching boundaries for infinite scroll
   useEffect(() => {
@@ -134,8 +172,6 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
   };
 
   const handleAvatarClick = (index: number) => {
-    const clickedAvatarId = extendedAvatars[index];
-    const avatar = getAvatarById(clickedAvatarId);
     const relativeIndex = index - currentIndex;
     
     if (relativeIndex !== 0) {
@@ -157,28 +193,8 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       setIsTransitioning(true);
       setCurrentIndex(newIndex);
       setTimeout(() => setIsTransitioning(false), 300);
-      
-      // Check if it's locked and show message after centering
-      const validation = validateAvatarSelection(clickedAvatarId);
-      if (!validation.isValid) {
-        setTimeout(() => {
-          onLockedMessage(validation.message || 'This avatar is locked.');
-        }, 350);
-      } else {
-        setTimeout(() => {
-          onAvatarSelect(clickedAvatarId);
-        }, 350);
-      }
-    } else {
-      // Avatar is already centered, handle selection
-      const validation = validateAvatarSelection(clickedAvatarId);
-      if (!validation.isValid) {
-        onLockedMessage(validation.message || 'This avatar is locked.');
-        return;
-      }
-      
-      onAvatarSelect(clickedAvatarId);
     }
+    // Note: Selection and locked message handling is now done automatically in the useEffect
   };
 
   const getAvatarStyle = (index: number) => {
@@ -271,21 +287,6 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       
       {/* Carousel Container */}
       <div className="relative h-40 mb-6">
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-gray-800 bg-opacity-80 hover:bg-opacity-100 rounded-full flex items-center justify-center text-white transition-all"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-gray-800 bg-opacity-80 hover:bg-opacity-100 rounded-full flex items-center justify-center text-white transition-all"
-        >
-          <ChevronRight size={20} />
-        </button>
-
         {/* Carousel Track */}
         <div
           ref={carouselRef}
@@ -383,11 +384,6 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
             <p className="text-red-400 text-xs mt-1 flex items-center justify-center gap-1">
               <Lock size={12} />
               Locked
-            </p>
-          )}
-          {selectedAvatarId !== avatarOptions[(currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length] && (
-            <p className="text-yellow-400 text-xs mt-1">
-              Click center avatar to select
             </p>
           )}
         </div>
