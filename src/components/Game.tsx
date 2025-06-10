@@ -32,8 +32,8 @@ const emptyLands: EmptyLand[] = [
 ];
 
 const townHallPosition = {
-  x: 900,
-  y: 820
+  x: 800,
+  y: 720
 };
 
 // Map dimensions - updated for your new background
