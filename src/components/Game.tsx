@@ -32,7 +32,7 @@ const emptyLands: EmptyLand[] = [
 ];
 
 const townHallPosition = {
-  x: 1100,
+  x: 900,
   y: 820
 };
 
