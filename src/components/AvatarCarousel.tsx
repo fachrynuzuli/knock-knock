@@ -408,18 +408,6 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                     </div>
                   )}
                   
-                  {/* Enhanced Selection Glow Effect */}
-                  {isCenterAvatar && isSelected && !isLocked && (
-                    <div 
-                      className="absolute inset-0 rounded-lg animate-pulse"
-                      style={{
-                        background: 'linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2))',
-                        backgroundSize: '200% 200%',
-                        animation: 'gradient-shift 2s ease-in-out infinite'
-                      }}
-                    />
-                  )}
-                  
                   {/* Disabled overlay for locked avatars */}
                   {isLocked && (
                     <div className="absolute inset-0 rounded-lg border-2 border-red-500 border-opacity-40"></div>
