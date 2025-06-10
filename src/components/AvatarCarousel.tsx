@@ -75,16 +75,16 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
 
   // Reset position when reaching boundaries for infinite scroll
   useEffect(() => {
-    if (currentIndex <= 2) {
+    if (currentIndex < centerOffset) {
       setTimeout(() => {
         setCurrentIndex(currentIndex + avatarOptions.length);
       }, 300);
-    } else if (currentIndex >= extendedAvatars.length - 3) {
+    } else if (currentIndex >= centerOffset + avatarOptions.length) {
       setTimeout(() => {
         setCurrentIndex(currentIndex - avatarOptions.length);
       }, 300);
     }
-  }, [currentIndex, avatarOptions.length, extendedAvatars.length]);
+  }, [currentIndex, avatarOptions.length, centerOffset]);
 
   const validateAvatarSelection = (avatarId: number): { isValid: boolean; message?: string } => {
     const avatar = getAvatarById(avatarId);
@@ -162,13 +162,15 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
   };
 
   const nextSlide = () => {
-    const actualIndex = (currentIndex - centerOffset + 1) % avatarOptions.length;
-    goToSlide(actualIndex);
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev + 1);
+    setTimeout(() => setIsTransitioning(false), 300);
   };
 
   const prevSlide = () => {
-    const actualIndex = (currentIndex - centerOffset - 1 + avatarOptions.length) % avatarOptions.length;
-    goToSlide(actualIndex);
+    setIsTransitioning(true);
+    setCurrentIndex(prev => prev - 1);
+    setTimeout(() => setIsTransitioning(false), 300);
   };
 
   const handleAvatarClick = (index: number) => {
