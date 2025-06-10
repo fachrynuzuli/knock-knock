@@ -289,8 +289,47 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       
       {/* Carousel Container */}
       <div className="relative h-48 mb-8">
-        {/* Gradient overlay for depth */}
-        <div className="absolute inset-0 carousel-gradient pointer-events-none z-20"></div>
+        {/* Enhanced Multi-Layer Gradient Overlay */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-20"
+          style={{
+            background: `
+              radial-gradient(ellipse 60% 100% at 50% 50%, transparent 40%, rgba(17, 24, 39, 0.3) 60%, rgba(17, 24, 39, 0.8) 85%),
+              linear-gradient(90deg, 
+                rgba(17, 24, 39, 0.95) 0%, 
+                rgba(17, 24, 39, 0.7) 8%, 
+                rgba(79, 70, 229, 0.1) 15%, 
+                rgba(99, 102, 241, 0.05) 25%, 
+                transparent 35%, 
+                transparent 65%, 
+                rgba(99, 102, 241, 0.05) 75%, 
+                rgba(79, 70, 229, 0.1) 85%, 
+                rgba(17, 24, 39, 0.7) 92%, 
+                rgba(17, 24, 39, 0.95) 100%
+              ),
+              linear-gradient(180deg, 
+                rgba(17, 24, 39, 0.4) 0%, 
+                transparent 20%, 
+                transparent 80%, 
+                rgba(17, 24, 39, 0.4) 100%
+              )
+            `
+          }}
+        />
+        
+        {/* Spotlight Effect for Center Avatar */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-15"
+          style={{
+            background: `
+              radial-gradient(ellipse 25% 60% at 50% 50%, 
+                rgba(99, 102, 241, 0.15) 0%, 
+                rgba(79, 70, 229, 0.08) 30%, 
+                transparent 70%
+              )
+            `
+          }}
+        />
         
         {/* Carousel Track */}
         <div
@@ -326,11 +365,14 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                     avatar.unlockRequirement.type === 'badges' ? 'Earn' : 'Play for'} ${avatar.unlockRequirement.count} ${avatar.unlockRequirement.type}` : 
                   'Play more to unlock'}` : avatar?.name}
               >
-                {/* Avatar Container */}
+                {/* Avatar Container with Enhanced Styling */}
                 <div 
                   className={`relative ${isLocked ? 'grayscale' : ''} ${
-                    isCenterAvatar && isSelected && !isLocked ? 'ring-4 ring-blue-400 ring-opacity-60 animate-pulse' : ''
+                    isCenterAvatar && isSelected && !isLocked ? 'ring-4 ring-primary-400 ring-opacity-60' : ''
                   }`}
+                  style={{
+                    filter: isCenterAvatar && !isLocked ? 'drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3))' : 'none'
+                  }}
                 >
                   {/* Use portrait if available, fallback to sprite */}
                   {!hasPortraitError ? (
@@ -339,6 +381,11 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                       alt={avatar?.name || 'Avatar'}
                       className="w-24 h-24 rounded-lg object-cover shadow-pixel"
                       onError={() => handlePortraitError(avatarId)}
+                      style={{
+                        boxShadow: isCenterAvatar && !isLocked ? 
+                          '0 4px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.4)' : 
+                          '0 4px 0 rgba(0, 0, 0, 0.5)'
+                      }}
                     />
                   ) : (
                     <div 
@@ -349,6 +396,9 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                         backgroundPosition: '0 0',
                         width: '96px',
                         height: '96px',
+                        boxShadow: isCenterAvatar && !isLocked ? 
+                          '0 4px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.4)' : 
+                          '0 4px 0 rgba(0, 0, 0, 0.5)'
                       }}
                     />
                   )}
@@ -356,13 +406,20 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                   {/* Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={24} />
+                      <Lock className="text-white drop-shadow-lg" size={24} />
                     </div>
                   )}
                   
-                  {/* Selection Glow Effect */}
+                  {/* Enhanced Selection Glow Effect */}
                   {isCenterAvatar && isSelected && !isLocked && (
-                    <div className="absolute inset-0 rounded-lg bg-blue-400 bg-opacity-20 animate-pulse shadow-pixel"></div>
+                    <div 
+                      className="absolute inset-0 rounded-lg animate-pulse"
+                      style={{
+                        background: 'linear-gradient(45deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2))',
+                        backgroundSize: '200% 200%',
+                        animation: 'gradient-shift 2s ease-in-out infinite'
+                      }}
+                    />
                   )}
                   
                   {/* Disabled overlay for locked avatars */}
@@ -378,10 +435,16 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
 
       {/* Current Selection Display */}
       <div className="text-center mb-8">
-        <div className="bg-gray-800 rounded-lg p-6 inline-block shadow-pixel border border-gray-700">
+        <div 
+          className="bg-gray-800 rounded-lg p-6 inline-block shadow-pixel border border-gray-700"
+          style={{
+            background: 'linear-gradient(135deg, rgba(55, 65, 81, 0.9) 0%, rgba(75, 85, 99, 0.9) 100%)',
+            boxShadow: '0 4px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+          }}
+        >
           <p className="text-gray-400 text-sm mb-2">Selected Character</p>
           <p className={`font-semibold text-xl ${
-            getCurrentAvatar()?.locked ? 'text-red-400' : 'text-blue-400'
+            getCurrentAvatar()?.locked ? 'text-red-400' : 'text-primary-400'
           }`}>
             {getCurrentAvatar()?.name}
           </p>
@@ -400,16 +463,23 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           const avatar = getAvatarById(avatarId);
           const isLocked = avatar?.locked || false;
+          const isActive = index === actualCurrentIndex;
+          
           return (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               disabled={isLocked}
               className={`w-4 h-4 rounded-full transition-all duration-300 shadow-pixel ${
-                index === actualCurrentIndex ? 'bg-blue-400 scale-125' : 
+                isActive ? 'bg-primary-400 scale-125' : 
                 isLocked ? 'bg-red-600 opacity-50 cursor-not-allowed' :
                 'bg-gray-600 hover:bg-gray-500'
               }`}
+              style={{
+                boxShadow: isActive ? 
+                  '0 2px 0 rgba(0, 0, 0, 0.5), 0 0 10px rgba(99, 102, 241, 0.6)' : 
+                  '0 2px 0 rgba(0, 0, 0, 0.5)'
+              }}
               title={isLocked ? 'Locked Avatar' : avatar?.name}
             />
           );
