@@ -223,7 +223,9 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       zIndex = 1;
     }
 
-    const baseTranslateX = (relativePosition * 160) + (dragOffset * 0.5); // Increased spacing from 140px to 160px
+    // Responsive spacing
+    const spacing = window.innerWidth < 640 ? 120 : window.innerWidth < 1024 ? 140 : 160;
+    const baseTranslateX = (relativePosition * spacing) + (dragOffset * 0.5);
     
     return {
       transform: `translateX(${baseTranslateX}px) scale(${scale})`,
@@ -283,12 +285,12 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
 
   return (
     <div className="mb-6">
-      <label className="block text-white font-pixel mb-4 text-lg">
+      <label className="block text-white font-pixel mb-4 text-responsive-md">
         Select Avatar:
       </label>
       
       {/* Carousel Container */}
-      <div className="relative h-48 mb-6">
+      <div className="avatar-carousel-container relative">
         {/* Enhanced Multi-Layer Gradient Overlay */}
         <div 
           className="absolute inset-0 pointer-events-none z-20"
@@ -377,7 +379,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                     <img
                       src={portraitPath}
                       alt={avatar?.name || 'Avatar'}
-                      className="w-24 h-24 rounded-lg object-cover shadow-pixel"
+                      className="avatar-item rounded-lg object-cover shadow-pixel"
                       onError={() => handlePortraitError(avatarId)}
                       style={{
                         boxShadow: isCenterAvatar && !isLocked ? 
@@ -387,13 +389,11 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                     />
                   ) : (
                     <div 
-                      className="rounded-lg overflow-hidden shadow-pixel"
+                      className="avatar-item rounded-lg overflow-hidden shadow-pixel"
                       style={{
                         backgroundImage: `url("${avatarDisplayInfo.spritePath}")`,
                         backgroundSize: `${avatarDisplayInfo.frameWidth * avatarDisplayInfo.frameCount}px ${avatarDisplayInfo.frameHeight * avatarDisplayInfo.rowCount}px`,
                         backgroundPosition: '0 0',
-                        width: '96px',
-                        height: '96px',
                         boxShadow: isCenterAvatar && !isLocked ? 
                           '0 4px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.4)' : 
                           '0 4px 0 rgba(0, 0, 0, 0.5)'
@@ -404,7 +404,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                   {/* Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={24} />
+                      <Lock className="text-white drop-shadow-lg" size={window.innerWidth < 640 ? 16 : 24} />
                     </div>
                   )}
                   
@@ -428,14 +428,14 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
             boxShadow: '0 4px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
           }}
         >
-          <p className="text-gray-400 text-sm mb-1">Selected Character</p>
-          <p className={`font-semibold text-xl ${
+          <p className="text-gray-400 text-responsive-sm mb-1">Selected Character</p>
+          <p className={`font-semibold text-responsive-lg ${
             getCurrentAvatar()?.locked ? 'text-red-400' : 'text-primary-400'
           }`}>
             {getCurrentAvatar()?.name}
           </p>
           {getCurrentAvatar()?.locked && (
-            <p className="text-red-400 text-sm mt-1 flex items-center justify-center gap-2">
+            <p className="text-red-400 text-responsive-sm mt-1 flex items-center justify-center gap-2">
               <Lock size={14} />
               Locked
             </p>
@@ -444,7 +444,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center mt-4 space-x-3">
+      <div className="flex justify-center mt-4 space-responsive-x">
         {avatarOptions.map((avatarId, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           const avatar = getAvatarById(avatarId);
@@ -456,7 +456,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               key={index}
               onClick={() => goToSlide(index)}
               disabled={isLocked}
-              className={`w-4 h-4 rounded-full transition-all duration-300 shadow-pixel ${
+              className={`w-4 h-4 rounded-full transition-all duration-300 shadow-pixel focus-visible:focus ${
                 isActive ? 'bg-primary-400 scale-125' : 
                 isLocked ? 'bg-red-600 opacity-50 cursor-not-allowed' :
                 'bg-gray-600 hover:bg-gray-500'
