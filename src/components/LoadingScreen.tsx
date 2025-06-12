@@ -4,9 +4,13 @@ import { Gamepad2, Loader2 } from 'lucide-react';
 
 interface LoadingScreenProps {
   onLoadingComplete?: () => void;
+  message?: string; // New optional prop for custom loading messages
 }
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ 
+  onLoadingComplete, 
+  message = "Loading your neighborhood..." 
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -48,7 +52,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onLoadingComplete }) => {
             Knock-Knock, Shippers!
           </h1>
           <p className="text-lg md:text-xl font-pixel text-gray-300">
-            Loading your neighborhood...
+            {message}
           </p>
         </motion.div>
 
