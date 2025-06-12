@@ -40,7 +40,7 @@ const PLAYER_WIDTH = 32;
 const PLAYER_HEIGHT = 32;
 
 // Movement speed (1-10 scale, where 1 is very slow and 10 is extremely fast)
-const MOVEMENT_SPEED = 4; // Reduced from 8 to 4 for better control
+const MOVEMENT_SPEED = 2; // Reduced from 8 to 4 for better control
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
