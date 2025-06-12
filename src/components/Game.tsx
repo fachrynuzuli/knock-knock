@@ -33,7 +33,7 @@ const MAX_ZOOM = 2.0;
 const ZOOM_STEP = 0.1;
 
 // Camera panning speed
-const CAMERA_PAN_SPEED = 6;
+const CAMERA_PAN_SPEED = 4;
 
 // Player dimensions for collision detection
 const PLAYER_WIDTH = 32;
