@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { useGameContext } from '../contexts/GameContext';
 import { 
   Trophy, 
   Calendar, 
@@ -19,12 +18,11 @@ import { getPortraitPath, getAvatarSpriteFallbackInfo, getAvatarById } from '../
 
 const GameHUD: React.FC = () => {
   const { currentWeek, dayOfWeek } = useSelector((state: RootState) => state.gameState);
-  const { playerName, playerAvatar } = useGameContext();
   const [showControls, setShowControls] = useState(false);
   const [portraitError, setPortraitError] = useState(false);
   const [currentObjective, setCurrentObjective] = useState('');
   
-  // Get player data from teammates to access house level and other stats
+  // Get player data from Redux store (single source of truth)
   const playerData = useSelector((state: RootState) => 
     state.teammates.items.find(teammate => teammate.isPlayer)
   );
@@ -32,13 +30,13 @@ const GameHUD: React.FC = () => {
   // Get activities for progress tracking
   const playerActivities = useSelector((state: RootState) => 
     state.activities.items.filter(activity => 
-      activity.createdBy === playerName && activity.week === currentWeek
+      activity.createdBy === (playerData?.name || 'Player') && activity.week === currentWeek
     )
   );
   
   // Get badges for achievement tracking
   const playerBadges = useSelector((state: RootState) => 
-    state.badges.items.filter(badge => badge.earnedBy === playerName)
+    state.badges.items.filter(badge => badge.earnedBy === (playerData?.name || 'Player'))
   );
   
   const getDayName = (day: number) => {
@@ -75,7 +73,9 @@ const GameHUD: React.FC = () => {
   };
   
   const getFallbackAvatar = () => {
-    const fallbackInfo = getAvatarSpriteFallbackInfo(playerAvatar);
+    if (!playerData) return null;
+    
+    const fallbackInfo = getAvatarSpriteFallbackInfo(playerData.avatarId);
     if (!fallbackInfo) return null;
     
     return (
@@ -92,18 +92,18 @@ const GameHUD: React.FC = () => {
   };
   
   const progress = getProgressToNextLevel();
-  const avatar = getAvatarById(playerAvatar);
+  const avatar = playerData ? getAvatarById(playerData.avatarId) : null;
   
   return (
     <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-40">
       {/* Left side: Enhanced Player info with avatar portrait */}
-      <div className="bg-gray-800 bg-opacity-90 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
+      <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
         <div className="flex items-center space-x-3">
           {/* Avatar Portrait */}
           <div className="relative">
-            {!portraitError ? (
+            {!portraitError && playerData ? (
               <img
-                src={getPortraitPath(playerAvatar)}
+                src={getPortraitPath(playerData.avatarId)}
                 alt={avatar?.name || 'Player Avatar'}
                 className="w-12 h-12 rounded-lg border-2 border-primary-400 shadow-pixel object-cover"
                 onError={handlePortraitError}
@@ -125,7 +125,7 @@ const GameHUD: React.FC = () => {
           
           {/* Player Info */}
           <div className="text-white font-pixel">
-            <div className="text-primary-400 font-heading text-sm">{playerName}</div>
+            <div className="text-primary-400 font-heading text-sm">{playerData?.name || 'Player'}</div>
             <div className="text-xs mt-1 flex items-center space-x-2">
               <span className="bg-success-600 px-2 py-0.5 rounded text-xs">Manager</span>
               <span className="text-gray-300">House Lv.{playerData?.houseLevel || 1}</span>
@@ -149,7 +149,7 @@ const GameHUD: React.FC = () => {
       </div>
       
       {/* Center: Enhanced Date/Time with visual day cycle */}
-      <div className="bg-gray-800 bg-opacity-90 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
+      <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
         <div className="flex items-center space-x-3">
           <div className="relative">
             <Calendar className="text-primary-400 w-6 h-6" />
@@ -182,7 +182,7 @@ const GameHUD: React.FC = () => {
       </div>
       
       {/* Right side: Enhanced Controls & Stats */}
-      <div className="bg-gray-800 bg-opacity-90 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
+      <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
         {/* Current Objective */}
         <div className="mb-3 p-2 bg-primary-900 bg-opacity-50 rounded border border-primary-700">
           <div className="flex items-center text-primary-400 text-xs font-pixel mb-1">

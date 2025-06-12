@@ -41,7 +41,7 @@ const PLAYER_HEIGHT = 32;
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
-  const { playerName, playerAvatar, playerAvatarLevel, isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
+  const { isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
   const { playerPosition, isLeaderboardOpen } = useSelector((state: RootState) => state.gameState);
   const teammates = useSelector((state: RootState) => state.teammates.items);
   
@@ -70,6 +70,8 @@ const Game: React.FC = () => {
   
   // Calculate camera position to center player on screen
   const calculateCameraPosition = () => {
+    if (!playerPosition) return { x: 0, y: 0 };
+    
     const viewportWidth = window.innerWidth / zoomLevel;
     const viewportHeight = window.innerHeight / zoomLevel;
     
@@ -236,7 +238,7 @@ const Game: React.FC = () => {
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
         // Check if near Town Hall
-        const nearbyObject = checkProximity(playerPosition.x, playerPosition.y, 96);
+        const nearbyObject = checkProximity(playerPosition!.x, playerPosition!.y, 96);
         
         if (nearbyObject?.type === 'townHall') {
           dispatch(toggleLeaderboard());
@@ -245,8 +247,8 @@ const Game: React.FC = () => {
 
         // Find which teammate's house we're near
         const nearbyTeammate = teammates.find(teammate => {
-          const dx = Math.abs(playerPosition.x - (teammate.housePosition.x + 32));
-          const dy = Math.abs(playerPosition.y - (teammate.housePosition.y + 32));
+          const dx = Math.abs(playerPosition!.x - (teammate.housePosition.x + 32));
+          const dy = Math.abs(playerPosition!.y - (teammate.housePosition.y + 32));
           return dx < 64 && dy < 64;
         });
         
@@ -288,7 +290,9 @@ const Game: React.FC = () => {
   }, [playerPosition, interactionPrompt, teammates, dispatch, openForm, closeForm, isFormOpen, isLeaderboardOpen, viewingTeammate, setViewingTeammate]);
   
   useEffect(() => {
-    const moveSpeed = 5;
+    if (!playerPosition) return;
+    
+    const moveSpeed = 8; // Increased from 5 for smoother movement
     
     const moveInterval = setInterval(() => {
       let newX = playerPosition.x;
@@ -351,16 +355,21 @@ const Game: React.FC = () => {
       const prompt = getInteractionPrompt(newX, newY);
       setInteractionPrompt(prompt);
       
-    }, 33);
+    }, 16); // Reduced from 33ms to 16ms for 60fps
     
     return () => clearInterval(moveInterval);
   }, [keysPressed, playerPosition, cameraOffsetX, cameraOffsetY, dispatch, teammates]);
+  
+  // Don't render if player position is not set
+  if (!playerPosition || !playerHouse) {
+    return null;
+  }
   
   return (
     <div className="relative w-full h-full overflow-hidden bg-gray-900">
       {/* Game World Container - This is what pans and zooms */}
       <div 
-        className="absolute transition-transform duration-150 ease-linear"
+        className="absolute"
         style={{
           width: `${MAP_WIDTH}px`,
           height: `${MAP_HEIGHT}px`,
@@ -372,9 +381,11 @@ const Game: React.FC = () => {
         
         <Player
           position={playerPosition}
-          avatarId={playerAvatar}
-          avatarLevel={playerAvatarLevel}
-          name={playerName}
+          playerData={{
+            name: playerHouse.name,
+            avatarId: playerHouse.avatarId,
+            avatarLevel: playerHouse.avatarLevel
+          }}
           isMoving={
             keysPressed.w || keysPressed.a || keysPressed.s || keysPressed.d
           }
