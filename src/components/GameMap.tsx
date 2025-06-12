@@ -32,4 +32,4 @@ const GameMap: React.FC = () => {
   );
 };
 
-export default GameMap
+export default GameMap;
