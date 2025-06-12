@@ -14,27 +14,14 @@ import Leaderboard from './Leaderboard';
 import GameHUD from './GameHUD';
 import BadgeNotification from './BadgeNotification';
 
-interface EmptyLand {
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-}
-
-const emptyLands: EmptyLand[] = [
-  { id: '1', name: 'Riverside Plot', x: 520, y: 450 },
-  { id: '2', name: 'Hilltop Haven', x: 970, y: 450 },
-  { id: '3', name: 'Forest Edge', x: 300, y: 870 },
-  { id: '4', name: 'Meadow View', x: 1045, y: 270 },
-  { id: '5', name: 'Valley Vista', x: 610, y: 700 },
-  { id: '6', name: 'Mountain Peak', x: 940, y: 870 },
-  { id: '7', name: 'Lareina Valley', x: 650, y: 870 }
-];
-
-const townHallPosition = {
-  x: 820,
-  y: 420
-};
+// Import game objects and collision detection
+import { 
+  allCollidableObjects, 
+  getObjectsByType, 
+  checkCollision, 
+  checkProximity,
+  CollidableObject 
+} from '../data/gameObjects';
 
 // Map dimensions - updated for your new background
 const MAP_WIDTH = 2048;
@@ -47,6 +34,10 @@ const ZOOM_STEP = 0.1;
 
 // Camera panning speed
 const CAMERA_PAN_SPEED = 18;
+
+// Player dimensions for collision detection
+const PLAYER_WIDTH = 32;
+const PLAYER_HEIGHT = 32;
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
@@ -69,6 +60,13 @@ const Game: React.FC = () => {
 
   // Get player's house from teammates array
   const playerHouse = teammates.find(teammate => teammate.isPlayer);
+  
+  // Get game objects by type for rendering
+  const townHallObjects = getObjectsByType('townHall');
+  const emptyLandObjects = getObjectsByType('emptyLand');
+  const treeObjects = getObjectsByType('tree');
+  const bushObjects = getObjectsByType('bush');
+  const rockObjects = getObjectsByType('rock');
   
   // Calculate camera position to center player on screen
   const calculateCameraPosition = () => {
@@ -119,6 +117,112 @@ const Game: React.FC = () => {
     setCameraOffsetX(0);
     setCameraOffsetY(0);
   };
+
+  // Enhanced collision detection function
+  const canMoveTo = (newX: number, newY: number): boolean => {
+    // Check map boundaries
+    if (newX < PLAYER_WIDTH/2 || newX > MAP_WIDTH - PLAYER_WIDTH/2 || 
+        newY < PLAYER_HEIGHT/2 || newY > MAP_HEIGHT - PLAYER_HEIGHT/2) {
+      return false;
+    }
+
+    // Check collision with static objects
+    const collision = checkCollision(
+      newX - PLAYER_WIDTH/2, 
+      newY - PLAYER_HEIGHT/2, 
+      PLAYER_WIDTH, 
+      PLAYER_HEIGHT
+    );
+
+    return collision === null;
+  };
+
+  // Enhanced interaction detection
+  const getInteractionPrompt = (playerX: number, playerY: number): {show: boolean, message: string, x: number, y: number} => {
+    // Check proximity to interactable objects
+    const nearbyObject = checkProximity(playerX, playerY, 96);
+    
+    if (nearbyObject) {
+      let message = '';
+      
+      switch (nearbyObject.type) {
+        case 'townHall':
+          message = 'Press E to enter Town Hall';
+          break;
+        case 'emptyLand':
+          message = `${nearbyObject.name} - Available for development`;
+          break;
+        default:
+          message = `Press E to interact with ${nearbyObject.name}`;
+      }
+      
+      return {
+        show: true,
+        message,
+        x: nearbyObject.x + nearbyObject.width / 2,
+        y: nearbyObject.y - 40
+      };
+    }
+
+    // Check if near any teammate houses (including player's own house)
+    for (const teammate of teammates) {
+      const dx = Math.abs(playerX - (teammate.housePosition.x + 32));
+      const dy = Math.abs(playerY - (teammate.housePosition.y + 32));
+      
+      if (dx < 64 && dy < 64) {
+        return {
+          show: true,
+          message: teammate.isPlayer 
+            ? 'Press E to update your board'
+            : `Press E to view ${teammate.name}'s board`,
+          x: teammate.housePosition.x,
+          y: teammate.housePosition.y - 40
+        };
+      }
+    }
+
+    return { show: false, message: '', x: 0, y: 0 };
+  };
+
+  // Render environmental objects
+  const renderEnvironmentalObject = (obj: CollidableObject) => {
+    let bgColor = 'bg-gray-600';
+    let borderColor = 'border-gray-800';
+    let content = obj.name;
+
+    switch (obj.type) {
+      case 'tree':
+        bgColor = 'bg-green-700';
+        borderColor = 'border-green-900';
+        content = '🌳';
+        break;
+      case 'bush':
+        bgColor = 'bg-green-600';
+        borderColor = 'border-green-800';
+        content = '🌿';
+        break;
+      case 'rock':
+        bgColor = 'bg-gray-500';
+        borderColor = 'border-gray-700';
+        content = '🪨';
+        break;
+    }
+
+    return (
+      <div 
+        key={obj.id}
+        className={`absolute ${bgColor} ${borderColor} border-2 rounded flex items-center justify-center text-white font-pixel text-xs`}
+        style={{
+          left: `${obj.x}px`,
+          top: `${obj.y}px`,
+          width: `${obj.width}px`,
+          height: `${obj.height}px`,
+        }}
+      >
+        {content}
+      </div>
+    );
+  };
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -132,10 +236,9 @@ const Game: React.FC = () => {
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
         // Check if near Town Hall
-        const dxTownHall = Math.abs(playerPosition.x - (townHallPosition.x + 48));
-        const dyTownHall = Math.abs(playerPosition.y - (townHallPosition.y + 48));
+        const nearbyObject = checkProximity(playerPosition.x, playerPosition.y, 96);
         
-        if (dxTownHall < 96 && dyTownHall < 96) {
+        if (nearbyObject?.type === 'townHall') {
           dispatch(toggleLeaderboard());
           return;
         }
@@ -193,18 +296,30 @@ const Game: React.FC = () => {
       let newCameraOffsetX = cameraOffsetX;
       let newCameraOffsetY = cameraOffsetY;
       
-      // WASD keys for player movement
-      if (keysPressed.w && playerPosition.y > 32) {
-        newY -= moveSpeed;
+      // WASD keys for player movement with collision detection
+      if (keysPressed.w) {
+        const testY = playerPosition.y - moveSpeed;
+        if (canMoveTo(playerPosition.x, testY)) {
+          newY = testY;
+        }
       }
-      if (keysPressed.s && playerPosition.y < MAP_HEIGHT - 32) {
-        newY += moveSpeed;
+      if (keysPressed.s) {
+        const testY = playerPosition.y + moveSpeed;
+        if (canMoveTo(playerPosition.x, testY)) {
+          newY = testY;
+        }
       }
-      if (keysPressed.a && playerPosition.x > 32) {
-        newX -= moveSpeed;
+      if (keysPressed.a) {
+        const testX = playerPosition.x - moveSpeed;
+        if (canMoveTo(testX, playerPosition.y)) {
+          newX = testX;
+        }
       }
-      if (keysPressed.d && playerPosition.x < MAP_WIDTH - 32) {
-        newX += moveSpeed;
+      if (keysPressed.d) {
+        const testX = playerPosition.x + moveSpeed;
+        if (canMoveTo(testX, playerPosition.y)) {
+          newX = testX;
+        }
       }
       
       // Arrow keys for camera panning
@@ -232,65 +347,9 @@ const Game: React.FC = () => {
         setCameraOffsetY(newCameraOffsetY);
       }
       
-      let foundInteraction = false;
-      
-      // Check if near Town Hall
-      const dxTownHall = Math.abs(newX - (townHallPosition.x + 48));
-      const dyTownHall = Math.abs(newY - (townHallPosition.y + 48));
-      
-      if (dxTownHall < 96 && dyTownHall < 96) {
-        setInteractionPrompt({
-          show: true,
-          message: 'Press E to enter Town Hall',
-          x: townHallPosition.x,
-          y: townHallPosition.y - 40
-        });
-        foundInteraction = true;
-      }
-      
-      // Check if near any teammate houses (including player's own house)
-      if (!foundInteraction) {
-        for (const teammate of teammates) {
-          const dx = Math.abs(newX - (teammate.housePosition.x + 32));
-          const dy = Math.abs(newY - (teammate.housePosition.y + 32));
-          
-          if (dx < 64 && dy < 64) {
-            setInteractionPrompt({
-              show: true,
-              message: teammate.isPlayer 
-                ? 'Press E to update your board'
-                : `Press E to view ${teammate.name}'s board`,
-              x: teammate.housePosition.x,
-              y: teammate.housePosition.y - 40
-            });
-            foundInteraction = true;
-            break;
-          }
-        }
-      }
-
-      // Check for nearby empty lands
-      if (!foundInteraction) {
-        for (const land of emptyLands) {
-          const dx = Math.abs(newX - (land.x + 32));
-          const dy = Math.abs(newY - (land.y + 32));
-          
-          if (dx < 64 && dy < 64) {
-            setInteractionPrompt({
-              show: true,
-              message: `${land.name} - Available for development`,
-              x: land.x,
-              y: land.y - 40
-            });
-            foundInteraction = true;
-            break;
-          }
-        }
-      }
-      
-      if (!foundInteraction) {
-        setInteractionPrompt({ show: false, message: '', x: 0, y: 0 });
-      }
+      // Update interaction prompt
+      const prompt = getInteractionPrompt(newX, newY);
+      setInteractionPrompt(prompt);
       
     }, 33);
     
@@ -327,34 +386,46 @@ const Game: React.FC = () => {
           }
         />
         
-        {/* Town Hall - Positioned for the new map */}
-        <div 
-          className="absolute"
-          style={{
-            left: `${townHallPosition.x}px`,
-            top: `${townHallPosition.y}px`,
-          }}
-        >
-          <div className="w-[440px] h-[300px] bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
-            <div className="text-white text-lg font-pixel text-center">Town Hall</div>
+        {/* Town Hall - Rendered from game objects data */}
+        {townHallObjects.map((townHall) => (
+          <div 
+            key={townHall.id}
+            className="absolute"
+            style={{
+              left: `${townHall.x}px`,
+              top: `${townHall.y}px`,
+              width: `${townHall.width}px`,
+              height: `${townHall.height}px`,
+            }}
+          >
+            <div className="w-full h-full bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
+              <div className="text-white text-lg font-pixel text-center">{townHall.name}</div>
+            </div>
           </div>
-        </div>
+        ))}
 
-        {/* Empty Lands - Repositioned for new map */}
-        {emptyLands.map((land) => (
+        {/* Empty Lands - Rendered from game objects data */}
+        {emptyLandObjects.map((land) => (
           <div 
             key={land.id}
             className="absolute"
             style={{
               left: `${land.x}px`,
               top: `${land.y}px`,
+              width: `${land.width}px`,
+              height: `${land.height}px`,
             }}
           >
-            <div className="w-32 h-16 bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500 flex items-center justify-center">
+            <div className="w-full h-full bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500 flex items-center justify-center">
               <div className="text-white text-xs font-pixel text-center">{land.name}</div>
             </div>
           </div>
         ))}
+
+        {/* Environmental Objects - Trees, Bushes, Rocks */}
+        {treeObjects.map(renderEnvironmentalObject)}
+        {bushObjects.map(renderEnvironmentalObject)}
+        {rockObjects.map(renderEnvironmentalObject)}
         
         {/* All Houses (including player's house) */}
         {teammates.map((teammate) => (
