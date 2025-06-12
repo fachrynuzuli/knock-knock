@@ -33,14 +33,14 @@ const MAX_ZOOM = 2.0;
 const ZOOM_STEP = 0.1;
 
 // Camera panning speed
-const CAMERA_PAN_SPEED = 6;
+const CAMERA_PAN_SPEED = 4;
 
 // Player dimensions for collision detection
 const PLAYER_WIDTH = 32;
 const PLAYER_HEIGHT = 32;
 
 // Movement speed (1-10 scale, where 1 is very slow and 10 is extremely fast)
-const MOVEMENT_SPEED = 3; // Reduced from 8 to 4 for better control
+const MOVEMENT_SPEED = 2; // Reduced from 8 to 4 for better control
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
