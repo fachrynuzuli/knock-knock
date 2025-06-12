@@ -4,10 +4,6 @@
 
 :root {
   --pixel-size: 4;
-  --game-min-width: 320px;
-  --game-min-height: 568px;
-  --game-optimal-width: 1280px;
-  --game-optimal-height: 720px;
 }
 
 html, body {
@@ -16,7 +12,7 @@ html, body {
   overflow: hidden;
   height: 100%;
   font-family: 'Silkscreen', cursive;
-  cursor: default;
+  cursor: default; /* Changed from crosshair to default */
 }
 
 body {
@@ -25,342 +21,19 @@ body {
 
 #root {
   height: 100%;
-  width: 100%;
 }
 
-/* Responsive Game Container */
-.game-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  min-width: var(--game-min-width);
-  min-height: var(--game-min-height);
-}
-
-/* Responsive scaling for different viewport sizes */
-@media (max-width: 640px) {
-  :root {
-    --pixel-size: 2;
-  }
-  
-  .game-container {
-    transform-origin: top left;
-  }
-}
-
-@media (min-width: 641px) and (max-width: 1024px) {
-  :root {
-    --pixel-size: 3;
-  }
-}
-
-@media (min-width: 1025px) {
-  :root {
-    --pixel-size: 4;
-  }
-}
-
-/* Responsive Typography */
-.font-pixel {
-  font-size: clamp(0.75rem, 2vw, 1rem);
-  line-height: 1.2;
-}
-
-.font-heading {
-  font-size: clamp(0.875rem, 2.5vw, 1.25rem);
-  line-height: 1.1;
-}
-
-.text-responsive-sm {
-  font-size: clamp(0.625rem, 1.5vw, 0.875rem);
-}
-
-.text-responsive-md {
-  font-size: clamp(0.875rem, 2vw, 1.125rem);
-}
-
-.text-responsive-lg {
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
-}
-
-.text-responsive-xl {
-  font-size: clamp(1.25rem, 3vw, 2rem);
-}
-
-.text-responsive-2xl {
-  font-size: clamp(1.5rem, 4vw, 3rem);
-}
-
-/* Responsive HUD Elements */
-.game-hud {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
-  padding: clamp(0.5rem, 2vw, 1rem);
-}
-
-.hud-panel {
-  background-color: rgba(31, 41, 55, 0.9);
-  backdrop-filter: blur(8px);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-  padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-/* Responsive Modal/Dialog Sizing */
-.modal-container {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(17, 24, 39, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-  padding: clamp(1rem, 4vw, 2rem);
-}
-
-.modal-content {
-  background-color: #1f2937;
-  border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  width: 100%;
-  max-width: min(90vw, 32rem);
-  max-height: min(90vh, 48rem);
-  overflow-y: auto;
-  border: clamp(2px, 0.5vw, 4px) solid #4f46e5;
-}
-
-/* Large Modal for Activity Forms */
-.modal-content-large {
-  max-width: min(95vw, 64rem);
-  max-height: min(95vh, 56rem);
-}
-
-/* Responsive Button Sizing */
-.btn-responsive {
-  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(1rem, 3vw, 1.5rem);
-  font-size: clamp(0.875rem, 2vw, 1rem);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-  min-height: clamp(2.5rem, 6vw, 3rem);
-}
-
-.btn-responsive-sm {
-  padding: clamp(0.375rem, 1vw, 0.5rem) clamp(0.75rem, 2vw, 1rem);
-  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
-  min-height: clamp(2rem, 5vw, 2.5rem);
-}
-
-/* Responsive Form Elements */
-.form-input-responsive {
-  padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  font-size: clamp(0.875rem, 2vw, 1rem);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-  min-height: clamp(2.5rem, 6vw, 3rem);
-}
-
-.form-textarea-responsive {
-  padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  font-size: clamp(0.875rem, 2vw, 1rem);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-  min-height: clamp(4rem, 10vw, 6rem);
-  resize: vertical;
-}
-
-/* Responsive Avatar Carousel */
-.avatar-carousel-container {
-  height: clamp(8rem, 20vw, 12rem);
-  margin-bottom: clamp(1rem, 3vw, 1.5rem);
-}
-
-.avatar-item {
-  width: clamp(4rem, 10vw, 6rem);
-  height: clamp(4rem, 10vw, 6rem);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-}
-
-/* Responsive Zoom Controls */
-.zoom-controls {
-  position: absolute;
-  bottom: clamp(1rem, 3vw, 1.5rem);
-  right: clamp(1rem, 3vw, 1.5rem);
-  background-color: rgba(31, 41, 55, 0.9);
-  backdrop-filter: blur(8px);
-  padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
-}
-
-.zoom-button {
-  width: clamp(2rem, 5vw, 2.5rem);
-  height: clamp(2rem, 5vw, 2.5rem);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  transition: all 0.2s ease;
-}
-
-/* Responsive Grid Layouts */
-.responsive-grid-2 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-  gap: clamp(1rem, 3vw, 2rem);
-}
-
-.responsive-grid-3 {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-  gap: clamp(0.75rem, 2vw, 1.5rem);
-}
-
-/* Responsive Spacing Utilities */
-.space-responsive-x > * + * {
-  margin-left: clamp(0.5rem, 2vw, 1rem);
-}
-
-.space-responsive-y > * + * {
-  margin-top: clamp(0.5rem, 2vw, 1rem);
-}
-
-.gap-responsive {
-  gap: clamp(0.5rem, 2vw, 1rem);
-}
-
-.gap-responsive-lg {
-  gap: clamp(1rem, 3vw, 2rem);
-}
-
-/* Mobile-specific adjustments */
-@media (max-width: 640px) {
-  .mobile-stack {
-    flex-direction: column;
-  }
-  
-  .mobile-full-width {
-    width: 100%;
-  }
-  
-  .mobile-text-center {
-    text-align: center;
-  }
-  
-  .mobile-hidden {
-    display: none;
-  }
-  
-  /* Adjust game HUD for mobile */
-  .game-hud {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .hud-panel {
-    min-width: 0;
-    flex: 1;
-  }
-  
-  /* Mobile-friendly modal adjustments */
-  .modal-container {
-    padding: 0.5rem;
-    align-items: flex-end;
-  }
-  
-  .modal-content {
-    border-radius: 0.75rem 0.75rem 0 0;
-    max-height: 85vh;
-  }
-}
-
-/* Tablet-specific adjustments */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .tablet-grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .tablet-flex-row {
-    flex-direction: row;
-  }
-  
-  .tablet-text-left {
-    text-align: left;
-  }
-}
-
-/* Desktop-specific adjustments */
-@media (min-width: 1025px) {
-  .desktop-grid-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .desktop-grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
-  
-  .desktop-max-width {
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-}
-
-/* High DPI display adjustments */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .pixel-art {
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-}
-
-/* Landscape orientation adjustments for mobile */
-@media (max-width: 1024px) and (orientation: landscape) {
-  .landscape-adjust {
-    height: 100vh;
-    overflow: hidden;
-  }
-  
-  .game-hud {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0.5rem;
-  }
-  
-  .hud-panel {
-    padding: 0.5rem;
-    font-size: 0.75rem;
-  }
-}
-
-/* Accessibility improvements */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* Focus management for keyboard navigation */
-.focus-visible:focus {
-  outline: 2px solid #6366f1;
-  outline-offset: 2px;
-}
-
-/* Ensure minimum touch targets on mobile */
-@media (max-width: 1024px) {
-  button, .clickable {
-    min-height: 44px;
-    min-width: 44px;
-  }
-}
-
-/* Legacy styles maintained for compatibility */
 .pixel-art {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
+}
+
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .pixel-text {
@@ -438,7 +111,7 @@ body {
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: clamp(8px, 1vw, 12px);
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {

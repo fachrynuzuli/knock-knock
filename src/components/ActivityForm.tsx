@@ -200,7 +200,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="modal-container"
+        className="fixed inset-0 bg-gray-900 bg-opacity-80 flex items-center justify-center z-50 p-4"
       >
         {showSuccess ? (
           <motion.div
@@ -210,43 +210,43 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
             className="bg-success-600 rounded-lg p-8 text-center"
           >
             <Sparkles className="w-16 h-16 text-white mx-auto mb-4" />
-            <h2 className="text-responsive-xl font-heading text-white mb-2">Activities Submitted!</h2>
-            <p className="text-white font-pixel text-responsive-md">Your weekly update has been recorded</p>
+            <h2 className="text-2xl font-heading text-white mb-2">Activities Submitted!</h2>
+            <p className="text-white font-pixel">Your weekly update has been recorded</p>
           </motion.div>
         ) : (
-          <div className="modal-content modal-content-large">
+          <div className="bg-gray-800 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto border-4 border-primary-700">
             <div className="p-4 border-b border-gray-700 flex justify-between items-center bg-primary-900">
-              <h2 className="text-responsive-lg font-heading text-white flex items-center">
+              <h2 className="text-xl font-heading text-white flex items-center">
                 <Clipboard className="mr-2 text-primary-400" size={20} />
                 What did you get done this week?
               </h2>
               <button 
                 onClick={onClose}
-                className="text-gray-400 hover:text-white focus-visible:focus"
+                className="text-gray-400 hover:text-white"
               >
                 <XCircle size={24} />
               </button>
             </div>
             
-            <div className="p-4 md:p-6">
+            <div className="p-6">
               <div className="mb-4">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-2">
-                  <div className="text-white font-pixel text-responsive-md">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-white font-pixel">
                     <span className="text-primary-400">{playerName}</span>'s activities for <span className="text-secondary-400">{currentWeek}</span>
                   </div>
-                  <div className="text-white text-responsive-sm font-pixel flex items-center mobile-hidden">
+                  <div className="text-white text-sm font-pixel flex items-center">
                     <BarChart4 className="text-primary-400 mr-1" size={16} />
                     <span>Priority matters! Drag to reorder</span>
                   </div>
                 </div>
                 
                 {generalError && (
-                  <div className="bg-error-600 bg-opacity-30 border border-error-700 text-white px-4 py-2 rounded-md mb-4 font-pixel text-responsive-sm">
+                  <div className="bg-error-600 bg-opacity-30 border border-error-700 text-white px-4 py-2 rounded-md mb-4 font-pixel text-sm">
                     {generalError}
                   </div>
                 )}
                 
-                <div className="space-responsive-y">
+                <div className="space-y-4">
                   {activities.map((activity, index) => (
                     <motion.div 
                       key={index}
@@ -257,14 +257,14 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                     >
                       <div className="flex items-start gap-4">
                         {/* Priority indicator */}
-                        <div className="flex flex-col items-center justify-center space-y-1 mobile-hidden">
-                          <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-responsive-sm">
+                        <div className="flex flex-col items-center justify-center space-y-1">
+                          <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold">
                             {index + 1}
                           </div>
                           <button 
                             onClick={() => handlePriorityChange(index, index - 1)}
                             disabled={index === 0}
-                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                            className={`w-6 h-6 rounded-full flex items-center justify-center ${
                               index === 0 ? 'text-gray-500 cursor-not-allowed' : 'text-white hover:bg-gray-600'
                             }`}
                           >
@@ -273,7 +273,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                           <button 
                             onClick={() => handlePriorityChange(index, index + 1)}
                             disabled={index === activities.length - 1}
-                            className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                            className={`w-6 h-6 rounded-full flex items-center justify-center ${
                               index === activities.length - 1 ? 'text-gray-500 cursor-not-allowed' : 'text-white hover:bg-gray-600'
                             }`}
                           >
@@ -284,13 +284,13 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                         <div className="flex-1">
                           {/* Activity text */}
                           <div className="mb-3">
-                            <label className="block text-white font-pixel mb-1 text-responsive-sm">
+                            <label className="block text-white font-pixel mb-1 text-sm">
                               Activity Description:
                             </label>
                             <textarea
                               value={activity.text}
                               onChange={(e) => handleTextChange(index, e.target.value)}
-                              className={`form-textarea-responsive w-full bg-gray-600 border rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500 ${
+                              className={`w-full px-3 py-2 bg-gray-600 border rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500 ${
                                 errors[index]?.text 
                                   ? 'border-error-500 focus:ring-error-500' 
                                   : 'border-gray-500 focus:ring-primary-500'
@@ -299,23 +299,23 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                               rows={2}
                             />
                             {errors[index]?.text && (
-                              <p className="mt-1 text-error-400 text-responsive-sm font-pixel">
+                              <p className="mt-1 text-error-400 text-sm font-pixel">
                                 {errors[index].text}
                               </p>
                             )}
                           </div>
                           
-                          <div className="responsive-grid-2 gap-responsive">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Category */}
                             <div>
-                              <label className="block text-white font-pixel mb-1 text-responsive-sm">
+                              <label className="block text-white font-pixel mb-1 text-sm">
                                 Category:
                               </label>
-                              <div className="flex flex-wrap gap-2">
+                              <div className="flex space-x-2">
                                 <button
                                   type="button"
                                   onClick={() => handleCategoryChange(index, 'project')}
-                                  className={`btn-responsive-sm text-white font-pixel ${
+                                  className={`px-3 py-1 rounded-md text-white text-sm font-pixel ${
                                     activity.category === 'project' 
                                       ? 'bg-success-600 border-2 border-white' 
                                       : 'bg-gray-600 hover:bg-success-700'
@@ -326,7 +326,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                                 <button
                                   type="button"
                                   onClick={() => handleCategoryChange(index, 'adhoc')}
-                                  className={`btn-responsive-sm text-white font-pixel ${
+                                  className={`px-3 py-1 rounded-md text-white text-sm font-pixel ${
                                     activity.category === 'adhoc' 
                                       ? 'bg-warning-600 border-2 border-white' 
                                       : 'bg-gray-600 hover:bg-warning-700'
@@ -337,7 +337,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                                 <button
                                   type="button"
                                   onClick={() => handleCategoryChange(index, 'routine')}
-                                  className={`btn-responsive-sm text-white font-pixel ${
+                                  className={`px-3 py-1 rounded-md text-white text-sm font-pixel ${
                                     activity.category === 'routine' 
                                       ? 'bg-primary-600 border-2 border-white' 
                                       : 'bg-gray-600 hover:bg-primary-700'
@@ -351,13 +351,13 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                             {/* Project Milestone (only if category is project) */}
                             {activity.category === 'project' && (
                               <div>
-                                <label className="block text-white font-pixel mb-1 text-responsive-sm">
+                                <label className="block text-white font-pixel mb-1 text-sm">
                                   Project Milestone:
                                 </label>
                                 <select
                                   value={activity.projectMilestone}
                                   onChange={(e) => handleMilestoneChange(index, e.target.value as ProjectMilestone)}
-                                  className="form-input-responsive w-full bg-gray-600 border border-gray-500 rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                  className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 >
                                   <option value="pre-project">Pre-Project</option>
                                   <option value="preparation">Preparation</option>
@@ -376,7 +376,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                           type="button"
                           onClick={() => handleRemoveActivity(index)}
                           disabled={activities.length === 1}
-                          className={`text-gray-400 hover:text-white focus-visible:focus ${activities.length === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          className={`text-gray-400 hover:text-white ${activities.length === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                           <XCircle size={20} />
                         </button>
@@ -386,27 +386,27 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
                 </div>
               </div>
               
-              <div className="flex flex-col md:flex-row justify-between gap-responsive mt-6">
+              <div className="flex justify-between mt-6">
                 <button
                   type="button"
                   onClick={handleAddActivity}
-                  className="btn-responsive bg-secondary-600 hover:bg-secondary-700 text-white rounded-md font-pixel shadow-pixel button-pixel flex items-center justify-center"
+                  className="px-4 py-2 bg-secondary-600 hover:bg-secondary-700 text-white rounded-md font-pixel shadow-pixel button-pixel flex items-center"
                 >
                   <span className="mr-1">+</span> Add Activity
                 </button>
                 
-                <div className="flex flex-col md:flex-row gap-responsive">
+                <div className="space-x-3">
                   <button
                     type="button"
                     onClick={onClose}
-                    className="btn-responsive bg-gray-600 hover:bg-gray-700 text-white rounded-md font-pixel shadow-pixel button-pixel"
+                    className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-pixel shadow-pixel button-pixel"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    className="btn-responsive bg-primary-600 hover:bg-primary-700 text-white rounded-md font-pixel shadow-pixel button-pixel flex items-center justify-center"
+                    className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-pixel shadow-pixel button-pixel flex items-center"
                   >
                     <CheckCircle2 size={18} className="mr-1" />
                     Submit

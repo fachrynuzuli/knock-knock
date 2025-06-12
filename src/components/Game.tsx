@@ -40,25 +40,13 @@ const townHallPosition = {
 const MAP_WIDTH = 2048;
 const MAP_HEIGHT = 1342;
 
-// Responsive zoom constants
-const getZoomConstants = () => {
-  const width = window.innerWidth;
-  if (width < 640) {
-    return { MIN_ZOOM: 0.3, MAX_ZOOM: 1.5, ZOOM_STEP: 0.1 };
-  } else if (width < 1024) {
-    return { MIN_ZOOM: 0.4, MAX_ZOOM: 1.8, ZOOM_STEP: 0.1 };
-  } else {
-    return { MIN_ZOOM: 0.5, MAX_ZOOM: 2.0, ZOOM_STEP: 0.1 };
-  }
-};
+// Zoom constants
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 2.0;
+const ZOOM_STEP = 0.1;
 
-// Responsive camera panning speed
-const getCameraPanSpeed = () => {
-  const width = window.innerWidth;
-  if (width < 640) return 12;
-  if (width < 1024) return 15;
-  return 18;
-};
+// Camera panning speed
+const CAMERA_PAN_SPEED = 18;
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
@@ -74,16 +62,10 @@ const Game: React.FC = () => {
     y: 0
   });
 
-  // Responsive camera state
+  // Camera state
   const [cameraOffsetX, setCameraOffsetX] = useState(0);
   const [cameraOffsetY, setCameraOffsetY] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(() => {
-    // Set initial zoom based on screen size
-    const width = window.innerWidth;
-    if (width < 640) return 0.6;
-    if (width < 1024) return 0.8;
-    return 1.0;
-  });
+  const [zoomLevel, setZoomLevel] = useState(1.0);
 
   // Get player's house from teammates array
   const playerHouse = teammates.find(teammate => teammate.isPlayer);
@@ -119,41 +101,24 @@ const Game: React.FC = () => {
 
   const cameraPosition = calculateCameraPosition();
   
-  // Responsive zoom functions
+  // Zoom functions
   const handleZoomIn = () => {
-    const { MAX_ZOOM, ZOOM_STEP } = getZoomConstants();
     const newZoom = zoomLevel + ZOOM_STEP;
     const clampedZoom = Math.min(MAX_ZOOM, newZoom);
     setZoomLevel(clampedZoom);
   };
 
   const handleZoomOut = () => {
-    const { MIN_ZOOM, ZOOM_STEP } = getZoomConstants();
     const newZoom = zoomLevel - ZOOM_STEP;
     const clampedZoom = Math.max(MIN_ZOOM, newZoom);
     setZoomLevel(clampedZoom);
   };
 
   const handleZoomReset = () => {
-    const width = window.innerWidth;
-    const defaultZoom = width < 640 ? 0.6 : width < 1024 ? 0.8 : 1.0;
-    setZoomLevel(defaultZoom);
+    setZoomLevel(1.0);
     setCameraOffsetX(0);
     setCameraOffsetY(0);
   };
-
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      // Adjust zoom level if it's outside the new bounds
-      const { MIN_ZOOM, MAX_ZOOM } = getZoomConstants();
-      if (zoomLevel < MIN_ZOOM) setZoomLevel(MIN_ZOOM);
-      if (zoomLevel > MAX_ZOOM) setZoomLevel(MAX_ZOOM);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [zoomLevel]);
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -220,8 +185,7 @@ const Game: React.FC = () => {
   }, [playerPosition, interactionPrompt, teammates, dispatch, openForm, closeForm, isFormOpen, isLeaderboardOpen, viewingTeammate, setViewingTeammate]);
   
   useEffect(() => {
-    const moveSpeed = window.innerWidth < 640 ? 3 : window.innerWidth < 1024 ? 4 : 5;
-    const cameraPanSpeed = getCameraPanSpeed();
+    const moveSpeed = 5;
     
     const moveInterval = setInterval(() => {
       let newX = playerPosition.x;
@@ -243,20 +207,18 @@ const Game: React.FC = () => {
         newX += moveSpeed;
       }
       
-      // Arrow keys for camera panning (disabled on mobile)
-      if (window.innerWidth >= 640) {
-        if (keysPressed.arrowup) {
-          newCameraOffsetY -= cameraPanSpeed;
-        }
-        if (keysPressed.arrowdown) {
-          newCameraOffsetY += cameraPanSpeed;
-        }
-        if (keysPressed.arrowleft) {
-          newCameraOffsetX -= cameraPanSpeed;
-        }
-        if (keysPressed.arrowright) {
-          newCameraOffsetX += cameraPanSpeed;
-        }
+      // Arrow keys for camera panning
+      if (keysPressed.arrowup) {
+        newCameraOffsetY -= CAMERA_PAN_SPEED;
+      }
+      if (keysPressed.arrowdown) {
+        newCameraOffsetY += CAMERA_PAN_SPEED;
+      }
+      if (keysPressed.arrowleft) {
+        newCameraOffsetX -= CAMERA_PAN_SPEED;
+      }
+      if (keysPressed.arrowright) {
+        newCameraOffsetX += CAMERA_PAN_SPEED;
       }
       
       // Update player position if changed
@@ -335,10 +297,8 @@ const Game: React.FC = () => {
     return () => clearInterval(moveInterval);
   }, [keysPressed, playerPosition, cameraOffsetX, cameraOffsetY, dispatch, teammates]);
   
-  const { MIN_ZOOM, MAX_ZOOM } = getZoomConstants();
-  
   return (
-    <div className="game-container landscape-adjust">
+    <div className="relative w-full h-full overflow-hidden bg-gray-900">
       {/* Game World Container - This is what pans and zooms */}
       <div 
         className="absolute transition-transform duration-150 ease-linear"
@@ -431,16 +391,16 @@ const Game: React.FC = () => {
       {/* Fixed UI Elements - These don't pan with the map */}
       <GameHUD />
       
-      {/* Zoom Controls - Responsive positioning */}
-      <div className="zoom-controls">
-        <div className="text-white font-pixel text-responsive-sm mb-2 text-center">
+      {/* Zoom Controls - Moved to bottom right */}
+      <div className="absolute bottom-4 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
+        <div className="text-white font-pixel text-sm mb-2 text-center">
           Zoom: {Math.round(zoomLevel * 100)}%
         </div>
-        <div className="flex items-center space-responsive-x">
+        <div className="flex items-center space-x-2">
           <button
             onClick={handleZoomOut}
             disabled={zoomLevel <= MIN_ZOOM}
-            className={`zoom-button text-white font-bold transition-all ${
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
               zoomLevel <= MIN_ZOOM 
                 ? 'bg-gray-600 cursor-not-allowed opacity-50' 
                 : 'bg-primary-600 hover:bg-primary-700 shadow-pixel button-pixel'
@@ -450,20 +410,20 @@ const Game: React.FC = () => {
           </button>
           <button
             onClick={handleZoomReset}
-            disabled={zoomLevel === (window.innerWidth < 640 ? 0.6 : window.innerWidth < 1024 ? 0.8 : 1.0) && cameraOffsetX === 0 && cameraOffsetY === 0}
-            className={`zoom-button text-white font-bold transition-all ${
-              zoomLevel === (window.innerWidth < 640 ? 0.6 : window.innerWidth < 1024 ? 0.8 : 1.0) && cameraOffsetX === 0 && cameraOffsetY === 0
+            disabled={zoomLevel === 1.0 && cameraOffsetX === 0 && cameraOffsetY === 0}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
+              zoomLevel === 1.0 && cameraOffsetX === 0 && cameraOffsetY === 0
                 ? 'bg-gray-600 cursor-not-allowed opacity-50' 
                 : 'bg-secondary-600 hover:bg-secondary-700 shadow-pixel button-pixel'
             }`}
-            title="Reset to default"
+            title="Reset to 100%"
           >
             <RotateCcw size={16} />
           </button>
           <button
             onClick={handleZoomIn}
             disabled={zoomLevel >= MAX_ZOOM}
-            className={`zoom-button text-white font-bold transition-all ${
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
               zoomLevel >= MAX_ZOOM 
                 ? 'bg-gray-600 cursor-not-allowed opacity-50' 
                 : 'bg-primary-600 hover:bg-primary-700 shadow-pixel button-pixel'
