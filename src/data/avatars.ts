@@ -304,3 +304,28 @@ export const getNextAvatarStage = (avatarId: number, currentLevel: number): Avat
   const nextStage = avatar.stages.find(stage => stage.level > currentLevel);
   return nextStage;
 };
+
+// New helper functions for HUD improvements
+export const getPortraitPath = (avatarId: number): string => {
+  return `/portraits/avatar_${avatarId}_portrait.png`;
+};
+
+export const getAvatarSpriteFallbackInfo = (avatarId: number): {
+  spritePath: string;
+  frameWidth: number;
+  frameHeight: number;
+  frameCount: number;
+  rowCount: number;
+} | undefined => {
+  const avatar = getAvatarById(avatarId);
+  if (!avatar || !avatar.stages.length) return undefined;
+  
+  const stage = avatar.stages[0]; // Use first stage as fallback
+  return {
+    spritePath: stage.spritePath,
+    frameWidth: stage.frameWidth,
+    frameHeight: stage.frameHeight,
+    frameCount: stage.frameCount,
+    rowCount: stage.rowCount,
+  };
+};
