@@ -39,6 +39,9 @@ const CAMERA_PAN_SPEED = 18;
 const PLAYER_WIDTH = 32;
 const PLAYER_HEIGHT = 32;
 
+// Movement speed (1-10 scale, where 1 is very slow and 10 is extremely fast)
+const MOVEMENT_SPEED = 4; // Reduced from 8 to 4 for better control
+
 const Game: React.FC = () => {
   const dispatch = useDispatch();
   const { isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
@@ -292,8 +295,6 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (!playerPosition) return;
     
-    const moveSpeed = 8; // Increased from 5 for smoother movement
-    
     const moveInterval = setInterval(() => {
       let newX = playerPosition.x;
       let newY = playerPosition.y;
@@ -302,25 +303,25 @@ const Game: React.FC = () => {
       
       // WASD keys for player movement with collision detection
       if (keysPressed.w) {
-        const testY = playerPosition.y - moveSpeed;
+        const testY = playerPosition.y - MOVEMENT_SPEED;
         if (canMoveTo(playerPosition.x, testY)) {
           newY = testY;
         }
       }
       if (keysPressed.s) {
-        const testY = playerPosition.y + moveSpeed;
+        const testY = playerPosition.y + MOVEMENT_SPEED;
         if (canMoveTo(playerPosition.x, testY)) {
           newY = testY;
         }
       }
       if (keysPressed.a) {
-        const testX = playerPosition.x - moveSpeed;
+        const testX = playerPosition.x - MOVEMENT_SPEED;
         if (canMoveTo(testX, playerPosition.y)) {
           newX = testX;
         }
       }
       if (keysPressed.d) {
-        const testX = playerPosition.x + moveSpeed;
+        const testX = playerPosition.x + MOVEMENT_SPEED;
         if (canMoveTo(testX, playerPosition.y)) {
           newX = testX;
         }
@@ -355,7 +356,7 @@ const Game: React.FC = () => {
       const prompt = getInteractionPrompt(newX, newY);
       setInteractionPrompt(prompt);
       
-    }, 16); // Reduced from 33ms to 16ms for 60fps
+    }, 16); // Maintained 60fps for smooth animation
     
     return () => clearInterval(moveInterval);
   }, [keysPressed, playerPosition, cameraOffsetX, cameraOffsetY, dispatch, teammates]);
