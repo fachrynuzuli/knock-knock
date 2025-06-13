@@ -288,7 +288,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       </label>
       
       {/* Carousel Container */}
-      <div className="relative h-48 mb-6">
+      <div className="relative h-32 mb-4">
         {/* Enhanced Multi-Layer Gradient Overlay */}
         <div 
           className="absolute inset-0 pointer-events-none z-20"
