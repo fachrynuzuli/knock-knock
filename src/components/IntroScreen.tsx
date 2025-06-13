@@ -615,7 +615,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
       {/* Fixed Header - Always visible */}
       <motion.div 
-        className="fixed top-10 left-0 right-0 py-4 bg-gray-900/80 backdrop-blur-sm z-30 text-center"
+        className="fixed top-16 left-0 right-0 py-4 bg-gray-900/80 backdrop-blur-sm z-30 text-center"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
