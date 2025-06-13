@@ -586,7 +586,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   );
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 px-4 relative overflow-hidden">
+    <div className="w-full h-full bg-gray-900 px-4 relative overflow-hidden">
       {/* Scanlines effect */}
       <div className="absolute inset-0 pointer-events-none z-10 scanlines-effect" />
       
@@ -613,8 +613,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         ))}
       </div>
 
+      {/* Fixed Header - Always visible */}
       <motion.div 
-        className="text-center mb-8 relative z-20"
+        className="fixed top-0 left-0 right-0 py-4 bg-gray-900/80 backdrop-blur-sm z-30 text-center"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -627,7 +628,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </p>
       </motion.div>
 
-      <div className="relative z-20">
+      {/* Content Area - Positioned below fixed header */}
+      <div className="pt-32 flex flex-col items-center justify-center flex-grow min-h-screen relative z-20">
         <AnimatePresence mode="wait">
           {screenMode === 'initial' && (
             <motion.div key="initial">
