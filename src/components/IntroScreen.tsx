@@ -332,29 +332,25 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           />
         </div>
 
-        {lockedMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 px-4 py-3 rounded-lg font-pixel text-sm glow-border-error"
-          >
-            {lockedMessage}
-          </motion.div>
-        )}
-
-        <motion.button
-          onClick={handleStartGame}
-          disabled={!name.trim()}
-          whileHover={name.trim() ? { scale: 1.05 } : {}}
-          whileTap={name.trim() ? { scale: 0.98 } : {}}
-          className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel text-lg transition-all ${
-            name.trim() 
-              ? 'bg-primary-600 hover:bg-primary-700 neon-button glow-border' 
-              : 'bg-gray-600 cursor-not-allowed opacity-50'
-          }`}
-        >
-          Create Neighborhood
-        </motion.button>
+        {lockedMessage ? (
+  <div className="w-full py-4 rounded-lg font-heading text-red-300 shadow-pixel text-lg bg-red-900 bg-opacity-30 border border-red-700 text-center">
+    {lockedMessage}
+  </div>
+) : (
+  <motion.button
+    onClick={handleStartGame}
+    disabled={!name.trim()}
+    whileHover={name.trim() ? { scale: 1.05 } : {}}
+    whileTap={name.trim() ? { scale: 0.98 } : {}}
+    className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel text-lg transition-all ${
+      name.trim() 
+        ? 'bg-primary-600 hover:bg-primary-700 neon-button glow-border' 
+        : 'bg-gray-600 cursor-not-allowed opacity-50'
+    }`}
+  >
+    Create Neighborhood
+  </motion.button>
+)}
       </div>
     </motion.div>
   );
@@ -492,7 +488,25 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                 onLockedMessage={handleLockedMessage}
               />
             </div>
-
+{lockedMessage ? (
+  <div className="w-full py-4 rounded-lg font-heading text-red-300 shadow-pixel text-lg bg-red-900 bg-opacity-30 border border-red-700 text-center">
+    {lockedMessage}
+  </div>
+) : (
+  <motion.button
+    onClick={handleStartGame}
+    disabled={!name.trim()}
+    whileHover={name.trim() ? { scale: 1.05 } : {}}
+    whileTap={name.trim() ? { scale: 0.98 } : {}}
+    className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel text-lg transition-all ${
+      name.trim() 
+        ? 'bg-primary-600 hover:bg-primary-700 neon-button glow-border' 
+        : 'bg-gray-600 cursor-not-allowed opacity-50'
+    }`}
+  >
+    Create Neighborhood
+  </motion.button>
+)}
             <div className="pt-4 border-t border-gray-700">
               <motion.button
                 onClick={handleJoinRequest}
