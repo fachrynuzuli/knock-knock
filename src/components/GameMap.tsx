@@ -14,6 +14,11 @@ const GameMap: React.FC = () => {
           imageRendering: 'pixelated',
         }}
       >
+        {/* Dynamic lighting overlay for lively atmosphere */}
+        <div 
+          className="absolute inset-0 pointer-events-none z-10 animate-day-night"
+        />
+        
         {/* Optional grid overlay for debugging */}
         <div 
           className="absolute inset-0 pointer-events-none opacity-0"

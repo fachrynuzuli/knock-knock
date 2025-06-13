@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store';
+import { updatePlayerPosition } from './store/slices/gameStateSlice';
 import Game from './components/Game';
 import IntroScreen from './components/IntroScreen';
 import LoadingScreen from './components/LoadingScreen';
@@ -6,30 +9,23 @@ import { GameProvider } from './contexts/GameContext';
 import { Maximize2 } from 'lucide-react';
 
 function App() {
+  const dispatch = useDispatch();
   const [gameStarted, setGameStarted] = useState(false);
   const [isLoadingAssets, setIsLoadingAssets] = useState(true);
-  // Commented out screen size warning state and check
-  // const [showSizeWarning, setShowSizeWarning] = useState(false);
+  
+  // Get player position and teammate data from Redux
+  const playerPosition = useSelector((state: RootState) => state.gameState.playerPosition);
+  const playerTeammate = useSelector((state: RootState) => 
+    state.teammates.items.find(teammate => teammate.isPlayer)
+  );
 
   const handleStartGame = () => {
     setGameStarted(true);
   };
 
-  // Commented out screen size check
-  // const checkScreenSize = () => {
-  //   setShowSizeWarning(window.innerWidth < 1280 || window.innerHeight < 720);
-  // };
-
-  // useEffect(() => {
-  //   checkScreenSize();
-  //   window.addEventListener('resize', checkScreenSize);
-  //   return () => window.removeEventListener('resize', checkScreenSize);
-  // }, []);
-
   const handleFullscreen = async () => {
     try {
       await document.documentElement.requestFullscreen();
-      // setTimeout(checkScreenSize, 1000);
     } catch (err) {
       console.error('Could not enter fullscreen mode:', err);
     }
@@ -44,33 +40,36 @@ function App() {
     return () => clearTimeout(loadingTimer);
   }, []);
 
+  // Dynamic player spawn position initialization
+  useEffect(() => {
+    if (gameStarted && playerTeammate && playerPosition === null) {
+      // Calculate spawn position in front of player's house
+      const houseX = playerTeammate.housePosition.x;
+      const houseY = playerTeammate.housePosition.y;
+      
+      // Spawn player in front of their house (64 pixels south of house center)
+      const initialPlayerX = houseX + 32; // Center horizontally with house
+      const initialPlayerY = houseY + 80; // Position in front (south) of house
+      
+      console.log('Initializing player spawn position:', {
+        playerName: playerTeammate.name,
+        housePosition: playerTeammate.housePosition,
+        spawnPosition: { x: initialPlayerX, y: initialPlayerY }
+      });
+      
+      dispatch(updatePlayerPosition({ x: initialPlayerX, y: initialPlayerY }));
+    }
+  }, [gameStarted, playerTeammate, playerPosition, dispatch]);
+
   // Show loading screen first
   if (isLoadingAssets) {
     return <LoadingScreen />;
   }
 
-  // Commented out screen size warning render
-  // if (showSizeWarning) {
-  //   return (
-  //     <div className="fixed inset-0 bg-gray-900 flex items-center justify-center p-4">
-  //       <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full border-4 border-primary-600 text-center">
-  //         <Maximize2 className="mx-auto mb-4 text-primary-400" size={48} />
-  //         <h2 className="text-xl font-heading text-white mb-4">
-  //           Screen Size Warning
-  //         </h2>
-  //         <p className="text-gray-300 font-pixel mb-6">
-  //           For the best gaming experience, please switch to full screen mode. Click the expand button in the corner or press F11 to continue. Your eyes will thank you later!
-  //         </p>
-  //         <button
-  //           onClick={handleFullscreen}
-  //           className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-pixel shadow-pixel button-pixel"
-  //         >
-  //           Go Fullscreen
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  // Show loading screen if game started but player position not initialized
+  if (gameStarted && playerPosition === null) {
+    return <LoadingScreen message="Preparing your house..." />;
+  }
 
   return (
     <div className="w-full h-full overflow-hidden">

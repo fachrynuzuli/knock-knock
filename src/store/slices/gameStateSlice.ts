@@ -6,7 +6,7 @@ interface Position {
 }
 
 interface GameStateState {
-  playerPosition: Position;
+  playerPosition: Position | null; // Changed to allow null for dynamic initialization
   currentWeek: string;
   dayOfWeek: number; // 1-5 (Monday-Friday)
   playerHouseLevel: number;
@@ -15,7 +15,7 @@ interface GameStateState {
 }
 
 const initialState: GameStateState = {
-  playerPosition: { x: 1024, y: 671 }, // Center of the new map (2048/2, 1342/2)
+  playerPosition: null, // Start as null - will be set dynamically based on house
   currentWeek: 'Week 1',
   dayOfWeek: 5, // Starting on Friday
   playerHouseLevel: 1,

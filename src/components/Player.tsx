@@ -6,33 +6,38 @@ interface PlayerProps {
     x: number;
     y: number;
   };
-  avatarId: number;
-  name: string;
+  playerData: {
+    name: string;
+    avatarId: number;
+    avatarLevel: number;
+  };
   isMoving: boolean;
   direction: 'up' | 'down' | 'left' | 'right';
-  avatarLevel?: number; // New prop for avatar progression
 }
 
 const Player: React.FC<PlayerProps> = ({ 
   position, 
-  avatarId, 
-  name, 
+  playerData,
   isMoving, 
-  direction, 
-  avatarLevel = 1 
+  direction
 }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [idleDirection, setIdleDirection] = useState<'up' | 'down' | 'left' | 'right'>('down');
   
   // Get sprite configuration from centralized data
-  const spriteConfig = getAvatarStage(avatarId, avatarLevel);
+  const spriteConfig = getAvatarStage(playerData.avatarId, playerData.avatarLevel);
   
   // Debug logging for avatar rendering
-  console.log('Player component rendering with:', { avatarId, avatarLevel, name, spriteConfig });
+  console.log('Player component rendering with:', { 
+    avatarId: playerData.avatarId, 
+    avatarLevel: playerData.avatarLevel, 
+    name: playerData.name, 
+    spriteConfig 
+  });
   
   // If no sprite config found, this indicates a data issue that should be addressed
   if (!spriteConfig) {
-    console.error(`CRITICAL: No sprite configuration found for avatarId: ${avatarId}, level: ${avatarLevel}. Available avatars:`, avatarId);
+    console.error(`CRITICAL: No sprite configuration found for avatarId: ${playerData.avatarId}, level: ${playerData.avatarLevel}. Available avatars:`, playerData.avatarId);
     return null;
   }
   
@@ -90,7 +95,7 @@ const Player: React.FC<PlayerProps> = ({
   
   return (
     <div 
-      className="absolute transition-transform duration-75"
+      className="absolute"
       style={{
         left: `${position.x - (scaledWidth / 2)}px`,
         top: `${position.y - (scaledHeight / 2)}px`,
@@ -122,7 +127,7 @@ const Player: React.FC<PlayerProps> = ({
         
         {/* Player name */}
         <div className="absolute left-1/2 -translate-x-1/2 -top-6 whitespace-nowrap px-2 py-0.5 bg-gray-800/75 text-white text-xs rounded-md font-pixel">
-          {name}
+          {playerData.name}
         </div>
       </div>
     </div>
