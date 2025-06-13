@@ -197,3 +197,206 @@ body {
     rgba(75, 85, 99, 0.7) 75%, 
     rgba(17, 24, 39, 0.9) 100%);
 }
+
+/* ===== RETRO GAME INTRO ENHANCEMENTS ===== */
+
+/* Scanlines effect */
+.scanlines-effect {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(99, 102, 241, 0.03) 2px,
+    rgba(99, 102, 241, 0.03) 4px
+  );
+  animation: scanlinesPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes scanlinesPulse {
+  0% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+/* Enhanced glow effects */
+.glow-text {
+  text-shadow: 
+    0 0 10px rgba(99, 102, 241, 0.8),
+    0 0 20px rgba(99, 102, 241, 0.6),
+    0 0 30px rgba(99, 102, 241, 0.4);
+}
+
+.glow-text-subtle {
+  text-shadow: 
+    0 0 5px rgba(99, 102, 241, 0.6),
+    0 0 10px rgba(99, 102, 241, 0.4);
+}
+
+.title-glow {
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  0% { 
+    text-shadow: 
+      0 0 10px rgba(99, 102, 241, 0.8),
+      0 0 20px rgba(99, 102, 241, 0.6),
+      0 0 30px rgba(99, 102, 241, 0.4);
+  }
+  100% { 
+    text-shadow: 
+      0 0 20px rgba(99, 102, 241, 1),
+      0 0 30px rgba(99, 102, 241, 0.8),
+      0 0 40px rgba(99, 102, 241, 0.6),
+      0 0 50px rgba(99, 102, 241, 0.4);
+  }
+}
+
+/* Enhanced game panel */
+.game-panel {
+  background: rgba(17, 24, 39, 0.95);
+  border: 3px solid rgba(99, 102, 241, 0.8);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+}
+
+.glow-border {
+  box-shadow: 
+    0 0 30px rgba(99, 102, 241, 0.5),
+    inset 0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+.glow-border-subtle {
+  box-shadow: 
+    0 0 15px rgba(99, 102, 241, 0.3),
+    inset 0 0 10px rgba(99, 102, 241, 0.05);
+}
+
+.glow-border-error {
+  box-shadow: 
+    0 0 20px rgba(239, 68, 68, 0.5),
+    inset 0 0 10px rgba(239, 68, 68, 0.1);
+}
+
+.pulse-border {
+  animation: panelPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes panelPulse {
+  0% { 
+    box-shadow: 
+      0 0 30px rgba(99, 102, 241, 0.5),
+      inset 0 0 20px rgba(99, 102, 241, 0.1);
+  }
+  100% { 
+    box-shadow: 
+      0 0 40px rgba(99, 102, 241, 0.8),
+      inset 0 0 30px rgba(99, 102, 241, 0.2);
+  }
+}
+
+/* Enhanced buttons */
+.neon-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  box-shadow: 
+    0 0 25px rgba(99, 102, 241, 0.6),
+    0 0 50px rgba(99, 102, 241, 0.4);
+}
+
+.neon-button:active {
+  transform: translateY(2px);
+}
+
+/* Enhanced input fields */
+.cyber-input {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.cyber-input:focus {
+  box-shadow: 
+    0 0 15px rgba(99, 102, 241, 0.5),
+    inset 0 0 5px rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.8);
+}
+
+/* Floating animations */
+.floating-icon {
+  animation: iconFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes iconFloat {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-5px); }
+}
+
+/* Loading animations */
+.loading-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Enhanced hover effects */
+.neon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.neon-button:hover::before {
+  left: 100%;
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+  .glow-text {
+    text-shadow: 
+      0 0 5px rgba(99, 102, 241, 0.8),
+      0 0 10px rgba(99, 102, 241, 0.6);
+  }
+  
+  .game-panel {
+    padding: 1.5rem;
+    margin: 0 10px;
+  }
+  
+  .scanlines-effect {
+    background-size: 100% 3px;
+  }
+}
