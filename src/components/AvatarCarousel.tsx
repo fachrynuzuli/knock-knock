@@ -404,7 +404,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                   {/* Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg backdrop-blur-sm">
-                      <Lock className="text-white drop-shadow-lg\" size={24} />
+                      <Lock className="text-white drop-shadow-lg\" size={48} />
                     </div>
                   )}
                   
