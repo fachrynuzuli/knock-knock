@@ -350,7 +350,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel text-lg transition-all ${
             name.trim() 
               ? 'bg-primary-600 hover:bg-primary-700 neon-button glow-border' 
-              : 'bg-gray-600 cursor-not-allowed opacity-30'
+              : 'bg-gray-600 cursor-not-allowed opacity-50'
           }`}
         >
           Create Neighborhood
