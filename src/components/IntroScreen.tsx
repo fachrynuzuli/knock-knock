@@ -294,7 +294,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="game-panel glow-border max-w-lg w-full max-h-[80vh] overflow-y-auto"
+      className="game-panel glow-border max-w-lg w-full max-h-[100vh] overflow-y-auto"
     >
       <div className="flex items-center mb-4">
         <motion.button
