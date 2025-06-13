@@ -204,12 +204,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-gray-800 p-4 rounded-lg shadow-lg max-w-lg w-full border-4 border-primary-600 max-h-[90vh] overflow-y-auto"
+      className="gradient-primary p-4 rounded-lg shadow-lg max-w-lg w-full border-4 border-primary-600 max-h-[90vh] overflow-y-auto"
     >
       <div className="flex items-center mb-4">
         <button
           onClick={() => setScreenMode('initial')}
-          className="mr-4 p-2 hover:bg-gray-700 rounded-lg transition-colors"
+          className="mr-4 p-2 hover:bg-gray-700 hover:bg-opacity-30 rounded-lg transition-colors"
         >
           <ArrowLeft className="text-white" />
         </button>
@@ -226,7 +226,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+            className="w-full px-4 py-3 bg-gray-700 bg-opacity-80 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-white focus:border-white transition-colors"
             placeholder="Enter your name"
             required
           />
@@ -241,7 +241,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
 
         {lockedMessage && (
-          <div className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 px-4 py-3 rounded-lg font-pixel text-sm">
+          <div className="bg-red-900 bg-opacity-50 border border-red-400 text-red-200 px-4 py-3 rounded-lg font-pixel text-sm">
             {lockedMessage}
           </div>
         )}
@@ -251,8 +251,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           disabled={!name.trim()}
           className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel button-pixel text-lg transition-all ${
             name.trim() 
-              ? 'bg-primary-600 hover:bg-primary-700 transform hover:scale-105' 
-              : 'bg-gray-600 cursor-not-allowed opacity-50'
+              ? 'bg-white bg-opacity-20 hover:bg-opacity-30 transform hover:scale-105 border-2 border-white border-opacity-50' 
+              : 'bg-gray-600 bg-opacity-50 cursor-not-allowed opacity-50'
           }`}
         >
           Create Neighborhood
