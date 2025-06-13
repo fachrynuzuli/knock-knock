@@ -392,8 +392,8 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                         backgroundImage: `url("${avatarDisplayInfo.spritePath}")`,
                         backgroundSize: `${avatarDisplayInfo.frameWidth * avatarDisplayInfo.frameCount}px ${avatarDisplayInfo.frameHeight * avatarDisplayInfo.rowCount}px`,
                         backgroundPosition: '0 0',
-                        width: '96px',
-                        height: '96px',
+                        width: '80px',
+                        height: '80px',
                         boxShadow: isCenterAvatar && !isLocked ? 
                           '0 4px 0 rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.4)' : 
                           '0 4px 0 rgba(0, 0, 0, 0.5)'
