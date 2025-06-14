@@ -368,7 +368,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               >
                 {/* Avatar Container with Enhanced Styling */}
                 <div 
-                  className={`relative transition-all duration-300 ${isLocked ? 'grayscale' : ''}X
+                  className={`relative ${isLocked ? 'grayscale' : ''}`}
                   style={{
                     filter: isCenterAvatar && !isLocked ? 'drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3))' : 'none'
                   }}
