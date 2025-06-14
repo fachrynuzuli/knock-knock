@@ -334,7 +334,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
         {/* Carousel Track */}
         <div
           ref={carouselRef}
-          className="relative h-full flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          className="relative h-full flex items-center justify-center overflow-hidden cursor-grab active:cursor-grabbing select-none"></div>
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
