@@ -305,7 +305,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         >
           <ArrowLeft className="text-white" />
         </motion.button>
-        <h2 className="text-xl font-heading text-white glow-text">Create Your Character</h2>
+        <h2 className="text-sm font-heading text-white glow-text">Create Your Character</h2>
       </div>
       
       <div className="space-y-4">
