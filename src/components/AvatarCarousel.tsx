@@ -436,7 +436,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
           </p>
           {getCurrentAvatar()?.locked && (
             <p className="text-red-400 text-sm mt-1 flex items-center justify-center gap-2">
-              <Lock size={14} />
+              <Lock size={60} />
               Locked
             </p>
           )}
