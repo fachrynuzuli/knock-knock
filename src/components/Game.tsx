@@ -8,6 +8,7 @@ import { Plus, Minus, RotateCcw } from 'lucide-react';
 
 import GameMap from './GameMap';
 import Player from './Player';
+import House from './House';
 import ActivityBoard from './ActivityBoard';
 import ActivityForm from './ActivityForm';
 import Leaderboard from './Leaderboard';
@@ -187,6 +188,16 @@ const Game: React.FC = () => {
     }
 
     return { show: false, message: '', x: 0, y: 0 };
+  };
+
+  // Check if player is near a specific house
+  const isPlayerNearHouse = (teammate: any): boolean => {
+    if (!playerPosition) return false;
+    
+    const dx = Math.abs(playerPosition.x - (teammate.housePosition.x + 32));
+    const dy = Math.abs(playerPosition.y - (teammate.housePosition.y + 32));
+    
+    return dx < 64 && dy < 64;
   };
 
   // Render environmental objects
@@ -439,7 +450,7 @@ const Game: React.FC = () => {
         {bushObjects.map(renderEnvironmentalObject)}
         {rockObjects.map(renderEnvironmentalObject)}
         
-        {/* All Houses (including player's house) */}
+        {/* All Houses using the new House component */}
         {teammates.map((teammate) => (
           <div 
             key={teammate.id}
@@ -449,9 +460,10 @@ const Game: React.FC = () => {
               top: `${teammate.housePosition.y}px`,
             }}
           >
-            <div className={`w-16 h-16 ${teammate.isPlayer ? 'bg-blue-500' : 'bg-red-500'} bg-opacity-50 border-2 ${teammate.isPlayer ? 'border-blue-700' : 'border-red-700'} flex items-center justify-center`}>
-              <div className="text-white text-xs font-pixel text-center">{teammate.name}</div>
-            </div>
+            <House 
+              teammate={teammate} 
+              isNearby={isPlayerNearHouse(teammate)}
+            />
           </div>
         ))}
         
