@@ -256,7 +256,7 @@ body {
   background: rgba(17, 24, 39, 0.95);
   border: 3px solid rgba(99, 102, 241, 0.8);
   border-radius: 12px;
-  padding: 2rem;
+  padding: 1.5rem;
   backdrop-filter: blur(10px);
 }
 
@@ -392,11 +392,18 @@ body {
   }
   
   .game-panel {
-    padding: 1.5rem;
+    padding: 1rem;
     margin: 0 10px;
   }
   
   .scanlines-effect {
     background-size: 100% 3px;
+  }
+}
+
+@media (max-width: 640px) {
+  .game-panel {
+    padding: 0.75rem;
+    margin: 0 5px;
   }
 }

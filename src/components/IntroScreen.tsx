@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../contexts/GameContext';
-import { MapPin, Lock, Users, UserPlus, ArrowLeft } from 'lucide-react';
+import { MapPin, Lock, Users, UserPlus, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAvatarById, getAllAvatarIds } from '../data/avatars';
 import AvatarCarousel from './AvatarCarousel';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +21,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [isWaitingApproval, setIsWaitingApproval] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
+
+  // Collapsible sections state for join form
+  const [expandedSections, setExpandedSections] = useState({
+    personal: true,
+    access: true,
+    character: true,
+  });
 
   const avatarOptions = getAllAvatarIds();
 
@@ -168,6 +175,13 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -246,33 +260,33 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="game-panel glow-border pulse-border max-w-4xl w-full"
+      className="game-panel glow-border pulse-border max-w-4xl w-full mx-auto"
     >
-      <h2 className="text-3xl font-heading text-white mb-8 text-center glow-text">
+      <h2 className="text-2xl md:text-3xl font-heading text-white mb-6 md:mb-8 text-center glow-text">
         Welcome to the Neighborhood!
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         <motion.button
           onClick={() => setScreenMode('create')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
-          className="neon-button bg-primary-600 hover:bg-primary-700 p-8 rounded-lg text-white transition-all border-2 border-primary-400 shadow-pixel"
+          className="neon-button bg-primary-600 hover:bg-primary-700 p-6 md:p-8 rounded-lg text-white transition-all border-2 border-primary-400 shadow-pixel"
         >
-          <Users className="w-16 h-16 mx-auto mb-4 floating-icon" />
-          <h3 className="text-xl font-heading mb-2">Create Neighborhood</h3>
-          <p className="font-pixel text-sm text-primary-200">Start a new team space as the neighborhood manager</p>
+          <Users className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 floating-icon" />
+          <h3 className="text-lg md:text-xl font-heading mb-2">Create Neighborhood</h3>
+          <p className="font-pixel text-xs md:text-sm text-primary-200">Start a new team space as the neighborhood manager</p>
         </motion.button>
         
         <motion.button
           onClick={() => setScreenMode('join')}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.98 }}
-          className="neon-button bg-secondary-600 hover:bg-secondary-700 p-8 rounded-lg text-white transition-all border-2 border-secondary-400 shadow-pixel"
+          className="neon-button bg-secondary-600 hover:bg-secondary-700 p-6 md:p-8 rounded-lg text-white transition-all border-2 border-secondary-400 shadow-pixel"
         >
-          <UserPlus className="w-16 h-16 mx-auto mb-4 floating-icon" />
-          <h3 className="text-xl font-heading mb-2">Join Neighborhood</h3>
-          <p className="font-pixel text-sm text-secondary-200">Join an existing team using an invite code</p>
+          <UserPlus className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 floating-icon" />
+          <h3 className="text-lg md:text-xl font-heading mb-2">Join Neighborhood</h3>
+          <p className="font-pixel text-xs md:text-sm text-secondary-200">Join an existing team using an invite code</p>
         </motion.button>
       </div>
       
@@ -280,7 +294,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         onClick={() => setScreenMode('instructions')}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="mt-8 w-full py-4 rounded-lg font-heading text-white bg-gray-600 hover:bg-gray-700 shadow-pixel neon-button transition-all"
+        className="mt-6 md:mt-8 w-full py-3 md:py-4 rounded-lg font-heading text-white bg-gray-600 hover:bg-gray-700 shadow-pixel neon-button transition-all"
       >
         How To Play
       </motion.button>
@@ -294,7 +308,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="game-panel glow-border max-w-lg w-full max-h-[90vh] overflow-y-auto"
+      className="game-panel glow-border max-w-lg w-full mx-auto max-h-[85vh] overflow-y-auto"
     >
       <div className="flex items-center mb-4">
         <motion.button
@@ -310,10 +324,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       
       <div className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-white font-pixel mb-2 text-lg">
+          <label htmlFor="name" className="block text-white font-pixel mb-2 text-base glow-text-subtle">
             Your Name: <span className="text-red-400">*</span>
           </label>
-          
           <input
             type="text"
             id="name"
@@ -334,24 +347,24 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
 
         {lockedMessage ? (
-  <div className="w-full py-2 rounded-lg font-heading text-red-300 shadow-pixel text-lg bg-red-900 bg-opacity-30 border border-red-700 text-center">
-    {lockedMessage}
-  </div>
-) : (
-  <motion.button
-    onClick={handleStartGame}
-    disabled={!name.trim()}
-    whileHover={name.trim() ? { scale: 1.05 } : {}}
-    whileTap={name.trim() ? { scale: 0.98 } : {}}
-    className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel text-lg transition-all ${
-      name.trim() 
-        ? 'bg-primary-600 hover:bg-primary-700 neon-button glow-border' 
-        : 'bg-gray-600 cursor-not-allowed opacity-50'
-    }`}
-  >
-    Create Neighborhood
-  </motion.button>
-)}
+          <div className="w-full py-3 rounded-lg font-heading text-red-300 shadow-pixel text-sm bg-red-900 bg-opacity-30 border border-red-700 text-center">
+            {lockedMessage}
+          </div>
+        ) : (
+          <motion.button
+            onClick={handleStartGame}
+            disabled={!name.trim()}
+            whileHover={name.trim() ? { scale: 1.05 } : {}}
+            whileTap={name.trim() ? { scale: 0.98 } : {}}
+            className={`w-full py-3 md:py-4 rounded-lg font-heading text-white shadow-pixel text-base md:text-lg transition-all ${
+              name.trim() 
+                ? 'bg-primary-600 hover:bg-primary-700 neon-button glow-border' 
+                : 'bg-gray-600 cursor-not-allowed opacity-50'
+            }`}
+          >
+            Create Neighborhood
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );
@@ -363,19 +376,19 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="game-panel glow-border max-w-lg w-full max-h-[90vh] overflow-y-auto"
+      className="game-panel glow-border max-w-lg w-full mx-auto max-h-[85vh] overflow-y-auto"
     >
       {isWaitingApproval ? (
-        <div className="text-center py-8">
+        <div className="text-center py-6">
           <motion.div 
-            className="animate-pulse mb-6"
+            className="animate-pulse mb-4"
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <Users className="w-16 h-16 text-secondary-400 mx-auto floating-icon" />
+            <Users className="w-12 h-12 md:w-16 md:h-16 text-secondary-400 mx-auto floating-icon" />
           </motion.div>
-          <h3 className="text-xl font-heading text-white mb-4 glow-text">Waiting for Approval</h3>
-          <p className="text-gray-300 font-pixel mb-6">
+          <h3 className="text-lg md:text-xl font-heading text-white mb-3 glow-text">Waiting for Approval</h3>
+          <p className="text-gray-300 font-pixel mb-4 text-sm">
             Your request to join the neighborhood has been sent to the team lead.
             You'll be notified once it's approved!
           </p>
@@ -406,106 +419,179 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <h2 className="text-xl font-heading text-white glow-text">Join Neighborhood</h2>
           </div>
 
-          <div className="space-y-4">
-            <div className="space-y-3">
-              <h3 className="text-lg font-pixel text-secondary-400 border-b border-gray-700 pb-2 glow-text-subtle">
-                Personal Information
-              </h3>
+          <div className="space-y-3">
+            {/* Personal Information Section */}
+            <div className="border border-gray-700 rounded-lg overflow-hidden">
+              <button
+                onClick={() => toggleSection('personal')}
+                className="w-full p-3 bg-gray-800 hover:bg-gray-750 transition-colors flex items-center justify-between"
+              >
+                <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle">
+                  Personal Information
+                </h3>
+                {expandedSections.personal ? (
+                  <ChevronUp className="text-gray-400" size={16} />
+                ) : (
+                  <ChevronDown className="text-gray-400" size={16} />
+                )}
+              </button>
               
-              <div>
-                <label htmlFor="name" className="block text-white font-pixel mb-2 text-base glow-text-subtle">
-                  Your Name: <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="cyber-input w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all"
-                  placeholder="Enter your name"
-                  required
-                  aria-describedby="name-help"
-                />
-                <p id="name-help" className="mt-1 text-xs text-gray-400 font-pixel">
-                  This will be displayed to your teammates
-                </p>
-              </div>
+              <AnimatePresence>
+                {expandedSections.personal && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-3 space-y-3">
+                      <div>
+                        <label htmlFor="name" className="block text-white font-pixel mb-1 text-sm glow-text-subtle">
+                          Your Name: <span className="text-red-400">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="cyber-input w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all text-sm"
+                          placeholder="Enter your name"
+                          required
+                        />
+                        <p className="mt-1 text-xs text-gray-400 font-pixel">
+                          This will be displayed to your teammates
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <div className="space-y-3">
-              <h3 className="text-lg font-pixel text-secondary-400 border-b border-gray-700 pb-2 glow-text-subtle">
-                Neighborhood Access
-              </h3>
+            {/* Neighborhood Access Section */}
+            <div className="border border-gray-700 rounded-lg overflow-hidden">
+              <button
+                onClick={() => toggleSection('access')}
+                className="w-full p-3 bg-gray-800 hover:bg-gray-750 transition-colors flex items-center justify-between"
+              >
+                <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle">
+                  Neighborhood Access
+                </h3>
+                {expandedSections.access ? (
+                  <ChevronUp className="text-gray-400" size={16} />
+                ) : (
+                  <ChevronDown className="text-gray-400" size={16} />
+                )}
+              </button>
               
-              <div>
-                <label htmlFor="inviteCode" className="block text-white font-pixel mb-2 text-base glow-text-subtle">
-                  Invitation Code: <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="inviteCode"
-                  value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value)}
-                  className="cyber-input w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all uppercase"
-                  placeholder="Enter the invitation code"
-                  required
-                  aria-describedby="invite-help"
-                />
-                <p id="invite-help" className="mt-1 text-xs text-gray-400 font-pixel">
-                  Get this code from your team lead
-                </p>
-              </div>
+              <AnimatePresence>
+                {expandedSections.access && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-3 space-y-3">
+                      <div>
+                        <label htmlFor="inviteCode" className="block text-white font-pixel mb-1 text-sm glow-text-subtle">
+                          Invitation Code: <span className="text-red-400">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="inviteCode"
+                          value={inviteCode}
+                          onChange={(e) => setInviteCode(e.target.value)}
+                          className="cyber-input w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all uppercase text-sm"
+                          placeholder="Enter the invitation code"
+                          required
+                        />
+                        <p className="mt-1 text-xs text-gray-400 font-pixel">
+                          Get this code from your team lead
+                        </p>
+                      </div>
 
-              <div className="bg-gray-900 bg-opacity-75 px-3 py-3 rounded-lg border border-gray-700 glow-border-subtle">
-                <h4 className="text-sm font-pixel text-gray-300 mb-2">Demo Codes:</h4>
-                <div className="space-y-1">
-                  <p className="text-xs font-pixel text-gray-400">
-                    <span className="text-secondary-400 font-bold glow-text-subtle">HACKATHON</span> - Queue for team approval
-                  </p>
-                  <p className="text-xs font-pixel text-gray-400">
-                    <span className="text-secondary-400 font-bold glow-text-subtle">HACKED</span> - Direct access (demo mode)
-                  </p>
-                </div>
-              </div>
-
-              {lockedMessage && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 px-4 py-3 rounded-lg font-pixel text-sm glow-border-error"
-                >
-                  {lockedMessage}
-                </motion.div>
-              )}
+                      <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg border border-gray-700 glow-border-subtle">
+                        <h4 className="text-sm font-pixel text-gray-300 mb-1">Demo Codes:</h4>
+                        <div className="space-y-1">
+                          <p className="text-xs font-pixel text-gray-400">
+                            <span className="text-secondary-400 font-bold glow-text-subtle">HACKATHON</span> - Queue for team approval
+                          </p>
+                          <p className="text-xs font-pixel text-gray-400">
+                            <span className="text-secondary-400 font-bold glow-text-subtle">HACKED</span> - Direct access (demo mode)
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <div className="space-y-3">
-              <h3 className="text-lg font-pixel text-secondary-400 border-b border-gray-700 pb-2 glow-text-subtle">
-                Character Selection
-              </h3>
-              <AvatarCarousel
-                selectedAvatarId={selectedAvatarId}
-                onAvatarSelect={handleAvatarSelect}
-                onLockedMessage={handleLockedMessage}
-              />
+            {/* Character Selection Section */}
+            <div className="border border-gray-700 rounded-lg overflow-hidden">
+              <button
+                onClick={() => toggleSection('character')}
+                className="w-full p-3 bg-gray-800 hover:bg-gray-750 transition-colors flex items-center justify-between"
+              >
+                <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle">
+                  Character Selection
+                </h3>
+                {expandedSections.character ? (
+                  <ChevronUp className="text-gray-400" size={16} />
+                ) : (
+                  <ChevronDown className="text-gray-400" size={16} />
+                )}
+              </button>
+              
+              <AnimatePresence>
+                {expandedSections.character && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-3">
+                      <AvatarCarousel
+                        selectedAvatarId={selectedAvatarId}
+                        onAvatarSelect={handleAvatarSelect}
+                        onLockedMessage={handleLockedMessage}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            <div className="pt-4 border-t border-gray-700">
+            {lockedMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-900 bg-opacity-30 border border-red-700 text-red-300 px-3 py-2 rounded-lg font-pixel text-sm glow-border-error"
+              >
+                {lockedMessage}
+              </motion.div>
+            )}
+
+            <div className="pt-3 border-t border-gray-700">
               <motion.button
                 onClick={handleJoinRequest}
                 disabled={!name.trim() || !inviteCode.trim()}
                 whileHover={name.trim() && inviteCode.trim() ? { scale: 1.05 } : {}}
                 whileTap={name.trim() && inviteCode.trim() ? { scale: 0.98 } : {}}
-                className={`w-full py-4 rounded-lg font-heading text-white shadow-pixel text-lg transition-all ${
+                className={`w-full py-3 rounded-lg font-heading text-white shadow-pixel text-base transition-all ${
                   name.trim() && inviteCode.trim()
                     ? 'bg-secondary-600 hover:bg-secondary-700 neon-button glow-border'
                     : 'bg-gray-600 cursor-not-allowed opacity-50'
                 }`}
-                aria-describedby="submit-help"
               >
                 Submit Join Request
               </motion.button>
-              <p id="submit-help" className="mt-2 text-xs text-gray-400 font-pixel text-center">
+              <p className="mt-2 text-xs text-gray-400 font-pixel text-center">
                 Your request will be sent to the team lead for approval
               </p>
             </div>
@@ -522,9 +608,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       animate="animate"
       exit="exit"
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="game-panel glow-border max-w-2xl w-full text-white font-pixel max-h-[90vh] overflow-y-auto"
+      className="game-panel glow-border max-w-2xl w-full mx-auto text-white font-pixel max-h-[85vh] overflow-y-auto"
     >
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-4">
         <motion.button
           onClick={() => setScreenMode('initial')}
           whileHover={{ scale: 1.1 }}
@@ -538,12 +624,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </h2>
       </div>
       
-      <div className="space-y-6 mb-8">
+      <div className="space-y-4 mb-6 text-sm">
         <p>Welcome to <span className="text-primary-400 glow-text-subtle">"Knock Knock, Shippers!"</span> - a team management game where you track your weekly accomplishments!</p>
         
         <div>
-          <h3 className="font-heading text-secondary-400 mb-3 glow-text-subtle">Game Basics:</h3>
-          <ul className="list-disc pl-5 space-y-2">
+          <h3 className="font-heading text-secondary-400 mb-2 glow-text-subtle">Game Basics:</h3>
+          <ul className="list-disc pl-5 space-y-1">
             <li>Walk around the neighborhood to see other team members' houses</li>
             <li>Each house has a board showing weekly accomplishments</li>
             <li>Update your board every Friday with tasks you completed</li>
@@ -553,8 +639,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
         
         <div>
-          <h3 className="font-heading text-secondary-400 mb-3 glow-text-subtle">Controls:</h3>
-          <ul className="list-disc pl-5 space-y-2">
+          <h3 className="font-heading text-secondary-400 mb-2 glow-text-subtle">Controls:</h3>
+          <ul className="list-disc pl-5 space-y-1">
             <li>Use arrow keys or WASD to move your character</li>
             <li>Press Space or E to interact with boards and objects</li>
             <li>Press ESC to open menu</li>
@@ -562,8 +648,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
         
         <div>
-          <h3 className="font-heading text-secondary-400 mb-3 glow-text-subtle">Task Categories:</h3>
-          <ul className="list-disc pl-5 space-y-2">
+          <h3 className="font-heading text-secondary-400 mb-2 glow-text-subtle">Task Categories:</h3>
+          <ul className="list-disc pl-5 space-y-1">
             <li><span className="text-success-400 glow-text-subtle">Project</span>: Major tasks moving your projects forward</li>
             <li><span className="text-warning-400 glow-text-subtle">Ad Hoc</span>: One-time tasks not related to main projects</li>
             <li><span className="text-primary-400 glow-text-subtle">Routine</span>: Recurring tasks and maintenance work</li>
@@ -575,7 +661,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         onClick={() => setScreenMode('initial')}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full py-4 rounded-lg font-heading text-white bg-secondary-600 hover:bg-secondary-700 shadow-pixel neon-button transition-all"
+        className="w-full py-3 rounded-lg font-heading text-white bg-secondary-600 hover:bg-secondary-700 shadow-pixel neon-button transition-all"
       >
         Back to Home
       </motion.button>
@@ -610,23 +696,55 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         ))}
       </div>
 
-      {/* Header - Now in document flow */}
+      {/* Animated Header */}
       <motion.div 
         className="py-4 bg-gray-900/80 backdrop-blur-sm z-30 text-center w-full"
         initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+        animate={{ 
+          opacity: 1, 
+          y: 0,
+          // Floating animation
+          y: [0, -8, 0],
+        }}
+        transition={{ 
+          opacity: { duration: 0.8 },
+          y: { 
+            duration: 3, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          }
+        }}
       >
-        <h1 className="text-4xl md:text-6xl font-heading text-primary-400 mb-2 glow-text title-glow">
+        <motion.h1 
+          className="text-3xl md:text-4xl lg:text-6xl font-heading text-primary-400 mb-2 glow-text title-glow"
+          animate={{
+            scale: [1, 1.02, 1],
+          }}
+          transition={{
+            duration: 2.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
           Knock-Knock,Shippers!
-        </h1>
-        <p className="text-xl md:text-2xl font-pixel text-white glow-text-subtle">
+        </motion.h1>
+        <motion.p 
+          className="text-lg md:text-xl lg:text-2xl font-pixel text-white glow-text-subtle"
+          animate={{
+            opacity: [0.8, 1, 0.8],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
           A non-boring task reporting management
-        </p>
+        </motion.p>
       </motion.div>
 
-      {/* Content Area - Now flex-grow with overflow-y-auto */}
-      <div className="flex-grow overflow-y-auto flex flex-col items-center relative z-20">
+      {/* Content Area */}
+      <div className="flex-grow overflow-y-auto flex flex-col items-center relative z-20 py-4">
         <AnimatePresence mode="wait">
           {screenMode === 'initial' && (
             <motion.div key="initial">
