@@ -283,7 +283,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
 
   return (
     <div className="mb-6">
-      <label className="block text-white font-pixel mb-4 text-lg">
+      <label className="block text-white font-pixel mb-2 text-lg">
         Select Avatar:
       </label>
       
