@@ -455,7 +455,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               key={index}
               onClick={() => goToSlide(index)}
               disabled={isLocked}
-              className={`w-2 h-2 rounded-full transition-all duration-300 shadow-pixel ${
+              className={`w-1 h-1 rounded-full transition-all duration-300 shadow-pixel ${
                 isActive ? 'bg-primary-400 scale-125' : 
                 isLocked ? 'bg-red-600 opacity-50 cursor-not-allowed' :
                 'bg-gray-600 hover:bg-gray-500'
