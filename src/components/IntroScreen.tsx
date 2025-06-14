@@ -311,7 +311,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       <div className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-white font-pixel mb-2 text-base glow-text-subtle">
-            Your Name: <span className="text-red-6800">*</span>
+            Your Name: <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
