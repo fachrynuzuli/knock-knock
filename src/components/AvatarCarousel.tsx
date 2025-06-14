@@ -443,7 +443,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center mt-4 space-x-2">
+      <div className="flex justify-center mt-4 space-x-3">
         {avatarOptions.map((avatarId, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           const avatar = getAvatarById(avatarId);
@@ -455,7 +455,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               key={index}
               onClick={() => goToSlide(index)}
               disabled={isLocked}
-              className={`w-4 h-2 rounded-full transition-all duration-300 shadow-pixel ${
+              className={`w-4 h-1 rounded-full transition-all duration-300 shadow-pixel ${
                 isActive ? 'bg-primary-400 scale-125' : 
                 isLocked ? 'bg-red-600 opacity-50 cursor-not-allowed' :
                 'bg-gray-600 hover:bg-gray-500'
