@@ -333,7 +333,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         </div>
 
         {lockedMessage ? (
-  <div className="w-full py-4 rounded-lg font-heading text-red-300 shadow-pixel text-lg bg-red-900 bg-opacity-30 border border-red-700 text-center">
+  <div className="w-full py-2 rounded-lg font-heading text-red-300 shadow-pixel text-lg bg-red-900 bg-opacity-30 border border-red-700 text-center">
     {lockedMessage}
   </div>
 ) : (
