@@ -429,7 +429,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
           }}
         >
           <p className="text-gray-400 text-sm mb-1">Selected Character</p>
-          <p className={`font-semibold text-xl ${
+          <p className={`font-semibold text-sm ${
             getCurrentAvatar()?.locked ? 'text-red-400' : 'text-primary-400'
           }`}>
             {getCurrentAvatar()?.name}
