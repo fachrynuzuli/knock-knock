@@ -422,7 +422,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       {/* Current Selection Display */}
       <div className="text-center mb-6">
         <div 
-          className="bg-gray-800 rounded-lg p-4 inline-block shadow-pixel border border-gray-500"
+          className="bg-gray-800 rounded-lg p-4 inline-block shadow-pixel border border-gray-700"
           style={{
             background: 'linear-gradient(135deg, rgba(55, 65, 81, 0.9) 0%, rgba(75, 85, 99, 0.9) 100%)',
             boxShadow: '0 4px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
