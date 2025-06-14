@@ -4,8 +4,9 @@ import { RootState } from '../store';
 import { useGameContext } from '../contexts/GameContext';
 import { addActivity, ActivityCategory, ProjectMilestone } from '../store/slices/activitiesSlice';
 import { addBadge } from '../store/slices/badgesSlice';
+import { incrementTeammateStats } from '../store/slices/teammatesSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, Clipboard, BarChart4, Sparkles } from 'lucide-react';
+import { CheckCircle2, XCircle, Clipboard, BarChart4, Sparkles, Star, Zap, Trophy } from 'lucide-react';
 
 interface ActivityFormProps {
   onClose: () => void;
@@ -35,6 +36,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
   const [errors, setErrors] = useState<ActivityError[]>([{}]);
   const [generalError, setGeneralError] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
   
   const handleAddActivity = () => {
     setActivities([...activities, { 
@@ -136,6 +138,8 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
   };
   
   const checkAndAwardBadges = () => {
+    const newBadges: string[] = [];
+    
     // First submission badge
     if (existingActivities.length === 0) {
       dispatch(addBadge({
@@ -144,6 +148,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
         description: 'Completed your first weekly update',
         earnedBy: playerName
       }));
+      newBadges.push('First Submission!');
     }
 
     // Early bird badge (if it's before Wednesday)
@@ -154,6 +159,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
         description: 'Submitted activities early in the week',
         earnedBy: playerName
       }));
+      newBadges.push('Early Bird');
     }
 
     // Pride champion badge (if all activities have detailed descriptions)
@@ -164,13 +170,27 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
         description: 'Provided detailed descriptions for all activities',
         earnedBy: playerName
       }));
+      newBadges.push('Pride Champion');
     }
+
+    // Productive week badge (if 5+ activities)
+    if (activities.length >= 5) {
+      dispatch(addBadge({
+        type: 'productive_week',
+        name: 'Productive Week',
+        description: 'Logged 5 or more activities in a single week',
+        earnedBy: playerName
+      }));
+      newBadges.push('Productive Week');
+    }
+
+    setEarnedBadges(newBadges);
   };
   
   const handleSubmit = async () => {
     if (!validateForm()) return;
     
-    // Submit all activities
+    // Submit all activities and update stats
     activities.forEach(activity => {
       dispatch(addActivity({
         text: activity.text,
@@ -179,6 +199,12 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
         priority: activity.priority,
         week: currentWeek,
         createdBy: playerName
+      }));
+
+      // Update teammate stats
+      dispatch(incrementTeammateStats({
+        id: 'player', // Player's teammate ID
+        category: activity.category
       }));
     });
     
@@ -191,7 +217,20 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
     // Close form after animation
     setTimeout(() => {
       onClose();
-    }, 1500);
+    }, 3000);
+  };
+
+  const getBadgeIcon = (badgeName: string) => {
+    switch (badgeName) {
+      case 'First Submission!':
+        return <Star className="w-8 h-8 text-yellow-400" />;
+      case 'Early Bird':
+        return <Zap className="w-8 h-8 text-blue-400" />;
+      case 'Pride Champion':
+        return <Trophy className="w-8 h-8 text-purple-400" />;
+      default:
+        return <Sparkles className="w-8 h-8 text-primary-400" />;
+    }
   };
   
   return (
@@ -207,11 +246,47 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onClose }) => {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="bg-success-600 rounded-lg p-8 text-center"
+            className="bg-gray-800 rounded-lg p-8 text-center border-4 border-success-600 max-w-md w-full"
           >
-            <Sparkles className="w-16 h-16 text-white mx-auto mb-4" />
-            <h2 className="text-2xl font-heading text-white mb-2">Activities Submitted!</h2>
-            <p className="text-white font-pixel">Your weekly update has been recorded</p>
+            <motion.div
+              animate={{ 
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{ 
+                duration: 0.6,
+                repeat: 2
+              }}
+              className="mb-6"
+            >
+              <Sparkles className="w-16 h-16 text-success-400 mx-auto" />
+            </motion.div>
+            
+            <h2 className="text-2xl font-heading text-white mb-4">Activities Submitted!</h2>
+            <p className="text-white font-pixel mb-6">Your weekly update has been recorded</p>
+            
+            {earnedBadges.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="space-y-3"
+              >
+                <h3 className="text-lg font-heading text-warning-400 mb-3">New Badges Earned!</h3>
+                {earnedBadges.map((badge, index) => (
+                  <motion.div
+                    key={badge}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.7 + (index * 0.2) }}
+                    className="flex items-center justify-center space-x-3 bg-warning-900 bg-opacity-50 p-3 rounded-lg border border-warning-600"
+                  >
+                    {getBadgeIcon(badge)}
+                    <span className="text-white font-pixel">{badge}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
           </motion.div>
         ) : (
           <div className="bg-gray-800 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto border-4 border-primary-700">
