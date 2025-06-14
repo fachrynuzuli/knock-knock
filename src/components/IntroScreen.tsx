@@ -308,9 +308,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         <h2 className="text-xl font-heading text-white glow-text">Create Neighborhood</h2>
       </div>
       
-      <div className="space-y-40">
+      <div className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-white font-pixel mb-20 text-base glow-text-subtle">
+          <label htmlFor="name" className="block text-white font-pixel mb-2 text-base glow-text-subtle">
             Your Name: <span className="text-red-400">*</span>
           </label>
           <input
