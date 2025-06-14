@@ -229,7 +229,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       transform: `translateX(${baseTranslateX}px) scale(${scale})`,
       opacity,
       zIndex,
-      transition: isTransitioning && !dragStart ? 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+      transition: isTransitioning && !dragStart ? 'all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none',
     };
   };
 
@@ -368,7 +368,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
               >
                 {/* Avatar Container with Enhanced Styling */}
                 <div 
-                  className={`relative ${isLocked ? 'grayscale' : ''}`}
+                  className={`relative transition-all duration-300 ${isLocked ? 'grayscale' : ''}`} ${isCenterAvatar ? 'transform hover:scale-105' : ''}`}
                   style={{
                     filter: isCenterAvatar && !isLocked ? 'drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3))' : 'none'
                   }}
