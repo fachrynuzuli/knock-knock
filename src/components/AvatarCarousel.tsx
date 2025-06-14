@@ -443,7 +443,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center mt-1 space-x-3">
+      <div className="flex justify-center mt-4 space-x-3">
         {avatarOptions.map((avatarId, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           const avatar = getAvatarById(avatarId);
