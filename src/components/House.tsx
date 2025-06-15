@@ -140,15 +140,6 @@ const House: React.FC<HouseProps> = ({ teammate, isNearby = false }) => {
           {isPlayerHouse && <span className="ml-1">👑</span>}
         </div>
       </div>
-      
-      {/* Interaction Prompt Area */}
-      {isNearby && (
-        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-          <div className="bg-gray-800 bg-opacity-90 px-3 py-1 rounded-lg text-white text-xs font-pixel animate-bounce">
-            {isPlayerHouse ? 'Press E to update board' : `Press E to view ${teammate.name}'s board`}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
