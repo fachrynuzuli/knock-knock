@@ -43,6 +43,10 @@ const PLAYER_HEIGHT = 32;
 // Movement speed (1-10 scale, where 1 is very slow and 10 is extremely fast)
 const MOVEMENT_SPEED = 2; // Reduced from 8 to 4 for better control
 
+// Camera recentering constants
+const RECENTER_SPEED = 0.1; // How fast the camera recenters (0.1 = 10% per frame)
+const RECENTER_THRESHOLD = 1; // Stop recentering when offset is within this many pixels
+
 const Game: React.FC = () => {
   const dispatch = useDispatch();
   const { isFormOpen, openForm, closeForm, viewingTeammate, setViewingTeammate } = useGameContext();
@@ -61,6 +65,7 @@ const Game: React.FC = () => {
   const [cameraOffsetX, setCameraOffsetX] = useState(0);
   const [cameraOffsetY, setCameraOffsetY] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1.0);
+  const [isRecenteringCamera, setIsRecenteringCamera] = useState(false);
 
   // Get player's house from teammates array
   const playerHouse = teammates.find(teammate => teammate.isPlayer);
@@ -122,6 +127,7 @@ const Game: React.FC = () => {
     setZoomLevel(1.0);
     setCameraOffsetX(0);
     setCameraOffsetY(0);
+    setIsRecenteringCamera(false);
   };
 
   // Enhanced collision detection function
@@ -244,10 +250,16 @@ const Game: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       setKeysPressed(prev => ({ ...prev, [e.key.toLowerCase()]: true }));
       
-      // Reset camera offset when WASD is pressed (recenter on player)
+      // Check if WASD keys are pressed (player movement)
       if (['w', 'a', 's', 'd'].includes(e.key.toLowerCase())) {
-        setCameraOffsetX(0);
-        setCameraOffsetY(0);
+        // Start camera recentering when player moves
+        setIsRecenteringCamera(true);
+      }
+      
+      // Check if arrow keys are pressed (camera panning)
+      if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(e.key.toLowerCase())) {
+        // Stop camera recentering when manually panning
+        setIsRecenteringCamera(false);
       }
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
@@ -338,18 +350,46 @@ const Game: React.FC = () => {
         }
       }
       
-      // Arrow keys for camera panning
-      if (keysPressed.arrowup) {
-        newCameraOffsetY -= CAMERA_PAN_SPEED;
+      // Arrow keys for camera panning (only when not recentering)
+      if (!isRecenteringCamera) {
+        if (keysPressed.arrowup) {
+          newCameraOffsetY -= CAMERA_PAN_SPEED;
+        }
+        if (keysPressed.arrowdown) {
+          newCameraOffsetY += CAMERA_PAN_SPEED;
+        }
+        if (keysPressed.arrowleft) {
+          newCameraOffsetX -= CAMERA_PAN_SPEED;
+        }
+        if (keysPressed.arrowright) {
+          newCameraOffsetX += CAMERA_PAN_SPEED;
+        }
       }
-      if (keysPressed.arrowdown) {
-        newCameraOffsetY += CAMERA_PAN_SPEED;
-      }
-      if (keysPressed.arrowleft) {
-        newCameraOffsetX -= CAMERA_PAN_SPEED;
-      }
-      if (keysPressed.arrowright) {
-        newCameraOffsetX += CAMERA_PAN_SPEED;
+      
+      // Smooth camera recentering when active
+      if (isRecenteringCamera) {
+        // Gradually move camera offsets toward zero
+        const offsetXDistance = Math.abs(newCameraOffsetX);
+        const offsetYDistance = Math.abs(newCameraOffsetY);
+        
+        if (offsetXDistance > RECENTER_THRESHOLD) {
+          newCameraOffsetX = newCameraOffsetX * (1 - RECENTER_SPEED);
+        } else {
+          newCameraOffsetX = 0;
+        }
+        
+        if (offsetYDistance > RECENTER_THRESHOLD) {
+          newCameraOffsetY = newCameraOffsetY * (1 - RECENTER_SPEED);
+        } else {
+          newCameraOffsetY = 0;
+        }
+        
+        // Stop recentering when we're close enough to center
+        if (offsetXDistance <= RECENTER_THRESHOLD && offsetYDistance <= RECENTER_THRESHOLD) {
+          setIsRecenteringCamera(false);
+          newCameraOffsetX = 0;
+          newCameraOffsetY = 0;
+        }
       }
       
       // Update player position if changed
@@ -370,7 +410,7 @@ const Game: React.FC = () => {
     }, 16); // Maintained 60fps for smooth animation
     
     return () => clearInterval(moveInterval);
-  }, [keysPressed, playerPosition, cameraOffsetX, cameraOffsetY, dispatch, teammates]);
+  }, [keysPressed, playerPosition, cameraOffsetX, cameraOffsetY, isRecenteringCamera, dispatch, teammates]);
   
   // Don't render if player position is not set
   if (!playerPosition || !playerHouse) {
