@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store';
-import { updatePlayerPosition } from './store/slices/gameStateSlice';
+import { updatePlayerPosition, initializeGameTime } from './store/slices/gameStateSlice';
 import Game from './components/Game';
 import IntroScreen from './components/IntroScreen';
 import LoadingScreen from './components/LoadingScreen';
@@ -20,6 +20,8 @@ function App() {
   );
 
   const handleStartGame = () => {
+    // Initialize game time when starting
+    dispatch(initializeGameTime());
     setGameStarted(true);
   };
 
@@ -81,7 +83,8 @@ function App() {
         )}
       </GameProvider>
       
-      {/* Built on Bolt Badge */}
+      {/* Built on Bolt Badge - COMMENTED OUT */}
+      {/*
       <div className="fixed bottom-0 left-0 z-50">
         <div className="transform transition-transform hover:scale-105">
           <img 
@@ -91,6 +94,7 @@ function App() {
           />
         </div>
       </div>
+      */}
     </div>
   );
 }

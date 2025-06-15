@@ -19,7 +19,7 @@ import { getPortraitPath, getAvatarSpriteFallbackInfo, getAvatarById } from '../
 import BadgesDisplay from './BadgesDisplay';
 
 const GameHUD: React.FC = () => {
-  const { currentWeek, dayOfWeek } = useSelector((state: RootState) => state.gameState);
+  const { currentWeek, dayOfWeek, currentDate } = useSelector((state: RootState) => state.gameState);
   const [showControls, setShowControls] = useState(false);
   const [showBadges, setShowBadges] = useState(false);
   const [portraitError, setPortraitError] = useState(false);
@@ -43,8 +43,8 @@ const GameHUD: React.FC = () => {
   );
   
   const getDayName = (day: number) => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    return days[day - 1] || 'Friday';
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[day] || 'Unknown';
   };
   
   const getProgressToNextLevel = () => {
@@ -97,6 +97,16 @@ const GameHUD: React.FC = () => {
   const progress = getProgressToNextLevel();
   const avatar = playerData ? getAvatarById(playerData.avatarId) : null;
   
+  // Format the current date for display
+  const formatCurrentDate = () => {
+    const date = new Date(currentDate);
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+  
   return (
     <>
       <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start z-40">
@@ -135,11 +145,11 @@ const GameHUD: React.FC = () => {
                 <span className="text-gray-300">House Lv.{playerData?.houseLevel || 1}</span>
               </div>
               
-              {/* Progress bar to next level */}
+              {/* EXP display instead of progress bar */}
               <div className="mt-2 w-32">
                 <div className="flex justify-between text-xs text-gray-400 mb-1">
-                  <span>Progress</span>
-                  <span>{progress.current}/{progress.needed}</span>
+                  <span>EXP</span>
+                  <span>{playerData?.stats.totalActivities || 0}</span>
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-1.5">
                   <div 
@@ -147,23 +157,26 @@ const GameHUD: React.FC = () => {
                     style={{ width: `${progress.percentage}%` }}
                   />
                 </div>
+                <div className="text-xs text-gray-400 mt-1">
+                  Next level: {10 - progress.current} EXP
+                </div>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Center: Enhanced Date/Time with visual day cycle */}
+        {/* Center: Enhanced Date/Time with actual date */}
         <div className="bg-gray-800 bg-opacity-70 p-4 rounded-lg shadow-lg border border-gray-700 backdrop-blur-sm">
           <div className="flex items-center space-x-3">
             <div className="relative">
               <Calendar className="text-primary-400 w-6 h-6" />
-              {/* Day indicator dots */}
+              {/* Day indicator dots for weekdays only */}
               <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
                 {[1, 2, 3, 4, 5].map((day) => (
                   <div
                     key={day}
                     className={`w-1 h-1 rounded-full ${
-                      day <= dayOfWeek ? 'bg-primary-400' : 'bg-gray-600'
+                      dayOfWeek >= day ? 'bg-primary-400' : 'bg-gray-600'
                     }`}
                   />
                 ))}
@@ -180,6 +193,9 @@ const GameHUD: React.FC = () => {
                     Report Due!
                   </span>
                 )}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                {formatCurrentDate()}
               </div>
             </div>
           </div>
