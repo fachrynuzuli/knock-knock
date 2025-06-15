@@ -149,9 +149,26 @@ const Game: React.FC = () => {
     return collision === null;
   };
 
-  // Enhanced interaction detection
+  // Enhanced interaction detection with priority system
   const getInteractionPrompt = (playerX: number, playerY: number): {show: boolean, message: string, x: number, y: number} => {
-    // Check proximity to interactable objects
+    // PRIORITY 1: Check if near any teammate houses first (highest priority)
+    for (const teammate of teammates) {
+      const dx = Math.abs(playerX - (teammate.housePosition.x + 32));
+      const dy = Math.abs(playerY - (teammate.housePosition.y + 32));
+      
+      if (dx < 64 && dy < 64) {
+        return {
+          show: true,
+          message: teammate.isPlayer 
+            ? 'Press E to update your board'
+            : `Press E to view ${teammate.name}'s board`,
+          x: teammate.housePosition.x,
+          y: teammate.housePosition.y - 40
+        };
+      }
+    }
+
+    // PRIORITY 2: Check proximity to other interactable objects only if no house nearby
     const nearbyObject = checkProximity(playerX, playerY, 96);
     
     if (nearbyObject) {
@@ -174,23 +191,6 @@ const Game: React.FC = () => {
         x: nearbyObject.x + nearbyObject.width / 2,
         y: nearbyObject.y - 40
       };
-    }
-
-    // Check if near any teammate houses (including player's own house)
-    for (const teammate of teammates) {
-      const dx = Math.abs(playerX - (teammate.housePosition.x + 32));
-      const dy = Math.abs(playerY - (teammate.housePosition.y + 32));
-      
-      if (dx < 64 && dy < 64) {
-        return {
-          show: true,
-          message: teammate.isPlayer 
-            ? 'Press E to update your board'
-            : `Press E to view ${teammate.name}'s board`,
-          x: teammate.housePosition.x,
-          y: teammate.housePosition.y - 40
-        };
-      }
     }
 
     return { show: false, message: '', x: 0, y: 0 };
@@ -263,15 +263,7 @@ const Game: React.FC = () => {
       }
       
       if ((e.key === 'e' || e.key === ' ') && interactionPrompt.show) {
-        // Check if near Town Hall
-        const nearbyObject = checkProximity(playerPosition!.x, playerPosition!.y, 96);
-        
-        if (nearbyObject?.type === 'townHall') {
-          dispatch(toggleLeaderboard());
-          return;
-        }
-
-        // Find which teammate's house we're near
+        // PRIORITY 1: Check if near any teammate houses first
         const nearbyTeammate = teammates.find(teammate => {
           const dx = Math.abs(playerPosition!.x - (teammate.housePosition.x + 32));
           const dy = Math.abs(playerPosition!.y - (teammate.housePosition.y + 32));
@@ -284,6 +276,15 @@ const Game: React.FC = () => {
           } else {
             setViewingTeammate(nearbyTeammate.name);
           }
+          return; // Exit early to prevent checking other objects
+        }
+
+        // PRIORITY 2: Check if near Town Hall only if no house nearby
+        const nearbyObject = checkProximity(playerPosition!.x, playerPosition!.y, 96);
+        
+        if (nearbyObject?.type === 'townHall') {
+          dispatch(toggleLeaderboard());
+          return;
         }
       }
       
