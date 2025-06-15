@@ -7,7 +7,7 @@ interface Position {
 
 interface GameStateState {
   playerPosition: Position | null; // Changed to allow null for dynamic initialization
-  currentDate: Date; // New: actual date tracking
+  currentDate: string; // Changed to string for Redux serialization
   currentWeek: string;
   dayOfWeek: number; // 0-6 (Sunday-Saturday) to match JavaScript Date
   playerHouseLevel: number;
@@ -49,7 +49,7 @@ const getNextWeekday = (date: Date): Date => {
 const now = new Date();
 const initialState: GameStateState = {
   playerPosition: null, // Start as null - will be set dynamically based on house
-  currentDate: now,
+  currentDate: now.toISOString(), // Convert to string for serialization
   currentWeek: getWeekString(now),
   dayOfWeek: now.getDay(), // 0-6 (Sunday-Saturday)
   playerHouseLevel: 1,
@@ -66,7 +66,7 @@ const gameStateSlice = createSlice({
     },
     initializeGameTime: (state) => {
       const now = new Date();
-      state.currentDate = now;
+      state.currentDate = now.toISOString(); // Convert to string
       state.currentWeek = getWeekString(now);
       state.dayOfWeek = now.getDay();
     },
@@ -77,10 +77,10 @@ const gameStateSlice = createSlice({
       state.dayOfWeek = action.payload;
     },
     incrementDay: (state) => {
-      const currentDate = new Date(state.currentDate);
+      const currentDate = new Date(state.currentDate); // Convert from string to Date
       const nextDay = getNextWeekday(currentDate);
       
-      state.currentDate = nextDay;
+      state.currentDate = nextDay.toISOString(); // Convert back to string
       state.dayOfWeek = nextDay.getDay();
       state.currentWeek = getWeekString(nextDay);
     },
