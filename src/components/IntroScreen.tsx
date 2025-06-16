@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../contexts/GameContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { MapPin, Lock, Users, UserPlus, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { MapPin, Lock, Users, UserPlus, ArrowLeft } from 'lucide-react';
 import { getAvatarById, getAllAvatarIds, isAvatarUnlocked, getAvatarUnlockMessage } from '../data/avatars';
 import AvatarCarousel from './AvatarCarousel';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,21 +21,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [selectedAvatarId, setSelectedAvatarId] = useState(1);
   const [lockedMessage, setLockedMessage] = useState('');
   const [isWaitingApproval, setIsWaitingApproval] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
 
   // Get player level from Redux store
   const playerData = useSelector((state: RootState) => 
     state.teammates.items.find(teammate => teammate.isPlayer)
   );
   const playerLevel = playerData?.playerLevel || 0;
-
-  // Collapsible sections state for join form
-  const [expandedSections, setExpandedSections] = useState({
-    personal: true,
-    access: true,
-    character: true,
-  });
 
   const avatarOptions = getAllAvatarIds();
 
@@ -53,30 +44,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
     
     return { isValid: true };
-  };
-
-  // Enhanced loading simulation
-  const simulateLoading = (callback: () => void) => {
-    setIsLoading(true);
-    setLoadingProgress(0);
-    
-    const interval = setInterval(() => {
-      setLoadingProgress(prev => {
-        const increment = Math.random() * 15 + 5;
-        const newProgress = Math.min(prev + increment, 100);
-        
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsLoading(false);
-            setLoadingProgress(0);
-            callback();
-          }, 500);
-        }
-        
-        return newProgress;
-      });
-    }, 150);
   };
 
   const handleStartGame = () => {
@@ -103,12 +70,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       isUnlocked: isAvatarUnlocked(selectedAvatarId, playerLevel)
     });
 
-    // Enhanced loading experience
-    simulateLoading(() => {
-      setPlayerName(name);
-      setPlayerAvatar(selectedAvatarId);
-      onStartGame();
-    });
+    // Direct game start without loading simulation
+    setPlayerName(name);
+    setPlayerAvatar(selectedAvatarId);
+    onStartGame();
   };
 
   const handleJoinRequest = () => {
@@ -144,11 +109,10 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         isUnlocked: isAvatarUnlocked(selectedAvatarId, playerLevel)
       });
 
-      simulateLoading(() => {
-        setPlayerName(name);
-        setPlayerAvatar(selectedAvatarId);
-        onStartGame();
-      });
+      // Direct game start without loading simulation
+      setPlayerName(name);
+      setPlayerAvatar(selectedAvatarId);
+      onStartGame();
     } else if (upperCode === 'HACKATHON') {
       setIsWaitingApproval(true);
     } else {
@@ -169,19 +133,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }
   };
 
-  const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (screenMode === 'initial') return;
       
-      if (e.key === 'Enter' && !isLoading) {
+      if (e.key === 'Enter') {
         if (screenMode === 'create') {
           handleStartGame();
         } else if (screenMode === 'join') {
@@ -194,7 +151,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [screenMode, name, inviteCode, selectedAvatarId, isLoading]);
+  }, [screenMode, name, inviteCode, selectedAvatarId]);
 
   // Initialize selected avatar to first unlocked avatar based on player level
   useEffect(() => {
@@ -211,39 +168,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     animate: { opacity: 1, scale: 1 },
     exit: { opacity: 0, scale: 0.95 }
   };
-
-  // Loading overlay
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50">
-        {/* Scanlines effect */}
-        <div className="absolute inset-0 pointer-events-none z-10 scanlines-effect" />
-        
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center relative z-20"
-        >
-          <div className="text-4xl font-heading text-primary-400 mb-8 glow-text animate-pulse">
-            INITIALIZING NEIGHBORHOOD...
-          </div>
-          
-          {/* Enhanced loading bar */}
-          <div className="w-96 h-6 bg-gray-800 border-2 border-primary-600 rounded-lg overflow-hidden shadow-pixel glow-border">
-            <motion.div
-              className="h-full bg-gradient-to-r from-primary-600 via-secondary-500 to-primary-400 loading-shimmer"
-              style={{ width: `${loadingProgress}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-          
-          <div className="mt-4 text-primary-300 font-pixel">
-            {Math.round(loadingProgress)}% Complete
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
 
   const renderInitialScreen = () => (
     <motion.div 
@@ -423,156 +347,76 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             <h2 className="text-xl font-heading text-white glow-text">Join Neighborhood</h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {/* Personal Information Section */}
-            <div className="border border-gray-700 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('personal')}
-                className="w-full p-3 bg-gray-800 hover:bg-gray-750 transition-colors flex items-center justify-between"
-              >
-                <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle">
-                  Personal Information
-                </h3>
-                {expandedSections.personal ? (
-                  <ChevronUp className="text-gray-400" size={16} />
-                ) : (
-                  <ChevronDown className="text-gray-400" size={16} />
-                )}
-              </button>
-              
-              <AnimatePresence>
-                {expandedSections.personal && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-3 space-y-3">
-                      <div>
-                        <label htmlFor="name" className="block text-white font-pixel mb-1 text-sm glow-text-subtle">
-                          Your Name: <span className="text-red-400">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="cyber-input w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all text-sm"
-                          placeholder="Enter your name"
-                          required
-                        />
-                        <p className="mt-1 text-xs text-gray-400 font-pixel">
-                          This will be displayed to your teammates
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div>
+              <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle mb-3">
+                Personal Information
+              </h3>
+              <div>
+                <label htmlFor="name" className="block text-white font-pixel mb-1 text-sm glow-text-subtle">
+                  Your Name: <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="cyber-input w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all text-sm"
+                  placeholder="Enter your name"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-400 font-pixel">
+                  This will be displayed to your teammates
+                </p>
+              </div>
             </div>
 
             {/* Neighborhood Access Section */}
-            <div className="border border-gray-700 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('access')}
-                className="w-full p-3 bg-gray-800 hover:bg-gray-750 transition-colors flex items-center justify-between"
-              >
-                <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle">
-                  Neighborhood Access
-                </h3>
-                {expandedSections.access ? (
-                  <ChevronUp className="text-gray-400" size={16} />
-                ) : (
-                  <ChevronDown className="text-gray-400" size={16} />
-                )}
-              </button>
-              
-              <AnimatePresence>
-                {expandedSections.access && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-3 space-y-3">
-                      <div>
-                        <label htmlFor="inviteCode" className="block text-white font-pixel mb-1 text-sm glow-text-subtle">
-                          Invitation Code: <span className="text-red-400">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="inviteCode"
-                          value={inviteCode}
-                          onChange={(e) => setInviteCode(e.target.value)}
-                          className="cyber-input w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all uppercase text-sm"
-                          placeholder="Enter the invitation code"
-                          required
-                        />
-                        <p className="mt-1 text-xs text-gray-400 font-pixel">
-                          Get this code from your team lead
-                        </p>
-                      </div>
+            <div>
+              <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle mb-3">
+                Neighborhood Access
+              </h3>
+              <div>
+                <label htmlFor="inviteCode" className="block text-white font-pixel mb-1 text-sm glow-text-subtle">
+                  Invitation Code: <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="inviteCode"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value)}
+                  className="cyber-input w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-pixel focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all uppercase text-sm"
+                  placeholder="Enter the invitation code"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-400 font-pixel">
+                  Get this code from your team lead
+                </p>
+              </div>
 
-                      <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg border border-gray-700 glow-border-subtle">
-                        <h4 className="text-sm font-pixel text-gray-300 mb-1">Demo Codes:</h4>
-                        <div className="space-y-1">
-                          <p className="text-xs font-pixel text-gray-400">
-                            <span className="text-secondary-400 font-bold glow-text-subtle">HACKATHON</span> - Queue for team approval
-                          </p>
-                          <p className="text-xs font-pixel text-gray-400">
-                            <span className="text-secondary-400 font-bold glow-text-subtle">HACKED</span> - Direct access (demo mode)
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className="bg-gray-900 bg-opacity-75 px-3 py-2 rounded-lg border border-gray-700 glow-border-subtle mt-3">
+                <h4 className="text-sm font-pixel text-gray-300 mb-1">Demo Codes:</h4>
+                <div className="text-xs font-pixel text-gray-400">
+                  <span className="text-secondary-400 font-bold glow-text-subtle">HACKATHON</span> - Queue for approval | <span className="text-secondary-400 font-bold glow-text-subtle">HACKED</span> - Direct access
+                </div>
+              </div>
             </div>
 
             {/* Character Selection Section */}
-            <div className="border border-gray-700 rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection('character')}
-                className="w-full p-3 bg-gray-800 hover:bg-gray-750 transition-colors flex items-center justify-between"
-              >
-                <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle">
-                  Character Selection
-                </h3>
-                {expandedSections.character ? (
-                  <ChevronUp className="text-gray-400" size={16} />
-                ) : (
-                  <ChevronDown className="text-gray-400" size={16} />
-                )}
-              </button>
-              
-              <AnimatePresence>
-                {expandedSections.character && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-3">
-                      <AvatarCarousel
-                        selectedAvatarId={selectedAvatarId}
-                        onAvatarSelect={handleAvatarSelect}
-                        onLockedMessage={handleLockedMessage}
-                        playerLevel={playerLevel}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <div>
+              <h3 className="text-base font-pixel text-secondary-400 glow-text-subtle mb-3">
+                Character Selection
+              </h3>
+              <AvatarCarousel
+                selectedAvatarId={selectedAvatarId}
+                onAvatarSelect={handleAvatarSelect}
+                onLockedMessage={handleLockedMessage}
+                playerLevel={playerLevel}
+              />
             </div>
 
-            {lockedMessage && (
+            {lockedMessage ? (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -580,26 +424,26 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
               >
                 {lockedMessage}
               </motion.div>
+            ) : (
+              <div className="pt-3 border-t border-gray-700">
+                <motion.button
+                  onClick={handleJoinRequest}
+                  disabled={!name.trim() || !inviteCode.trim()}
+                  whileHover={name.trim() && inviteCode.trim() ? { scale: 1.05 } : {}}
+                  whileTap={name.trim() && inviteCode.trim() ? { scale: 0.98 } : {}}
+                  className={`w-full py-3 rounded-lg font-heading text-white shadow-pixel text-base transition-all ${
+                    name.trim() && inviteCode.trim()
+                      ? 'bg-secondary-600 hover:bg-secondary-700 neon-button glow-border'
+                      : 'bg-gray-600 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  Submit Join Request
+                </motion.button>
+                <p className="mt-2 text-xs text-gray-400 font-pixel text-center">
+                  Your request will be sent to the team lead for approval
+                </p>
+              </div>
             )}
-
-            <div className="pt-3 border-t border-gray-700">
-              <motion.button
-                onClick={handleJoinRequest}
-                disabled={!name.trim() || !inviteCode.trim()}
-                whileHover={name.trim() && inviteCode.trim() ? { scale: 1.05 } : {}}
-                whileTap={name.trim() && inviteCode.trim() ? { scale: 0.98 } : {}}
-                className={`w-full py-3 rounded-lg font-heading text-white shadow-pixel text-base transition-all ${
-                  name.trim() && inviteCode.trim()
-                    ? 'bg-secondary-600 hover:bg-secondary-700 neon-button glow-border'
-                    : 'bg-gray-600 cursor-not-allowed opacity-50'
-                }`}
-              >
-                Submit Join Request
-              </motion.button>
-              <p className="mt-2 text-xs text-gray-400 font-pixel text-center">
-                Your request will be sent to the team lead for approval
-              </p>
-            </div>
           </div>
         </>
       )}
@@ -712,9 +556,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         ))}
       </div>
 
-      {/* Animated Header */}
+      {/* Animated Header - Made transparent */}
       <motion.div 
-        className="py-4 bg-gray-900/50 backdrop-blur-sm z-30 text-center w-full"
+        className="py-4 bg-transparent z-30 text-center w-full"
         initial={{ opacity: 0, y: -50 }}
         animate={{ 
           opacity: 1, 
