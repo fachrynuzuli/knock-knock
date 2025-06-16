@@ -137,7 +137,7 @@ export const avatars: Avatar[] = [
     locked: false,
     stages: [
       {
-        level: 1,
+        level: 2,
         name: 'Slime',
         spritePath: '/lv1_slime.png',
         frameWidth: 64,
