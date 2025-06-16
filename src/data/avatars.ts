@@ -9,6 +9,12 @@ export interface AvatarStage {
   scale: number;
   offsetX: number;
   offsetY: number;
+  directionMap: {
+    down: number;
+    left: number;
+    right: number;
+    up: number;
+  };
   unlockRequirement?: {
     type: 'activities' | 'badges' | 'weeks';
     count: number;
@@ -45,6 +51,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          left: 1,  // Left row
+          right: 2, // Right row
+          up: 3,    // Up row
+        },
       },
       {
         level: 2,
@@ -57,6 +69,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          left: 1,  // Left row
+          right: 2, // Right row
+          up: 3,    // Up row
+        },
         unlockRequirement: {
           type: 'activities',
           count: 15,
@@ -68,7 +86,7 @@ export const avatars: Avatar[] = [
     id: 2,
     name: 'Female Civilian',
     category: 'civilian',
-    locked: false, // Unlocked
+    locked: false,
     stages: [
       {
         level: 1,
@@ -81,6 +99,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          left: 1,  // Left row
+          right: 2, // Right row
+          up: 3,    // Up row
+        },
       },
       {
         level: 2,
@@ -93,6 +117,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          left: 1,  // Left row
+          right: 2, // Right row
+          up: 3,    // Up row
+        },
         unlockRequirement: {
           type: 'activities',
           count: 15,
@@ -104,7 +134,7 @@ export const avatars: Avatar[] = [
     id: 5,
     name: 'Slime',
     category: 'mage',
-    locked: false, // Unlocked and moved to front
+    locked: false,
     stages: [
       {
         level: 1,
@@ -117,6 +147,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
       },
       {
         level: 3,
@@ -129,6 +165,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
         unlockRequirement: {
           type: 'weeks',
           count: 4,
@@ -145,6 +187,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
         unlockRequirement: {
           type: 'weeks',
           count: 6,
@@ -156,7 +204,7 @@ export const avatars: Avatar[] = [
     id: 3,
     name: 'Orc',
     category: 'warrior',
-    locked: true, // Moved to back
+    locked: true,
     unlockRequirement: {
       type: 'activities',
       count: 25,
@@ -173,6 +221,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
       },
       {
         level: 4,
@@ -185,6 +239,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
         unlockRequirement: {
           type: 'activities',
           count: 30,
@@ -201,6 +261,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
         unlockRequirement: {
           type: 'activities',
           count: 45,
@@ -212,7 +278,7 @@ export const avatars: Avatar[] = [
     id: 4,
     name: 'Vampire',
     category: 'noble',
-    locked: true, // Moved to back
+    locked: true,
     unlockRequirement: {
       type: 'badges',
       count: 3,
@@ -229,6 +295,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
       },
       {
         level: 4,
@@ -241,6 +313,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
         unlockRequirement: {
           type: 'badges',
           count: 5,
@@ -257,6 +335,12 @@ export const avatars: Avatar[] = [
         scale: 2,
         offsetX: 0,
         offsetY: 0,
+        directionMap: {
+          down: 0,  // Bottom row
+          up: 1,    // Up row
+          left: 2,  // Left row
+          right: 3, // Right row
+        },
         unlockRequirement: {
           type: 'badges',
           count: 8,
@@ -327,5 +411,40 @@ export const getAvatarSpriteFallbackInfo = (avatarId: number): {
     frameHeight: stage.frameHeight,
     frameCount: stage.frameCount,
     rowCount: stage.rowCount,
+  };
+};
+
+// Validation function to ensure all avatars have proper direction mappings
+export const validateAvatarDirectionMappings = (): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  const requiredDirections = ['down', 'left', 'right', 'up'];
+  
+  avatars.forEach(avatar => {
+    avatar.stages.forEach(stage => {
+      // Check if directionMap exists
+      if (!stage.directionMap) {
+        errors.push(`Avatar ${avatar.name} (ID: ${avatar.id}) stage ${stage.level} is missing directionMap`);
+        return;
+      }
+      
+      // Check if all required directions are present
+      requiredDirections.forEach(direction => {
+        if (stage.directionMap[direction as keyof typeof stage.directionMap] === undefined) {
+          errors.push(`Avatar ${avatar.name} (ID: ${avatar.id}) stage ${stage.level} is missing direction: ${direction}`);
+        }
+      });
+      
+      // Check if direction values are within valid range (0 to rowCount-1)
+      Object.entries(stage.directionMap).forEach(([direction, rowIndex]) => {
+        if (rowIndex < 0 || rowIndex >= stage.rowCount) {
+          errors.push(`Avatar ${avatar.name} (ID: ${avatar.id}) stage ${stage.level} has invalid row index ${rowIndex} for direction ${direction}. Must be between 0 and ${stage.rowCount - 1}`);
+        }
+      });
+    });
+  });
+  
+  return {
+    isValid: errors.length === 0,
+    errors
   };
 };

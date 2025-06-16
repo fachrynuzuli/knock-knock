@@ -41,6 +41,12 @@ const Player: React.FC<PlayerProps> = ({
     return null;
   }
   
+  // Validate that directionMap exists
+  if (!spriteConfig.directionMap) {
+    console.error(`CRITICAL: No directionMap found for avatarId: ${playerData.avatarId}, level: ${playerData.avatarLevel}`);
+    return null;
+  }
+  
   // Animation frame handling
   useEffect(() => {
     let animationFrame: number;
@@ -73,17 +79,20 @@ const Player: React.FC<PlayerProps> = ({
     };
   }, [isMoving, direction, spriteConfig.frameCount]);
 
-  // Get the row index based on direction
+  // Get the row index based on direction using the avatar's specific direction mapping
   const getDirectionRow = () => {
     const directionToUse = isMoving ? direction : idleDirection;
     
-    switch (directionToUse) {
-      case 'down': return 0;
-      case 'left': return 1;
-      case 'right': return 2;
-      case 'up': return 3;
-      default: return 0;
+    // Use the avatar's specific direction mapping
+    const rowIndex = spriteConfig.directionMap[directionToUse];
+    
+    // Validate that the row index is valid
+    if (rowIndex === undefined || rowIndex < 0 || rowIndex >= spriteConfig.rowCount) {
+      console.error(`Invalid direction mapping for ${directionToUse}: ${rowIndex}. Using fallback row 0.`);
+      return 0;
     }
+    
+    return rowIndex;
   };
 
   const scaledWidth = spriteConfig.frameWidth * spriteConfig.scale;
