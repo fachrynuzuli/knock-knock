@@ -278,7 +278,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         >
           <Users className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 floating-icon" />
           <h3 className="text-lg md:text-xl font-heading mb-2">Create Neighborhood</h3>
-          <p className="font-pixel text-xs md:text-sm text-primary-200">Start a new team space as the neighborhood captain</p>
+          <p className="font-pixel text-xs md:text-sm text-primary-200">Start a new team space as the neighborhood Team lead</p>
         </motion.button>
         
         <motion.button
