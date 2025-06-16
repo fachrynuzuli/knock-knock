@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../contexts/GameContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 import { MapPin, Lock, Users, UserPlus, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
-import { getAvatarById, getAllAvatarIds } from '../data/avatars';
+import { getAvatarById, getAllAvatarIds, isAvatarUnlocked, getAvatarUnlockMessage } from '../data/avatars';
 import AvatarCarousel from './AvatarCarousel';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -22,6 +24,12 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
+  // Get player level from Redux store
+  const playerData = useSelector((state: RootState) => 
+    state.teammates.items.find(teammate => teammate.isPlayer)
+  );
+  const playerLevel = playerData?.playerLevel || 0;
+
   // Collapsible sections state for join form
   const [expandedSections, setExpandedSections] = useState({
     personal: true,
@@ -31,7 +39,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const avatarOptions = getAllAvatarIds();
 
-  // CRITICAL: Strict validation for locked avatars
+  // CRITICAL: Strict validation for locked avatars based on player level
   const validateAvatarSelection = (avatarId: number): { isValid: boolean; message?: string } => {
     const avatar = getAvatarById(avatarId);
     
@@ -39,25 +47,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       return { isValid: false, message: 'Invalid avatar selection. Please choose a different character.' };
     }
     
-    if (avatar.locked) {
-      const requirement = avatar.unlockRequirement;
-      let message = 'This avatar is locked. Play more to unlock!';
-      
-      if (requirement) {
-        switch (requirement.type) {
-          case 'activities':
-            message = `Complete ${requirement.count} activities to unlock this avatar!`;
-            break;
-          case 'badges':
-            message = `Earn ${requirement.count} badges to unlock this avatar!`;
-            break;
-          case 'weeks':
-            message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-            break;
-        }
-      }
-      
-      return { isValid: false, message };
+    if (!isAvatarUnlocked(avatarId, playerLevel)) {
+      const unlockMessage = getAvatarUnlockMessage(avatarId, playerLevel);
+      return { isValid: false, message: unlockMessage || 'This avatar is locked.' };
     }
     
     return { isValid: true };
@@ -95,7 +87,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       return;
     }
 
-    // CRITICAL: Strict avatar validation
+    // CRITICAL: Strict avatar validation based on player level
     const validation = validateAvatarSelection(selectedAvatarId);
     if (!validation.isValid) {
       setLockedMessage(validation.message || 'Invalid avatar selection.');
@@ -107,7 +99,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       avatarId: selectedAvatarId,
       avatarName: getAvatarById(selectedAvatarId)?.name,
       playerName: name,
-      isLocked: getAvatarById(selectedAvatarId)?.locked
+      playerLevel: playerLevel,
+      isUnlocked: isAvatarUnlocked(selectedAvatarId, playerLevel)
     });
 
     // Enhanced loading experience
@@ -132,7 +125,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       return;
     }
 
-    // CRITICAL: Strict avatar validation for join flow
+    // CRITICAL: Strict avatar validation for join flow based on player level
     const validation = validateAvatarSelection(selectedAvatarId);
     if (!validation.isValid) {
       setLockedMessage(validation.message || 'Invalid avatar selection.');
@@ -147,7 +140,8 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         avatarId: selectedAvatarId,
         avatarName: getAvatarById(selectedAvatarId)?.name,
         playerName: name,
-        isLocked: getAvatarById(selectedAvatarId)?.locked
+        playerLevel: playerLevel,
+        isUnlocked: isAvatarUnlocked(selectedAvatarId, playerLevel)
       });
 
       simulateLoading(() => {
@@ -165,7 +159,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const handleAvatarSelect = (avatarId: number) => {
     setSelectedAvatarId(avatarId);
-    console.log('AVATAR SELECTION: Selected avatar:', avatarId, getAvatarById(avatarId)?.name);
+    console.log('AVATAR SELECTION: Selected avatar:', avatarId, getAvatarById(avatarId)?.name, 'Player Level:', playerLevel);
   };
 
   const handleLockedMessage = (message: string) => {
@@ -202,16 +196,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [screenMode, name, inviteCode, selectedAvatarId, isLoading]);
 
-  // Initialize selected avatar to first unlocked avatar
+  // Initialize selected avatar to first unlocked avatar based on player level
   useEffect(() => {
-    const firstUnlockedAvatar = avatarOptions.find(id => {
-      const avatar = getAvatarById(id);
-      return avatar && !avatar.locked;
-    });
-    if (firstUnlockedAvatar) {
+    const firstUnlockedAvatar = avatarOptions.find(id => isAvatarUnlocked(id, playerLevel));
+    if (firstUnlockedAvatar && firstUnlockedAvatar !== selectedAvatarId) {
       setSelectedAvatarId(firstUnlockedAvatar);
+      console.log('AVATAR SELECTION: Auto-selected first unlocked avatar:', firstUnlockedAvatar, 'for player level:', playerLevel);
     }
-  }, []);
+  }, [playerLevel]);
 
   // Screen transition variants
   const screenVariants = {
@@ -265,6 +257,17 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       <h2 className="text-2xl md:text-3xl font-heading text-white mb-6 md:mb-8 text-center glow-text">
         Welcome to the Neighborhood!
       </h2>
+      
+      {/* Player Level Display */}
+      <div className="text-center mb-6">
+        <div className="bg-gray-800 bg-opacity-50 p-3 rounded-lg border border-gray-700 inline-block">
+          <p className="text-gray-400 text-sm mb-1">Your Current Level</p>
+          <p className="text-primary-400 font-heading text-lg">Level {playerLevel}</p>
+          {playerLevel === 0 && (
+            <p className="text-gray-300 text-xs mt-1">Complete the tutorial to advance!</p>
+          )}
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         <motion.button
@@ -343,6 +346,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
             selectedAvatarId={selectedAvatarId}
             onAvatarSelect={handleAvatarSelect}
             onLockedMessage={handleLockedMessage}
+            playerLevel={playerLevel}
           />
         </div>
 
@@ -560,6 +564,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                         selectedAvatarId={selectedAvatarId}
                         onAvatarSelect={handleAvatarSelect}
                         onLockedMessage={handleLockedMessage}
+                        playerLevel={playerLevel}
                       />
                     </div>
                   </motion.div>
@@ -626,6 +631,17 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       
       <div className="space-y-4 mb-6 text-sm">
         <p>Welcome to <span className="text-primary-400 glow-text-subtle">"Knock Knock, Shippers!"</span> - a team management game where you track your weekly accomplishments!</p>
+        
+        <div>
+          <h3 className="font-heading text-secondary-400 mb-2 glow-text-subtle">Player Progression:</h3>
+          <ul className="list-disc pl-5 space-y-1">
+            <li><span className="text-primary-400">Level 0</span>: Choose between Male or Female Civilian (Slime, Orc, Vampire locked)</li>
+            <li><span className="text-primary-400">Level 1</span>: Complete tutorial and submit first activity report</li>
+            <li><span className="text-primary-400">Level 2</span>: Unlock Slime avatar option</li>
+            <li><span className="text-primary-400">Level 3</span>: Unlock Orc and Vampire avatar options</li>
+            <li>Higher levels unlock advanced avatar stages and abilities</li>
+          </ul>
+        </div>
         
         <div>
           <h3 className="font-heading text-secondary-400 mb-2 glow-text-subtle">Game Basics:</h3>

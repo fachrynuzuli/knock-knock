@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Lock } from 'lucide-react';
-import { getAvatarById, getAllAvatarIds } from '../data/avatars';
+import { getAvatarById, getAllAvatarIds, isAvatarUnlocked, getAvatarUnlockMessage } from '../data/avatars';
 
 interface AvatarCarouselProps {
   selectedAvatarId: number;
   onAvatarSelect: (avatarId: number) => void;
   onLockedMessage: (message: string) => void;
+  playerLevel: number;
 }
 
 const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
   selectedAvatarId,
   onAvatarSelect,
   onLockedMessage,
+  playerLevel,
 }) => {
   const avatarOptions = getAllAvatarIds();
   
@@ -61,17 +63,17 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       // ALWAYS notify parent of the centered avatar, regardless of lock status
       onAvatarSelect(centeredAvatarId);
       
-      // Handle locked message display
-      const validation = validateAvatarSelection(centeredAvatarId);
-      if (validation.isValid) {
+      // Handle locked message display based on player level
+      if (isAvatarUnlocked(centeredAvatarId, playerLevel)) {
         // Clear any existing locked message for unlocked avatars
         onLockedMessage('');
       } else {
         // Show locked message for locked avatars
-        onLockedMessage(validation.message || 'This avatar is locked.');
+        const unlockMessage = getAvatarUnlockMessage(centeredAvatarId, playerLevel);
+        onLockedMessage(unlockMessage || 'This avatar is locked.');
       }
     }
-  }, [currentIndex, isTransitioning, onAvatarSelect, onLockedMessage]);
+  }, [currentIndex, isTransitioning, playerLevel, onAvatarSelect, onLockedMessage]);
 
   // Reset position when reaching boundaries for infinite scroll
   useEffect(() => {
@@ -85,37 +87,6 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       }, 300);
     }
   }, [currentIndex, avatarOptions.length, centerOffset]);
-
-  const validateAvatarSelection = (avatarId: number): { isValid: boolean; message?: string } => {
-    const avatar = getAvatarById(avatarId);
-    
-    if (!avatar) {
-      return { isValid: false, message: 'Invalid avatar selection. Please choose a different character.' };
-    }
-    
-    if (avatar.locked) {
-      const requirement = avatar.unlockRequirement;
-      let message = 'This avatar is locked. Play more to unlock!';
-      
-      if (requirement) {
-        switch (requirement.type) {
-          case 'activities':
-            message = `Complete ${requirement.count} activities to unlock this avatar!`;
-            break;
-          case 'badges':
-            message = `Earn ${requirement.count} badges to unlock this avatar!`;
-            break;
-          case 'weeks':
-            message = `Play for ${requirement.count} weeks to unlock this avatar!`;
-            break;
-        }
-      }
-      
-      return { isValid: false, message };
-    }
-    
-    return { isValid: true };
-  };
 
   const getPortraitPath = (avatarId: number): string => {
     return `/portraits/avatar_${avatarId}_portrait.png`;
@@ -287,6 +258,14 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
         Select Avatar:
       </label>
       
+      {/* Player Level Display */}
+      <div className="text-center mb-4">
+        <div className="bg-gray-800 bg-opacity-50 p-2 rounded-lg border border-gray-700 inline-block">
+          <p className="text-gray-400 text-xs mb-0.5">Your Level</p>
+          <p className="text-primary-400 font-heading text-sm">Level {playerLevel}</p>
+        </div>
+      </div>
+      
       {/* Carousel Container */}
       <div className="relative h-32 mb-4">
         {/* Enhanced Multi-Layer Gradient Overlay */}
@@ -348,7 +327,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
             const avatar = getAvatarById(avatarId);
             const avatarDisplayInfo = getAvatarDisplayInfo(avatarId);
             const style = getAvatarStyle(index);
-            const isLocked = avatar?.locked || false;
+            const isLocked = !isAvatarUnlocked(avatarId, playerLevel);
             const distance = Math.abs(index - currentIndex);
             const isCenterAvatar = distance === 0;
             const isSelected = selectedAvatarId === avatarId;
@@ -361,10 +340,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                 className="absolute flex flex-col items-center cursor-pointer"
                 style={style}
                 onClick={() => handleAvatarClick(index)}
-                title={isLocked ? `Locked: ${avatar?.unlockRequirement ? 
-                  `${avatar.unlockRequirement.type === 'activities' ? 'Complete' : 
-                    avatar.unlockRequirement.type === 'badges' ? 'Earn' : 'Play for'} ${avatar.unlockRequirement.count} ${avatar.unlockRequirement.type}` : 
-                  'Play more to unlock'}` : avatar?.name}
+                title={isLocked ? getAvatarUnlockMessage(avatarId, playerLevel) || 'Locked Avatar' : avatar?.name}
               >
                 {/* Avatar Container with Enhanced Styling */}
                 <div 
@@ -405,13 +381,15 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                   {/* Lock Overlay */}
                   {isLocked && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-lg">
-                      <Lock className="text-white drop-shadow-lg\" size={24} />
+                      <Lock className="text-white drop-shadow-lg" size={24} />
                     </div>
                   )}
                   
-                  {/* Disabled overlay for locked avatars */}
-                  {isLocked && (
-                    <div className="absolute inset-0 rounded-lg border-2 border-red-500 border-opacity-40"></div>
+                  {/* Level requirement indicator for locked avatars */}
+                  {isLocked && avatar?.unlockRequirement && (
+                    <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-white">
+                      {avatar.unlockRequirement.count}
+                    </div>
                   )}
                 </div>
               </div>
@@ -431,13 +409,14 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
         >
           <p className="text-gray-400 text-sm mb-0.5">Selected Character</p>
           <p className={`font-semibold text-sm ${
-            getCurrentAvatar()?.locked ? 'text-red-400' : 'text-primary-400'
+            !isAvatarUnlocked(selectedAvatarId, playerLevel) ? 'text-red-400' : 'text-primary-400'
           }`}>
             {getCurrentAvatar()?.name}
           </p>
-          {getCurrentAvatar()?.locked && (
-            <p className="text-red-400 text-sm mt-1 flex items-center justify-center gap-1">
-              
+          {!isAvatarUnlocked(selectedAvatarId, playerLevel) && (
+            <p className="text-red-400 text-xs mt-1 flex items-center justify-center gap-1">
+              <Lock size={12} />
+              Requires Level {getCurrentAvatar()?.unlockRequirement?.count}
             </p>
           )}
         </div>
@@ -448,7 +427,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
         {avatarOptions.map((avatarId, index) => {
           const actualCurrentIndex = (currentIndex - centerOffset + avatarOptions.length) % avatarOptions.length;
           const avatar = getAvatarById(avatarId);
-          const isLocked = avatar?.locked || false;
+          const isLocked = !isAvatarUnlocked(avatarId, playerLevel);
           const isActive = index === actualCurrentIndex;
           
           return (
@@ -466,7 +445,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
                   '0 2px 0 rgba(0, 0, 0, 0.5), 0 0 10px rgba(99, 102, 241, 0.6)' : 
                   '0 2px 0 rgba(0, 0, 0, 0.5)'
               }}
-              title={isLocked ? 'Locked Avatar' : avatar?.name}
+              title={isLocked ? `Locked - Requires Level ${avatar?.unlockRequirement?.count}` : avatar?.name}
             />
           );
         })}
