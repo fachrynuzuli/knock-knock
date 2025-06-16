@@ -141,7 +141,7 @@ const GameHUD: React.FC = () => {
             <div className="text-white font-pixel">
               <div className="text-primary-400 font-heading text-sm">{playerData?.name || 'Player'}</div>
               <div className="text-xs mt-1 flex items-center space-x-2">
-                <span className="bg-success-600 px-2 py-0.5 rounded text-xs">Manager</span>
+                <span className="bg-success-600 px-2 py-0.5 rounded text-xs">Captain</span>
                 <span className="text-gray-300">House Lv.{playerData?.houseLevel || 1}</span>
               </div>
               
