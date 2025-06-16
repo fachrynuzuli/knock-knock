@@ -211,7 +211,7 @@ export const avatars: Avatar[] = [
     },
     stages: [
       {
-        level: 3,
+        level: 1,
         name: 'Orc',
         spritePath: '/lv3_orc.png',
         frameWidth: 64,
@@ -285,7 +285,7 @@ export const avatars: Avatar[] = [
     },
     stages: [
       {
-        level: 3,
+        level: 1,
         name: 'Vampire',
         spritePath: '/lv3_vampire.png',
         frameWidth: 64,
