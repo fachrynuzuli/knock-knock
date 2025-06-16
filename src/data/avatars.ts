@@ -15,19 +15,14 @@ export interface AvatarStage {
     right: number;
     up: number;
   };
-  unlockRequirement?: {
-    type: 'activities' | 'badges' | 'weeks';
-    count: number;
-  };
 }
 
 export interface Avatar {
   id: number;
   name: string;
   category: 'civilian' | 'warrior' | 'mage' | 'rogue' | 'noble';
-  locked: boolean;
   unlockRequirement?: {
-    type: 'activities' | 'badges' | 'weeks';
+    type: 'playerLevel';
     count: number;
   };
   stages: AvatarStage[];
@@ -38,7 +33,7 @@ export const avatars: Avatar[] = [
     id: 1,
     name: 'Male Civilian',
     category: 'civilian',
-    locked: false,
+    // No unlock requirement - available from start
     stages: [
       {
         level: 1,
@@ -75,10 +70,6 @@ export const avatars: Avatar[] = [
           right: 2, // Right row
           up: 3,    // Up row
         },
-        unlockRequirement: {
-          type: 'activities',
-          count: 15,
-        },
       },
     ],
   },
@@ -86,7 +77,7 @@ export const avatars: Avatar[] = [
     id: 2,
     name: 'Female Civilian',
     category: 'civilian',
-    locked: false,
+    // No unlock requirement - available from start
     stages: [
       {
         level: 1,
@@ -123,10 +114,6 @@ export const avatars: Avatar[] = [
           right: 2, // Right row
           up: 3,    // Up row
         },
-        unlockRequirement: {
-          type: 'activities',
-          count: 15,
-        },
       },
     ],
   },
@@ -134,7 +121,10 @@ export const avatars: Avatar[] = [
     id: 5,
     name: 'Slime',
     category: 'mage',
-    locked: false,
+    unlockRequirement: {
+      type: 'playerLevel',
+      count: 2,
+    },
     stages: [
       {
         level: 2,
@@ -171,10 +161,6 @@ export const avatars: Avatar[] = [
           left: 2,  // Left row
           right: 3, // Right row
         },
-        unlockRequirement: {
-          type: 'weeks',
-          count: 4,
-        },
       },
       {
         level: 5,
@@ -193,10 +179,6 @@ export const avatars: Avatar[] = [
           left: 2,  // Left row
           right: 3, // Right row
         },
-        unlockRequirement: {
-          type: 'weeks',
-          count: 6,
-        },
       },
     ],
   },
@@ -204,10 +186,9 @@ export const avatars: Avatar[] = [
     id: 3,
     name: 'Orc',
     category: 'warrior',
-    locked: true,
     unlockRequirement: {
-      type: 'activities',
-      count: 25,
+      type: 'playerLevel',
+      count: 3,
     },
     stages: [
       {
@@ -245,10 +226,6 @@ export const avatars: Avatar[] = [
           left: 2,  // Left row
           right: 3, // Right row
         },
-        unlockRequirement: {
-          type: 'activities',
-          count: 30,
-        },
       },
       {
         level: 5,
@@ -267,10 +244,6 @@ export const avatars: Avatar[] = [
           left: 2,  // Left row
           right: 3, // Right row
         },
-        unlockRequirement: {
-          type: 'activities',
-          count: 45,
-        },
       },
     ],
   },
@@ -278,9 +251,8 @@ export const avatars: Avatar[] = [
     id: 4,
     name: 'Vampire',
     category: 'noble',
-    locked: true,
     unlockRequirement: {
-      type: 'badges',
+      type: 'playerLevel',
       count: 3,
     },
     stages: [
@@ -319,10 +291,6 @@ export const avatars: Avatar[] = [
           left: 2,  // Left row
           right: 3, // Right row
         },
-        unlockRequirement: {
-          type: 'badges',
-          count: 5,
-        },
       },
       {
         level: 5,
@@ -340,10 +308,6 @@ export const avatars: Avatar[] = [
           up: 1,    // Up row
           left: 2,  // Left row
           right: 3, // Right row
-        },
-        unlockRequirement: {
-          type: 'badges',
-          count: 8,
         },
       },
     ],
@@ -373,8 +337,11 @@ export const getAvatarStage = (avatarId: number, level: number = 1): AvatarStage
   return avatar.stages[0];
 };
 
-export const getAvailableAvatars = (): Avatar[] => {
-  return avatars.filter(avatar => !avatar.locked);
+export const getAvailableAvatars = (playerLevel: number = 0): Avatar[] => {
+  return avatars.filter(avatar => {
+    if (!avatar.unlockRequirement) return true; // Always available
+    return playerLevel >= avatar.unlockRequirement.count;
+  });
 };
 
 export const getAllAvatarIds = (): number[] => {
@@ -412,6 +379,26 @@ export const getAvatarSpriteFallbackInfo = (avatarId: number): {
     frameCount: stage.frameCount,
     rowCount: stage.rowCount,
   };
+};
+
+// New helper function to check if avatar is unlocked for player
+export const isAvatarUnlocked = (avatarId: number, playerLevel: number): boolean => {
+  const avatar = getAvatarById(avatarId);
+  if (!avatar) return false;
+  
+  if (!avatar.unlockRequirement) return true; // Always available
+  return playerLevel >= avatar.unlockRequirement.count;
+};
+
+// Helper function to get unlock message for locked avatars
+export const getAvatarUnlockMessage = (avatarId: number, playerLevel: number): string | null => {
+  const avatar = getAvatarById(avatarId);
+  if (!avatar || !avatar.unlockRequirement) return null;
+  
+  if (playerLevel >= avatar.unlockRequirement.count) return null; // Already unlocked
+  
+  const levelsNeeded = avatar.unlockRequirement.count - playerLevel;
+  return `Reach player level ${avatar.unlockRequirement.count} to unlock this avatar! (${levelsNeeded} more level${levelsNeeded !== 1 ? 's' : ''} needed)`;
 };
 
 // Validation function to ensure all avatars have proper direction mappings
