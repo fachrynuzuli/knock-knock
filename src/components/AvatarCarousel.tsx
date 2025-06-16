@@ -262,7 +262,7 @@ const AvatarCarousel: React.FC<AvatarCarouselProps> = ({
       <div className="text-center mb-2">
         <div className="bg-gray-800 bg-opacity-50 p-2 rounded-lg border border-gray-700 inline-block">
           <p className="text-gray-400 text-xs mb-0.5">Your Level</p>
-          <p className="text-primary-400 font-heading text-s">Level {playerLevel}</p>
+          <p className="text-primary-400 font-heading text-sm">Level {playerLevel}</p>
         </div>
       </div>
       
