@@ -398,7 +398,7 @@ export const getAvatarUnlockMessage = (avatarId: number, playerLevel: number): s
   if (playerLevel >= avatar.unlockRequirement.count) return null; // Already unlocked
   
   const levelsNeeded = avatar.unlockRequirement.count - playerLevel;
-  return `Reach player level ${avatar.unlockRequirement.count} to unlock this avatar! (${levelsNeeded} more level${levelsNeeded !== 1 ? 's' : ''} needed)`;
+  return `Locked! (${levelsNeeded} more level${levelsNeeded !== 1 ? 's' : ''} needed)`;
 };
 
 // Validation function to ensure all avatars have proper direction mappings
