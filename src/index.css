@@ -251,9 +251,16 @@ body {
   }
 }
 
-/* Enhanced game panel */
+/* Enhanced game panel with fading gradient background */
 .game-panel {
-  background: rgba(17, 24, 39, 0.95);
+  background: linear-gradient(180deg, 
+    rgba(17, 24, 39, 0.3) 0%,
+    rgba(17, 24, 39, 0.85) 15%,
+    rgba(17, 24, 39, 0.95) 25%,
+    rgba(17, 24, 39, 0.95) 75%,
+    rgba(17, 24, 39, 0.85) 85%,
+    rgba(17, 24, 39, 0.3) 100%
+  );
   border: 3px solid rgba(99, 102, 241, 0.8);
   border-radius: 12px;
   padding: 1.5rem;
