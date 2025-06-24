@@ -83,6 +83,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     }, ANIMATION_CONFIG.LOADING_PROGRESS_INTERVAL);
   };
 
+  // Save user registration data to localStorage
+  const saveUserRegistration = (playerName: string, avatarId: number) => {
+    localStorage.setItem('hasRegistered', 'true');
+    localStorage.setItem('playerName', playerName);
+    localStorage.setItem('playerAvatar', avatarId.toString());
+    localStorage.setItem('registrationDate', new Date().toISOString());
+  };
+
   const handleStartGame = () => {
     // CRITICAL: Gate-keeping logic - validate everything before proceeding
     if (!name.trim()) {
@@ -109,6 +117,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
     // Enhanced loading experience
     simulateLoading(() => {
+      // Save registration data
+      saveUserRegistration(name, selectedAvatarId);
+      
       setPlayerName(name);
       setPlayerAvatar(selectedAvatarId);
       onStartGame();
@@ -149,6 +160,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       });
 
       simulateLoading(() => {
+        // Save registration data
+        saveUserRegistration(name, selectedAvatarId);
+        
         setPlayerName(name);
         setPlayerAvatar(selectedAvatarId);
         onStartGame();
@@ -234,7 +248,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           className="text-center relative z-20"
         >
           <div className="text-4xl font-heading text-primary-400 mb-8 glow-text animate-pulse">
-            INITIALIZING NEIGHBORHOOD...
+            JOINING NEIGHBORHOOD...
           </div>
           
           {/* Enhanced loading bar */}

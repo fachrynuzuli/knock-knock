@@ -10,9 +10,11 @@ import { GameProvider } from './contexts/GameContext';
 
 function App() {
   const dispatch = useDispatch();
-  const [showLandingPage, setShowLandingPage] = useState(true);
+  const [isReturningUser, setIsReturningUser] = useState<boolean | null>(null); // null = checking
+  const [showLandingPage, setShowLandingPage] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-  const [isLoadingAssets, setIsLoadingAssets] = useState(false);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState('');
   
   // Get player position and teammate data from Redux
   const playerPosition = useSelector((state: RootState) => state.gameState.playerPosition);
@@ -20,12 +22,48 @@ function App() {
     state.teammates.items.find(teammate => teammate.isPlayer)
   );
 
+  // Check if user is returning on app load
+  useEffect(() => {
+    const checkUserStatus = () => {
+      const hasRegistered = localStorage.getItem('hasRegistered');
+      const playerName = localStorage.getItem('playerName');
+      const playerAvatar = localStorage.getItem('playerAvatar');
+      
+      const isReturning = hasRegistered === 'true' && playerName && playerAvatar;
+      
+      setIsReturningUser(isReturning);
+      
+      if (isReturning) {
+        // Returning user - show loading and prepare to enter game
+        setLoadingMessage('Welcome back! Loading your neighborhood...');
+        setShowLandingPage(false);
+        
+        // Simulate loading for returning users (shorter duration)
+        setTimeout(() => {
+          setIsLoadingAssets(false);
+          setGameStarted(true);
+          dispatch(initializeGameTime());
+        }, 2000);
+      } else {
+        // New user - show landing page after brief initial load
+        setLoadingMessage('Initializing game...');
+        
+        setTimeout(() => {
+          setIsLoadingAssets(false);
+          setShowLandingPage(true);
+        }, 1500);
+      }
+    };
+
+    checkUserStatus();
+  }, [dispatch]);
+
   const handleEnterGameFlow = () => {
     setShowLandingPage(false);
-    // Start loading assets when entering game flow
     setIsLoadingAssets(true);
+    setLoadingMessage('Loading game assets...');
     
-    // Simulate asset loading
+    // Simulate asset loading for new users
     setTimeout(() => {
       setIsLoadingAssets(false);
     }, 3000);
@@ -58,14 +96,14 @@ function App() {
     }
   }, [gameStarted, playerTeammate, playerPosition, dispatch]);
 
-  // Show landing page first
-  if (showLandingPage) {
-    return <LandingPage onEnterGameFlow={handleEnterGameFlow} />;
+  // Show initial loading screen while checking user status
+  if (isReturningUser === null || isLoadingAssets) {
+    return <LoadingScreen message={loadingMessage} />;
   }
 
-  // Show loading screen during asset loading
-  if (isLoadingAssets) {
-    return <LoadingScreen message="Loading your neighborhood..." />;
+  // Show landing page for new users
+  if (showLandingPage && !isReturningUser) {
+    return <LandingPage onEnterGameFlow={handleEnterGameFlow} />;
   }
 
   // Show loading screen if game started but player position not initialized
