@@ -4,6 +4,7 @@ import { RootState } from '../store';
 import { updatePlayerPosition, toggleActivityForm, toggleLeaderboard } from '../store/slices/gameStateSlice';
 import { useGameContext } from '../contexts/GameContext';
 import { addBadge } from '../store/slices/badgesSlice';
+import { incrementTeammateStats } from '../store/slices/teammatesSlice';
 import { Plus, Minus, RotateCcw } from 'lucide-react';
 
 import GameMap from './GameMap';
@@ -24,28 +25,14 @@ import {
   CollidableObject 
 } from '../data/gameObjects';
 
-// Map dimensions - updated for your new background
-const MAP_WIDTH = 2048;
-const MAP_HEIGHT = 1342;
-
-// Zoom constants
-const MIN_ZOOM = 0.5;
-const MAX_ZOOM = 2.0;
-const ZOOM_STEP = 0.1;
-
-// Camera panning speed
-const CAMERA_PAN_SPEED = 5;
-
-// Player dimensions for collision detection
-const PLAYER_WIDTH = 32;
-const PLAYER_HEIGHT = 32;
-
-// Movement speed (1-10 scale, where 1 is very slow and 10 is extremely fast)
-const MOVEMENT_SPEED = 2; // Reduced from 8 to 4 for better control
-
-// Camera recentering constants
-const RECENTER_SPEED = 0.1; // How fast the camera recenters (0.1 = 10% per frame)
-const RECENTER_THRESHOLD = 1; // Stop recentering when offset is within this many pixels
+// Import centralized configuration
+import { 
+  MAP_CONFIG, 
+  ZOOM_CONFIG, 
+  MOVEMENT_CONFIG, 
+  INTERACTION_CONFIG,
+  ACCESSIBILITY_CONFIG 
+} from '../config/gameConfig';
 
 const Game: React.FC = () => {
   const dispatch = useDispatch();
@@ -64,7 +51,7 @@ const Game: React.FC = () => {
   // Camera state
   const [cameraOffsetX, setCameraOffsetX] = useState(0);
   const [cameraOffsetY, setCameraOffsetY] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(1.0);
+  const [zoomLevel, setZoomLevel] = useState(ZOOM_CONFIG.DEFAULT_ZOOM);
   const [isRecenteringCamera, setIsRecenteringCamera] = useState(false);
 
   // Get player's house from teammates array
@@ -89,20 +76,20 @@ const Game: React.FC = () => {
     let cameraY = playerPosition.y - viewportHeight / 2 + cameraOffsetY;
     
     // Check if the viewport is larger than the map
-    if (viewportWidth >= MAP_WIDTH) {
+    if (viewportWidth >= MAP_CONFIG.MAP_WIDTH) {
       // Center the map horizontally
-      cameraX = -(viewportWidth - MAP_WIDTH) / 2;
+      cameraX = -(viewportWidth - MAP_CONFIG.MAP_WIDTH) / 2;
     } else {
       // Clamp camera to map boundaries horizontally
-      cameraX = Math.max(0, Math.min(MAP_WIDTH - viewportWidth, cameraX));
+      cameraX = Math.max(0, Math.min(MAP_CONFIG.MAP_WIDTH - viewportWidth, cameraX));
     }
     
-    if (viewportHeight >= MAP_HEIGHT) {
+    if (viewportHeight >= MAP_CONFIG.MAP_HEIGHT) {
       // Center the map vertically
-      cameraY = -(viewportHeight - MAP_HEIGHT) / 2;
+      cameraY = -(viewportHeight - MAP_CONFIG.MAP_HEIGHT) / 2;
     } else {
       // Clamp camera to map boundaries vertically
-      cameraY = Math.max(0, Math.min(MAP_HEIGHT - viewportHeight, cameraY));
+      cameraY = Math.max(0, Math.min(MAP_CONFIG.MAP_HEIGHT - viewportHeight, cameraY));
     }
     
     return { x: cameraX, y: cameraY };
@@ -110,21 +97,21 @@ const Game: React.FC = () => {
 
   const cameraPosition = calculateCameraPosition();
   
-  // Zoom functions
+  // Zoom functions with centralized configuration
   const handleZoomIn = () => {
-    const newZoom = zoomLevel + ZOOM_STEP;
-    const clampedZoom = Math.min(MAX_ZOOM, newZoom);
+    const newZoom = zoomLevel + ZOOM_CONFIG.ZOOM_STEP;
+    const clampedZoom = Math.min(ZOOM_CONFIG.MAX_ZOOM, newZoom);
     setZoomLevel(clampedZoom);
   };
 
   const handleZoomOut = () => {
-    const newZoom = zoomLevel - ZOOM_STEP;
-    const clampedZoom = Math.max(MIN_ZOOM, newZoom);
+    const newZoom = zoomLevel - ZOOM_CONFIG.ZOOM_STEP;
+    const clampedZoom = Math.max(ZOOM_CONFIG.MIN_ZOOM, newZoom);
     setZoomLevel(clampedZoom);
   };
 
   const handleZoomReset = () => {
-    setZoomLevel(1.0);
+    setZoomLevel(ZOOM_CONFIG.DEFAULT_ZOOM);
     setCameraOffsetX(0);
     setCameraOffsetY(0);
     setIsRecenteringCamera(false);
@@ -133,17 +120,17 @@ const Game: React.FC = () => {
   // Enhanced collision detection function
   const canMoveTo = (newX: number, newY: number): boolean => {
     // Check map boundaries
-    if (newX < PLAYER_WIDTH/2 || newX > MAP_WIDTH - PLAYER_WIDTH/2 || 
-        newY < PLAYER_HEIGHT/2 || newY > MAP_HEIGHT - PLAYER_HEIGHT/2) {
+    if (newX < MAP_CONFIG.PLAYER_WIDTH/2 || newX > MAP_CONFIG.MAP_WIDTH - MAP_CONFIG.PLAYER_WIDTH/2 || 
+        newY < MAP_CONFIG.PLAYER_HEIGHT/2 || newY > MAP_CONFIG.MAP_HEIGHT - MAP_CONFIG.PLAYER_HEIGHT/2) {
       return false;
     }
 
     // Check collision with static objects
     const collision = checkCollision(
-      newX - PLAYER_WIDTH/2, 
-      newY - PLAYER_HEIGHT/2, 
-      PLAYER_WIDTH, 
-      PLAYER_HEIGHT
+      newX - MAP_CONFIG.PLAYER_WIDTH/2, 
+      newY - MAP_CONFIG.PLAYER_HEIGHT/2, 
+      MAP_CONFIG.PLAYER_WIDTH, 
+      MAP_CONFIG.PLAYER_HEIGHT
     );
 
     return collision === null;
@@ -156,7 +143,7 @@ const Game: React.FC = () => {
       const dx = Math.abs(playerX - (teammate.housePosition.x + 32));
       const dy = Math.abs(playerY - (teammate.housePosition.y + 32));
       
-      if (dx < 64 && dy < 64) {
+      if (dx < INTERACTION_CONFIG.HOUSE_INTERACTION_DISTANCE && dy < INTERACTION_CONFIG.HOUSE_INTERACTION_DISTANCE) {
         return {
           show: true,
           message: teammate.isPlayer 
@@ -169,7 +156,7 @@ const Game: React.FC = () => {
     }
 
     // PRIORITY 2: Check proximity to other interactable objects only if no house nearby
-    const nearbyObject = checkProximity(playerX, playerY, 96);
+    const nearbyObject = checkProximity(playerX, playerY, INTERACTION_CONFIG.OBJECT_PROXIMITY_DISTANCE);
     
     if (nearbyObject) {
       let message = '';
@@ -203,7 +190,7 @@ const Game: React.FC = () => {
     const dx = Math.abs(playerPosition.x - (teammate.housePosition.x + 32));
     const dy = Math.abs(playerPosition.y - (teammate.housePosition.y + 32));
     
-    return dx < 64 && dy < 64;
+    return dx < INTERACTION_CONFIG.HOUSE_INTERACTION_DISTANCE && dy < INTERACTION_CONFIG.HOUSE_INTERACTION_DISTANCE;
   };
 
   // Render environmental objects
@@ -240,6 +227,8 @@ const Game: React.FC = () => {
           width: `${obj.width}px`,
           height: `${obj.height}px`,
         }}
+        role="img"
+        aria-label={`${obj.type}: ${obj.name}`}
       >
         {content}
       </div>
@@ -248,6 +237,11 @@ const Game: React.FC = () => {
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent default for game controls to avoid page scrolling
+      if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e', ' ', 'escape', 'l'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+
       setKeysPressed(prev => ({ ...prev, [e.key.toLowerCase()]: true }));
       
       // Check if WASD keys are pressed (player movement)
@@ -267,7 +261,7 @@ const Game: React.FC = () => {
         const nearbyTeammate = teammates.find(teammate => {
           const dx = Math.abs(playerPosition!.x - (teammate.housePosition.x + 32));
           const dy = Math.abs(playerPosition!.y - (teammate.housePosition.y + 32));
-          return dx < 64 && dy < 64;
+          return dx < INTERACTION_CONFIG.HOUSE_INTERACTION_DISTANCE && dy < INTERACTION_CONFIG.HOUSE_INTERACTION_DISTANCE;
         });
         
         if (nearbyTeammate) {
@@ -280,7 +274,7 @@ const Game: React.FC = () => {
         }
 
         // PRIORITY 2: Check if near Town Hall only if no house nearby
-        const nearbyObject = checkProximity(playerPosition!.x, playerPosition!.y, 96);
+        const nearbyObject = checkProximity(playerPosition!.x, playerPosition!.y, INTERACTION_CONFIG.OBJECT_PROXIMITY_DISTANCE);
         
         if (nearbyObject?.type === 'townHall') {
           dispatch(toggleLeaderboard());
@@ -288,7 +282,8 @@ const Game: React.FC = () => {
         }
       }
       
-      if (e.key === 'Escape') {
+      // Enhanced ESC key handling with accessibility
+      if (e.key === 'Escape' && ACCESSIBILITY_CONFIG.ESCAPE_KEY_CLOSES_MODALS) {
         if (viewingTeammate) {
           setViewingTeammate(null);
         } else if (isFormOpen) {
@@ -327,25 +322,25 @@ const Game: React.FC = () => {
       
       // WASD keys for player movement with collision detection
       if (keysPressed.w) {
-        const testY = playerPosition.y - MOVEMENT_SPEED;
+        const testY = playerPosition.y - MOVEMENT_CONFIG.MOVEMENT_SPEED;
         if (canMoveTo(playerPosition.x, testY)) {
           newY = testY;
         }
       }
       if (keysPressed.s) {
-        const testY = playerPosition.y + MOVEMENT_SPEED;
+        const testY = playerPosition.y + MOVEMENT_CONFIG.MOVEMENT_SPEED;
         if (canMoveTo(playerPosition.x, testY)) {
           newY = testY;
         }
       }
       if (keysPressed.a) {
-        const testX = playerPosition.x - MOVEMENT_SPEED;
+        const testX = playerPosition.x - MOVEMENT_CONFIG.MOVEMENT_SPEED;
         if (canMoveTo(testX, playerPosition.y)) {
           newX = testX;
         }
       }
       if (keysPressed.d) {
-        const testX = playerPosition.x + MOVEMENT_SPEED;
+        const testX = playerPosition.x + MOVEMENT_CONFIG.MOVEMENT_SPEED;
         if (canMoveTo(testX, playerPosition.y)) {
           newX = testX;
         }
@@ -354,16 +349,16 @@ const Game: React.FC = () => {
       // Arrow keys for camera panning (only when not recentering)
       if (!isRecenteringCamera) {
         if (keysPressed.arrowup) {
-          newCameraOffsetY -= CAMERA_PAN_SPEED;
+          newCameraOffsetY -= MOVEMENT_CONFIG.CAMERA_PAN_SPEED;
         }
         if (keysPressed.arrowdown) {
-          newCameraOffsetY += CAMERA_PAN_SPEED;
+          newCameraOffsetY += MOVEMENT_CONFIG.CAMERA_PAN_SPEED;
         }
         if (keysPressed.arrowleft) {
-          newCameraOffsetX -= CAMERA_PAN_SPEED;
+          newCameraOffsetX -= MOVEMENT_CONFIG.CAMERA_PAN_SPEED;
         }
         if (keysPressed.arrowright) {
-          newCameraOffsetX += CAMERA_PAN_SPEED;
+          newCameraOffsetX += MOVEMENT_CONFIG.CAMERA_PAN_SPEED;
         }
       }
       
@@ -373,20 +368,20 @@ const Game: React.FC = () => {
         const offsetXDistance = Math.abs(newCameraOffsetX);
         const offsetYDistance = Math.abs(newCameraOffsetY);
         
-        if (offsetXDistance > RECENTER_THRESHOLD) {
-          newCameraOffsetX = newCameraOffsetX * (1 - RECENTER_SPEED);
+        if (offsetXDistance > MOVEMENT_CONFIG.RECENTER_THRESHOLD) {
+          newCameraOffsetX = newCameraOffsetX * (1 - MOVEMENT_CONFIG.RECENTER_SPEED);
         } else {
           newCameraOffsetX = 0;
         }
         
-        if (offsetYDistance > RECENTER_THRESHOLD) {
-          newCameraOffsetY = newCameraOffsetY * (1 - RECENTER_SPEED);
+        if (offsetYDistance > MOVEMENT_CONFIG.RECENTER_THRESHOLD) {
+          newCameraOffsetY = newCameraOffsetY * (1 - MOVEMENT_CONFIG.RECENTER_SPEED);
         } else {
           newCameraOffsetY = 0;
         }
         
         // Stop recentering when we're close enough to center
-        if (offsetXDistance <= RECENTER_THRESHOLD && offsetYDistance <= RECENTER_THRESHOLD) {
+        if (offsetXDistance <= MOVEMENT_CONFIG.RECENTER_THRESHOLD && offsetYDistance <= MOVEMENT_CONFIG.RECENTER_THRESHOLD) {
           setIsRecenteringCamera(false);
           newCameraOffsetX = 0;
           newCameraOffsetY = 0;
@@ -419,16 +414,22 @@ const Game: React.FC = () => {
   }
   
   return (
-    <div className="relative w-full h-full overflow-hidden bg-gray-900">
+    <div 
+      className="relative w-full h-full overflow-hidden bg-gray-900"
+      role="application"
+      aria-label="Knock Knock Shippers Game"
+      tabIndex={-1}
+    >
       {/* Game World Container - This is what pans and zooms */}
       <div 
         className="absolute"
         style={{
-          width: `${MAP_WIDTH}px`,
-          height: `${MAP_HEIGHT}px`,
+          width: `${MAP_CONFIG.MAP_WIDTH}px`,
+          height: `${MAP_CONFIG.MAP_HEIGHT}px`,
           transform: `translate(-${cameraPosition.x}px, -${cameraPosition.y}px) scale(${zoomLevel})`,
           transformOrigin: 'top left',
         }}
+        aria-hidden="true"
       >
         <GameMap />
         
@@ -461,6 +462,9 @@ const Game: React.FC = () => {
               width: `${townHall.width}px`,
               height: `${townHall.height}px`,
             }}
+            role="button"
+            aria-label={`${townHall.name} - Press E to enter`}
+            tabIndex={-1}
           >
             <div className="w-full h-full bg-primary-600 bg-opacity-50 border-4 border-primary-800 rounded-lg flex items-center justify-center relative">
               <div className="text-white text-lg font-pixel text-center">{townHall.name}</div>
@@ -479,6 +483,8 @@ const Game: React.FC = () => {
               width: `${land.width}px`,
               height: `${land.height}px`,
             }}
+            role="img"
+            aria-label={`Empty land: ${land.name}`}
           >
             <div className="w-full h-full bg-gray-700 bg-opacity-50 border-2 border-dashed border-gray-500 flex items-center justify-center">
               <div className="text-white text-xs font-pixel text-center">{land.name}</div>
@@ -500,6 +506,9 @@ const Game: React.FC = () => {
               left: `${teammate.housePosition.x}px`,
               top: `${teammate.housePosition.y}px`,
             }}
+            role="button"
+            aria-label={`${teammate.name}'s house - Press E to ${teammate.isPlayer ? 'update your board' : 'view their board'}`}
+            tabIndex={-1}
           >
             <House 
               teammate={teammate} 
@@ -518,6 +527,8 @@ const Game: React.FC = () => {
               width: '200px',
               textAlign: 'center',
             }}
+            role="tooltip"
+            aria-live="polite"
           >
             {interactionPrompt.message}
           </div>
@@ -528,48 +539,58 @@ const Game: React.FC = () => {
       <GameHUD />
       
       {/* Zoom Controls - Moved to bottom right */}
-      <div className="absolute bottom-4 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg">
+      <div 
+        className="absolute bottom-4 right-4 bg-gray-800 bg-opacity-80 p-3 rounded-lg"
+        role="group"
+        aria-label="Zoom controls"
+      >
         <div className="text-white font-pixel text-sm mb-2 text-center">
           Zoom: {Math.round(zoomLevel * 100)}%
         </div>
         <div className="flex items-center space-x-2">
           <button
             onClick={handleZoomOut}
-            disabled={zoomLevel <= MIN_ZOOM}
+            disabled={zoomLevel <= ZOOM_CONFIG.MIN_ZOOM}
             className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
-              zoomLevel <= MIN_ZOOM 
+              zoomLevel <= ZOOM_CONFIG.MIN_ZOOM 
                 ? 'bg-gray-600 cursor-not-allowed opacity-50' 
                 : 'bg-primary-600 hover:bg-primary-700 shadow-pixel button-pixel'
             }`}
+            aria-label="Zoom out"
+            title="Zoom out"
           >
             <Minus size={16} />
           </button>
           <button
             onClick={handleZoomReset}
-            disabled={zoomLevel === 1.0 && cameraOffsetX === 0 && cameraOffsetY === 0}
+            disabled={zoomLevel === ZOOM_CONFIG.DEFAULT_ZOOM && cameraOffsetX === 0 && cameraOffsetY === 0}
             className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
-              zoomLevel === 1.0 && cameraOffsetX === 0 && cameraOffsetY === 0
+              zoomLevel === ZOOM_CONFIG.DEFAULT_ZOOM && cameraOffsetX === 0 && cameraOffsetY === 0
                 ? 'bg-gray-600 cursor-not-allowed opacity-50' 
                 : 'bg-secondary-600 hover:bg-secondary-700 shadow-pixel button-pixel'
             }`}
             title="Reset to 100%"
+            aria-label="Reset zoom to 100%"
           >
             <RotateCcw size={16} />
           </button>
           <button
             onClick={handleZoomIn}
-            disabled={zoomLevel >= MAX_ZOOM}
+            disabled={zoomLevel >= ZOOM_CONFIG.MAX_ZOOM}
             className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold transition-all ${
-              zoomLevel >= MAX_ZOOM 
+              zoomLevel >= ZOOM_CONFIG.MAX_ZOOM 
                 ? 'bg-gray-600 cursor-not-allowed opacity-50' 
                 : 'bg-primary-600 hover:bg-primary-700 shadow-pixel button-pixel'
             }`}
+            aria-label="Zoom in"
+            title="Zoom in"
           >
             <Plus size={16} />
           </button>
         </div>
       </div>
       
+      {/* Modals with focus management */}
       {isFormOpen && <ActivityForm onClose={closeForm} />}
       
       {viewingTeammate && (
@@ -582,6 +603,11 @@ const Game: React.FC = () => {
       {isLeaderboardOpen && <Leaderboard />}
       
       <BadgeNotification />
+      
+      {/* Screen reader announcements */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {/* Game state announcements will be added here */}
+      </div>
     </div>
   );
 };
