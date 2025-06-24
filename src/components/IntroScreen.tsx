@@ -792,7 +792,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
       {/* Animated Header */}
       <motion.div 
-        className="py-4 bg-gray-900/50 backdrop-blur-sm z-30 text-center w-full"
+        className="py-4 z-30 text-center w-full"
         initial={{ opacity: 0, y: -50 }}
         animate={{ 
           opacity: 1, 
