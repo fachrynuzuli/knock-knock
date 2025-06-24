@@ -9,10 +9,9 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   return (
-    <div className="min-h-screen bg-gray-900 relative">
-      {/* Fixed background effects that don't interfere with scrolling */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
-        {/* Animated background particles */}
+    <div className="min-h-screen bg-gray-900 relative overflow-hidden">
+      {/* Animated background particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {[...Array(EFFECTS_CONFIG.INTRO_PARTICLES)].map((_, i) => (
           <motion.div
             key={i}
@@ -32,15 +31,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             }}
           />
         ))}
-        
-        {/* Scanlines effect */}
-        <div className="absolute inset-0 scanlines-effect" />
       </div>
 
-      {/* Scrollable content */}
-      <div className="relative z-10">
+      {/* Scanlines effect */}
+      <div className="absolute inset-0 pointer-events-none z-10 scanlines-effect" aria-hidden="true" />
+
+      {/* Main Content */}
+      <div className="relative z-20 flex flex-col min-h-screen">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-4 py-12">
+        <section className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-6xl mx-auto text-center">
             {/* Logo/Icon */}
             <motion.div
@@ -117,7 +116,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 px-4 bg-gray-800 bg-opacity-50">
+        <section className="py-16 px-4">
           <div className="max-w-6xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
@@ -188,7 +187,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         </section>
 
         {/* How It Works Section */}
-        <section className="py-16 px-4">
+        <section className="py-16 px-4 bg-gray-800 bg-opacity-30">
           <div className="max-w-6xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
@@ -267,111 +266,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 <p className="text-gray-300 font-pixel text-sm">
                   Earn badges and upgrade your house as you contribute
                 </p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Benefits Section */}
-        <section className="py-16 px-4 bg-gray-800 bg-opacity-30">
-          <div className="max-w-4xl mx-auto">
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="text-3xl md:text-4xl font-heading text-white text-center mb-12 glow-text-subtle"
-            >
-              Perfect For Modern Teams
-            </motion.h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1, duration: 0.8 }}
-                viewport={{ once: true }}
-                className="space-y-4"
-              >
-                <div className="flex items-start space-x-3">
-                  <div className="bg-primary-600 p-2 rounded-full flex-shrink-0">
-                    <Target className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-heading text-primary-400 mb-1">Remote Teams</h3>
-                    <p className="text-gray-300 font-pixel text-sm">
-                      Bridge the gap between distributed team members with visual, engaging updates
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="bg-secondary-600 p-2 rounded-full flex-shrink-0">
-                    <Users className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-heading text-secondary-400 mb-1">Agile Teams</h3>
-                    <p className="text-gray-300 font-pixel text-sm">
-                      Perfect for sprint retrospectives and weekly standup alternatives
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="bg-warning-600 p-2 rounded-full flex-shrink-0">
-                    <Star className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-heading text-warning-400 mb-1">Creative Teams</h3>
-                    <p className="text-gray-300 font-pixel text-sm">
-                      Showcase creative work and celebrate artistic achievements in style
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-                viewport={{ once: true }}
-                className="space-y-4"
-              >
-                <div className="flex items-start space-x-3">
-                  <div className="bg-success-600 p-2 rounded-full flex-shrink-0">
-                    <Trophy className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-heading text-success-400 mb-1">Project Teams</h3>
-                    <p className="text-gray-300 font-pixel text-sm">
-                      Track project milestones and celebrate major deliverables together
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="bg-primary-600 p-2 rounded-full flex-shrink-0">
-                    <BarChart3 className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-heading text-primary-400 mb-1">Leadership Teams</h3>
-                    <p className="text-gray-300 font-pixel text-sm">
-                      Get clear visibility into team productivity and individual contributions
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <div className="bg-secondary-600 p-2 rounded-full flex-shrink-0">
-                    <Sparkles className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-heading text-secondary-400 mb-1">Innovation Teams</h3>
-                    <p className="text-gray-300 font-pixel text-sm">
-                      Perfect for R&D teams who want to showcase experimental work and breakthroughs
-                    </p>
-                  </div>
-                </div>
               </motion.div>
             </div>
           </div>
