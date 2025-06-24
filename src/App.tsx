@@ -5,13 +5,14 @@ import { updatePlayerPosition, initializeGameTime } from './store/slices/gameSta
 import Game from './components/Game';
 import IntroScreen from './components/IntroScreen';
 import LoadingScreen from './components/LoadingScreen';
+import LandingPage from './components/LandingPage';
 import { GameProvider } from './contexts/GameContext';
-import { Maximize2 } from 'lucide-react';
 
 function App() {
   const dispatch = useDispatch();
+  const [showLandingPage, setShowLandingPage] = useState(true);
   const [gameStarted, setGameStarted] = useState(false);
-  const [isLoadingAssets, setIsLoadingAssets] = useState(true);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(false);
   
   // Get player position and teammate data from Redux
   const playerPosition = useSelector((state: RootState) => state.gameState.playerPosition);
@@ -19,28 +20,22 @@ function App() {
     state.teammates.items.find(teammate => teammate.isPlayer)
   );
 
+  const handleEnterGameFlow = () => {
+    setShowLandingPage(false);
+    // Start loading assets when entering game flow
+    setIsLoadingAssets(true);
+    
+    // Simulate asset loading
+    setTimeout(() => {
+      setIsLoadingAssets(false);
+    }, 3000);
+  };
+
   const handleStartGame = () => {
     // Initialize game time when starting
     dispatch(initializeGameTime());
     setGameStarted(true);
   };
-
-  const handleFullscreen = async () => {
-    try {
-      await document.documentElement.requestFullscreen();
-    } catch (err) {
-      console.error('Could not enter fullscreen mode:', err);
-    }
-  };
-
-  // Loading screen effect
-  useEffect(() => {
-    const loadingTimer = setTimeout(() => {
-      setIsLoadingAssets(false);
-    }, 3000); // 3 second loading simulation
-
-    return () => clearTimeout(loadingTimer);
-  }, []);
 
   // Dynamic player spawn position initialization
   useEffect(() => {
@@ -63,9 +58,14 @@ function App() {
     }
   }, [gameStarted, playerTeammate, playerPosition, dispatch]);
 
-  // Show loading screen first
+  // Show landing page first
+  if (showLandingPage) {
+    return <LandingPage onEnterGameFlow={handleEnterGameFlow} />;
+  }
+
+  // Show loading screen during asset loading
   if (isLoadingAssets) {
-    return <LoadingScreen />;
+    return <LoadingScreen message="Loading your neighborhood..." />;
   }
 
   // Show loading screen if game started but player position not initialized
@@ -82,19 +82,6 @@ function App() {
           <Game />
         )}
       </GameProvider>
-      
-      {/* Built on Bolt Badge - COMMENTED OUT */}
-      {/*
-      <div className="fixed bottom-0 left-0 z-50">
-        <div className="transform transition-transform hover:scale-105">
-          <img 
-            src="/built_on_bolt_new.png" 
-            alt="Built on Bolt" 
-            className="max-w-32"
-          />
-        </div>
-      </div>
-      */}
     </div>
   );
 }
