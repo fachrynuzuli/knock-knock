@@ -9,7 +9,7 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-900 relative">
       {/* Animated background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {[...Array(EFFECTS_CONFIG.INTRO_PARTICLES)].map((_, i) => (
@@ -37,7 +37,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
       <div className="absolute inset-0 pointer-events-none z-10 scanlines-effect" aria-hidden="true" />
 
       {/* Main Content */}
-      <div className="relative z-20 flex flex-col min-h-screen">
+      <div className="relative z-20 flex flex-col">
         {/* Hero Section */}
         <section className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-6xl mx-auto text-center">

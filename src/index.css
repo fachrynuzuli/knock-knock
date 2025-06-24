@@ -9,10 +9,10 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden; /* Changed from overflow: hidden to allow vertical scrolling */
   height: 100%;
   font-family: 'Silkscreen', cursive;
-  cursor: default; /* Changed from crosshair to default */
+  cursor: default;
 }
 
 body {
