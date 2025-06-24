@@ -263,7 +263,7 @@ body {
 .glow-border {
   box-shadow: 
     0 0 30px rgba(99, 102, 241, 0.5),
-    inset 0 0 0px rgba(99, 102, 241, 0.1);
+    inset 0 0 20px rgba(99, 102, 241, 0.1);
 }
 
 .glow-border-subtle {
