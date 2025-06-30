@@ -6,15 +6,19 @@ import Game from './components/Game';
 import IntroScreen from './components/IntroScreen';
 import LoadingScreen from './components/LoadingScreen';
 import LandingPage from './components/LandingPage';
-import { GameProvider } from './contexts/GameContext';
+import { GameProvider, useGameContext } from './contexts/GameContext';
 
-function App() {
+// Create a wrapper component to access GameContext
+const AppContent: React.FC = () => {
   const dispatch = useDispatch();
   const [isReturningUser, setIsReturningUser] = useState<boolean | null>(null); // null = checking
   const [showLandingPage, setShowLandingPage] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [isLoadingAssets, setIsLoadingAssets] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState('');
+  
+  // Access game context for form states
+  const { isFormOpen, viewingTeammate } = useGameContext();
   
   // Get player position and teammate data from Redux
   const playerPosition = useSelector((state: RootState) => state.gameState.playerPosition);
@@ -112,13 +116,31 @@ function App() {
   }
 
   return (
+    <div className="w-full h-full overflow-hidden relative">
+      {!gameStarted ? (
+        <IntroScreen onStartGame={handleStartGame} />
+      ) : (
+        <Game />
+      )}
+      
+      {/* Global Bolt Logo - positioned at bottom-left with conditional opacity */}
+      <img
+        src="/built_on_bolt_new.png"
+        alt="Built with Bolt"
+        className={`absolute bottom-4 left-4 z-50 w-16 h-16 transition-opacity duration-300 ${
+          isFormOpen || viewingTeammate ? 'opacity-50' : 'opacity-100'
+        }`}
+        style={{ imageRendering: 'auto' }}
+      />
+    </div>
+  );
+};
+
+function App() {
+  return (
     <div className="w-full h-full overflow-hidden">
       <GameProvider>
-        {!gameStarted ? (
-          <IntroScreen onStartGame={handleStartGame} />
-        ) : (
-          <Game />
-        )}
+        <AppContent />
       </GameProvider>
     </div>
   );
