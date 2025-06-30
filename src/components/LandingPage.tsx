@@ -226,8 +226,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               }}
               className="text-lg md:text-xl text-gray-300 mb-12 max-w-3xl mx-auto font-pixel leading-relaxed"
             >
-              Say goodbye to boring weekly status updates. Build your virtual neighborhood, 
-              showcase your accomplishments, and celebrate your team's success in a gamified experience 
+              Say goodbye to boring weekly status updates. Build your virtual neighborhood and celebrate your team's success in a gamified experience 
               that makes reporting actually enjoyable.
             </motion.p>
 
