@@ -107,11 +107,11 @@ const AppContent: React.FC = () => {
       <div className="relative">
         <LandingPage onEnterGameFlow={handleEnterGameFlow} />
         
-        {/* Global Bolt Logo for landing page */}
+        {/* Global Bolt Logo for landing page - with spinning animation */}
         <img
           src="/white_circle_360x360.png"
           alt="Built with Bolt"
-          className="fixed bottom-4 left-4 z-50 w-16 h-16 opacity-100"
+          className="fixed bottom-4 left-4 z-50 w-16 h-16 opacity-100 bolt-logo-spin"
           style={{ imageRendering: 'auto' }}
         />
       </div>
@@ -131,11 +131,11 @@ const AppContent: React.FC = () => {
         <Game />
       )}
       
-      {/* Global Bolt Logo - positioned at bottom-left with conditional opacity */}
+      {/* Global Bolt Logo - positioned at bottom-left with conditional opacity and spinning animation */}
       <img
         src="/white_circle_360x360.png"
         alt="Built with Bolt"
-        className={`absolute bottom-4 left-4 z-50 w-16 h-16 transition-opacity duration-300 ${
+        className={`absolute bottom-4 left-4 z-50 w-16 h-16 transition-opacity duration-300 bolt-logo-spin ${
           isFormOpen || viewingTeammate ? 'opacity-50' : 'opacity-100'
         }`}
         style={{ imageRendering: 'auto' }}

@@ -57,6 +57,20 @@ body {
   box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.5);
 }
 
+/* Bolt Logo Spinning Animation */
+@keyframes bolt-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bolt-logo-spin {
+  animation: bolt-spin 8s linear infinite;
+}
+
 /* Character styles */
 .character {
   image-rendering: pixelated;
