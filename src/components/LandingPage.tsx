@@ -86,7 +86,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                       transition={{
                         duration: 1.2,
                         repeat: Infinity,
-                        ease: "steps(6, end)"
+                        ease: "linear"
                       }}
                       style={{
                         backgroundImage: 'inherit',
