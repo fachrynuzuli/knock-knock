@@ -723,6 +723,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         */}
 
         {/* Final CTA Section with dramatic enhanced parallax */}
+        {/*
         <motion.section 
           className="py-16 px-4 parallax-section scroll-snap-section"
           style={{ y: finalCtaY, scale: finalCtaScale }}
@@ -764,6 +765,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             </motion.div>
           </div>
         </motion.section>
+        */}
 
         {/* Footer */}
         <footer className="py-8 px-4 border-t border-gray-700">
