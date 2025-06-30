@@ -576,7 +576,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         >
           <div className="max-w-6xl mx-auto">
             <motion.h2
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ 
                 duration: 0.8,
