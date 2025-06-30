@@ -10,7 +10,7 @@ interface LandingPageProps {
 
 const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   return (
-    <div className="min-h-screen bg-gray-900 relative">
+    <div className="min-h-screen bg-gray-900 relative overflow-y-auto">
       {/* Animated background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {[...Array(EFFECTS_CONFIG.INTRO_PARTICLES)].map((_, i) => (
@@ -63,14 +63,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                   className="p-6 rounded-2xl shadow-pixel glow-border"
                   style={{ backgroundColor: 'transparent' }}
                 >
-                  {/* 3x Scaled Male Character Walking Right */}
+                  {/* 1.5x Scaled Male Character Walking Right */}
                   <WalkingCharacterAnimation
                     spritePath="/lv1_male_civilian.png"
                     frameWidth={64}
                     frameHeight={64}
                     frameCount={6}
                     directionRowIndex={2} // Right direction
-                    scale={3} // 3x bigger
+                    scale={1.5} // 1.5x size instead of 3x
                     className=""
                   />
                 </motion.div>
