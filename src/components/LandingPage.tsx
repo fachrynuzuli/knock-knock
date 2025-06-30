@@ -117,16 +117,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
       // Show instruction with fade effect
       setShowScrollInstruction(true);
       
-      // Auto-scroll to start the parallax experience
+      // 🎯 AUTO-SCROLL TO NEXT SECTION (Game Demo)
       containerRef.current.scrollTo({
-        top: window.innerHeight * 0.3, // Scroll down 30% of viewport
+        top: window.innerHeight, // Scroll exactly one viewport height down
         behavior: 'smooth'
       });
       
-      // Hide instruction after 3 seconds
+      // Hide instruction after 4 seconds (longer to let user see it)
       setTimeout(() => {
         setShowScrollInstruction(false);
-      }, 3000);
+      }, 4000);
     }
   };
 
@@ -140,33 +140,52 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         style={{ imageRendering: 'auto' }}
       />
 
-      {/* Scroll Instruction Overlay */}
+      {/* 🌟 ENHANCED SCROLL UNLOCKED NOTIFICATION - Low Opacity Style */}
       <AnimatePresence>
         {showScrollInstruction && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
+            initial={{ opacity: 0, y: -30, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.8 }}
+            transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+            className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none"
           >
             <motion.div
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="bg-gray-900/90 backdrop-blur-sm rounded-lg p-6 border-2 border-primary-500 glow-border"
+              animate={{ 
+                opacity: [0.9, 0.4, 0.9],
+                scale: [1, 1.02, 1]
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity,
+                ease: [0.4, 0, 0.6, 1]
+              }}
+              className="bg-gray-900/30 backdrop-blur-md rounded-2xl px-8 py-4 border border-primary-400/30 shadow-2xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.2) 0%, rgba(99, 102, 241, 0.1) 50%, rgba(17, 24, 39, 0.2) 100%)',
+                boxShadow: '0 0 40px rgba(99, 102, 241, 0.2), inset 0 0 20px rgba(99, 102, 241, 0.05)'
+              }}
             >
               <div className="text-center">
-                <div className="text-primary-400 font-heading text-xl mb-2 glow-text">
-                  ✨ Scroll Unlocked! ✨
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  className="text-primary-400/80 font-heading text-2xl mb-2"
+                >
+                  ✨
+                </motion.div>
+                <div className="text-white/70 font-heading text-lg mb-1 glow-text-subtle">
+                  Scroll Unlocked!
                 </div>
-                <div className="text-white font-pixel text-sm">
-                  Scroll to bottom to experience the magic
+                <div className="text-gray-300/60 font-pixel text-sm">
+                  Experience the parallax magic below
                 </div>
                 <motion.div
-                  animate={{ y: [0, 10, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
+                  animate={{ y: [0, 8, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: [0.4, 0, 0.6, 1] }}
                   className="mt-3"
                 >
-                  <ChevronDown className="w-6 h-6 text-primary-400 mx-auto" />
+                  <ChevronDown className="w-5 h-5 text-primary-400/60 mx-auto" />
                 </motion.div>
               </div>
             </motion.div>
@@ -347,7 +366,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform duration-300 ease-out" />
               </motion.button>
 
-              {/* MAGICAL SCROLL UNLOCK ARROW BUTTON */}
+              {/* 🎯 MAGICAL AUTO-SCROLL ARROW BUTTON */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
