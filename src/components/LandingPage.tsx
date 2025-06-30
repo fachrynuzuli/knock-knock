@@ -61,10 +61,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   const featuresY = useSpring(useTransform(scrollYProgress, [0.3, 0.7], [120, -60]), springConfig);
   const featuresOpacity = useSpring(useTransform(scrollYProgress, [0.3, 0.5, 0.9], [0, 1, 0.7]), springConfig);
   
-  // How it works section - staggered parallax with spring
-  const howItWorksY = useSpring(useTransform(scrollYProgress, [0.5, 0.9], [180, -120]), springConfig);
-  const howItWorksScale = useSpring(useTransform(scrollYProgress, [0.5, 0.7], [0.9, 1]), springConfig);
-  
   // Final CTA - dramatic entrance with spring physics
   const finalCtaY = useSpring(useTransform(scrollYProgress, [0.7, 1], [250, -180]), springConfig);
   const finalCtaScale = useSpring(useTransform(scrollYProgress, [0.8, 1], [0.8, 1.1]), springConfig);
@@ -569,11 +565,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
           </div>
         </motion.section>
 
-        {/* How It Works Section with enhanced staggered parallax */}
-        <motion.section 
-          className="py-16 px-4 bg-gray-800 bg-opacity-30 parallax-section scroll-snap-section"
-          style={{ y: howItWorksY, scale: howItWorksScale }}
-        >
+        {/* How It Works Section - FIXED: Removed parallax transformations */}
+        <section className="py-16 px-4 bg-gray-800 bg-opacity-30 scroll-snap-section">
           <div className="max-w-6xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -722,7 +715,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               </motion.div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
         {/* Final CTA Section with dramatic enhanced parallax */}
         <motion.section 
