@@ -60,7 +60,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     repeat: Infinity, 
                     ease: "easeInOut" 
                   }}
-                  className="p-6 rounded-2xl shadow-pixel"
+                  className="p-6 rounded-2xl"
                   style={{ backgroundColor: 'transparent' }}
                 >
                   {/* 1.5x Scaled Male Character Walking Right */}
@@ -117,7 +117,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={onEnterGameFlow}
-              className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-lg md:text-xl px-8 py-4 rounded-lg shadow-pixel neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
+              className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-lg md:text-xl px-8 py-4 rounded-lg neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
             >
               <Play className="w-6 h-6 group-hover:animate-pulse" />
               <span>Start Your Adventure</span>
@@ -219,7 +219,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="bg-primary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4 shadow-pixel">
+                <div className="bg-primary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
                   1
                 </div>
                 <h3 className="text-lg font-heading text-primary-400 mb-2">Create Neighborhood</h3>
@@ -236,7 +236,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="bg-secondary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4 shadow-pixel">
+                <div className="bg-secondary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
                   2
                 </div>
                 <h3 className="text-lg font-heading text-secondary-400 mb-2">Log Activities</h3>
@@ -253,7 +253,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="bg-warning-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4 shadow-pixel">
+                <div className="bg-warning-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
                   3
                 </div>
                 <h3 className="text-lg font-heading text-warning-400 mb-2">Explore & Engage</h3>
@@ -270,7 +270,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 viewport={{ once: true }}
                 className="text-center"
               >
-                <div className="bg-success-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4 shadow-pixel">
+                <div className="bg-success-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
                   4
                 </div>
                 <h3 className="text-lg font-heading text-success-400 mb-2">Level Up</h3>
@@ -302,7 +302,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onEnterGameFlow}
-                className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-xl px-10 py-5 rounded-lg shadow-pixel neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
+                className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-xl px-10 py-5 rounded-lg neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
               >
                 <Sparkles className="w-6 h-6 group-hover:animate-pulse" />
                 <span>Get Started Now</span>

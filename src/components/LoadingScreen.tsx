@@ -48,7 +48,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="p-4 rounded-full shadow-pixel"
+              className="p-4 rounded-full"
               style={{ backgroundColor: 'transparent' }}
               aria-hidden="true"
             >
@@ -82,7 +82,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           {/* Pixel Art Loading Bar */}
           <div 
-            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden shadow-pixel"
+            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden"
             style={{ width: '256px', height: '16px' }}
             role="progressbar"
             aria-label="Loading progress"
@@ -124,7 +124,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                   repeatType: "reverse",
                   repeatDelay: 1
                 }}
-                className="w-8 h-8 bg-primary-600 border-2 border-primary-800 rounded-sm shadow-pixel"
+                className="w-8 h-8 bg-primary-600 border-2 border-primary-800 rounded-sm"
                 style={{
                   clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
                 }}
