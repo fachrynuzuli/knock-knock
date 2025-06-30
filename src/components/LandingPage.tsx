@@ -60,7 +60,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     repeat: Infinity, 
                     ease: "easeInOut" 
                   }}
-                  className="p-6 rounded-2xl shadow-pixel glow-border"
+                  className="p-6 rounded-2xl shadow-pixel"
                   style={{ backgroundColor: 'transparent' }}
                 >
                   {/* 1.5x Scaled Male Character Walking Right */}
@@ -117,7 +117,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               onClick={onEnterGameFlow}
-              className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-lg md:text-xl px-8 py-4 rounded-lg shadow-pixel neon-button glow-border transition-all duration-300 flex items-center space-x-3 mx-auto"
+              className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-lg md:text-xl px-8 py-4 rounded-lg shadow-pixel neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
             >
               <Play className="w-6 h-6 group-hover:animate-pulse" />
               <span>Start Your Adventure</span>
@@ -302,7 +302,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onEnterGameFlow}
-                className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-xl px-10 py-5 rounded-lg shadow-pixel neon-button glow-border transition-all duration-300 flex items-center space-x-3 mx-auto"
+                className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-xl px-10 py-5 rounded-lg shadow-pixel neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
               >
                 <Sparkles className="w-6 h-6 group-hover:animate-pulse" />
                 <span>Get Started Now</span>

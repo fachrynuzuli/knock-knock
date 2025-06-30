@@ -82,7 +82,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           {/* Pixel Art Loading Bar */}
           <div 
-            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden shadow-pixel glow-border"
+            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden shadow-pixel"
             style={{ width: '256px', height: '16px' }}
             role="progressbar"
             aria-label="Loading progress"
