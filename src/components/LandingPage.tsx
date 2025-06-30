@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Play, Users, Trophy, Star, ArrowRight, Sparkles, Target, BarChart3 } from 'lucide-react';
 import { ANIMATION_CONFIG, EFFECTS_CONFIG } from '../config/gameConfig';
+import WalkingCharacterAnimation from './WalkingCharacterAnimation';
 
 interface LandingPageProps {
   onEnterGameFlow: () => void;
@@ -62,38 +63,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                   className="bg-primary-600 p-6 rounded-2xl shadow-pixel glow-border"
                 >
                   {/* Male Character Walking Right */}
-                  <div 
-                    className="w-16 h-16 relative"
-                    style={{
-                      imageRendering: 'pixelated',
-                    }}
-                  >
-                    <motion.div
-                      className="w-full h-full"
-                      animate={{
-                        backgroundPosition: [
-                          '-0px -128px',    // Frame 1 (right direction, row 2 - index 2)
-                          '-64px -128px',   // Frame 2
-                          '-128px -128px',  // Frame 3
-                          '-192px -128px',  // Frame 4
-                          '-256px -128px',  // Frame 5
-                          '-320px -128px',  // Frame 6
-                        ]
-                      }}
-                      transition={{
-                        duration: 1.2,
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                      style={{
-                        backgroundImage: 'url(/lv1_male_civilian.png)',
-                        backgroundSize: '384px 256px', // 6 frames * 64px width, 4 rows * 64px height
-                        backgroundRepeat: 'no-repeat',
-                        imageRendering: 'pixelated',
-                        backgroundColor: 'transparent',
-                      }}
-                    />
-                  </div>
+                  <WalkingCharacterAnimation
+                    spritePath="/lv1_male_civilian.png"
+                    frameWidth={64}
+                    frameHeight={64}
+                    frameCount={6}
+                    directionRowIndex={2} // Right direction
+                    className="w-16 h-16"
+                  />
                 </motion.div>
               </div>
             </motion.div>
