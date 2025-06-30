@@ -9,7 +9,7 @@ interface WalkingCharacterAnimationProps {
   directionRowIndex: number;
   className?: string;
   style?: React.CSSProperties;
-  scale?: number; // New prop for scaling
+  scale?: number;
 }
 
 const WalkingCharacterAnimation: React.FC<WalkingCharacterAnimationProps> = ({
@@ -20,7 +20,7 @@ const WalkingCharacterAnimation: React.FC<WalkingCharacterAnimationProps> = ({
   directionRowIndex,
   className = '',
   style = {},
-  scale = 1, // Default scale
+  scale = 3,
 }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
 

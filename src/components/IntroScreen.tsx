@@ -5,6 +5,7 @@ import { RootState } from '../store';
 import { MapPin, Lock, Users, UserPlus, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAvatarById, getAllAvatarIds, isAvatarUnlocked, getAvatarUnlockMessage } from '../data/avatars';
 import AvatarCarousel from './AvatarCarousel';
+import WalkingCharacterAnimation from './WalkingCharacterAnimation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ANIMATION_CONFIG, EFFECTS_CONFIG, UI_CONFIG, ACCESSIBILITY_CONFIG } from '../config/gameConfig';
 
@@ -661,7 +662,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   aria-live="polite"
                 >
                   {lockedMessage}
-                </motion.div>
+                </div>
               )}
 
               <div className="pt-3 border-t border-gray-700">
