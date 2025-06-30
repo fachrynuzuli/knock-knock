@@ -104,17 +104,7 @@ const AppContent: React.FC = () => {
   // Show landing page for new users (with scroll enabled)
   if (showLandingPage && !isReturningUser) {
     return (
-      <div className="relative">
-        <LandingPage onEnterGameFlow={handleEnterGameFlow} />
-        
-        {/* Global Bolt Logo for landing page - with spinning animation and responsive sizing */}
-        <img
-          src="/white_circle_360x360.png"
-          alt="Built with Bolt"
-          className="fixed bottom-2 left-2 z-50 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 opacity-100 bolt-logo-spin"
-          style={{ imageRendering: 'auto' }}
-        />
-      </div>
+      <LandingPage onEnterGameFlow={handleEnterGameFlow} />
     );
   }
 
@@ -146,11 +136,9 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <div className="w-full h-full overflow-hidden">
-      <GameProvider>
-        <AppContent />
-      </GameProvider>
-    </div>
+    <GameProvider>
+      <AppContent />
+    </GameProvider>
   );
 }
 

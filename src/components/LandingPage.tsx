@@ -20,7 +20,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-y-auto">
+    <div className="min-h-screen bg-gray-900 relative">
+      {/* Global Bolt Logo for landing page - with spinning animation and responsive sizing */}
+      <img
+        src="/white_circle_360x360.png"
+        alt="Built with Bolt"
+        className="fixed bottom-2 left-2 z-50 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 opacity-100 bolt-logo-spin"
+        style={{ imageRendering: 'auto' }}
+      />
+
       {/* Animated background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {[...Array(EFFECTS_CONFIG.INTRO_PARTICLES)].map((_, i) => (
@@ -50,7 +58,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
       {/* Main Content - Scrollable */}
       <div className="relative z-20 flex flex-col">
         {/* Hero Section */}
-        <section className="flex-1 flex items-center justify-center px-4 py-12 min-h-screen">
+        <section className="flex-1 flex items-center justify-center px-4 py-12">
           <div className="max-w-6xl mx-auto text-center">
             {/* Logo/Icon */}
             <motion.div
