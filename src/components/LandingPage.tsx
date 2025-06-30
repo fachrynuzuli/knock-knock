@@ -355,7 +355,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 🎮 Try It Right Now!
               </h2>
               <p className="text-lg md:text-xl text-gray-300 font-pixel max-w-3xl mx-auto leading-relaxed">
-                This isn't a video - it's the <span className="text-primary-400 font-bold">actual game running live!</span> 
+                This isn't a video, it's the <span className="text-primary-400 font-bold">actual game running live! </span> 
                 Use <span className="text-secondary-400 font-bold">WASD to move</span>, <span className="text-warning-400 font-bold">arrows to pan camera</span>, and <span className="text-success-400 font-bold">E to interact</span>!
               </p>
             </motion.div>
