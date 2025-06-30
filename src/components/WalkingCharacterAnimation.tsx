@@ -9,6 +9,7 @@ interface WalkingCharacterAnimationProps {
   directionRowIndex: number;
   className?: string;
   style?: React.CSSProperties;
+  scale?: number; // New prop for scaling
 }
 
 const WalkingCharacterAnimation: React.FC<WalkingCharacterAnimationProps> = ({
@@ -19,6 +20,7 @@ const WalkingCharacterAnimation: React.FC<WalkingCharacterAnimationProps> = ({
   directionRowIndex,
   className = '',
   style = {},
+  scale = 1, // Default scale
 }) => {
   const [currentFrame, setCurrentFrame] = useState(0);
 
@@ -34,13 +36,21 @@ const WalkingCharacterAnimation: React.FC<WalkingCharacterAnimationProps> = ({
   const x = currentFrame * frameWidth;
   const y = directionRowIndex * frameHeight;
 
+  // Calculate scaled dimensions
+  const scaledWidth = frameWidth * scale;
+  const scaledHeight = frameHeight * scale;
+  const totalSpriteWidth = frameWidth * frameCount * scale;
+  const totalSpriteHeight = frameHeight * 4 * scale; // Assuming 4 rows for directions
+
   return (
     <div
       className={`${className}`}
       style={{
+        width: `${scaledWidth}px`,
+        height: `${scaledHeight}px`,
         backgroundImage: `url(${spritePath})`,
-        backgroundPosition: `-${x}px -${y}px`,
-        backgroundSize: `${frameWidth * frameCount}px ${frameHeight * 4}px`, // Assuming 4 rows for directions
+        backgroundPosition: `-${x * scale}px -${y * scale}px`,
+        backgroundSize: `${totalSpriteWidth}px ${totalSpriteHeight}px`,
         backgroundRepeat: 'no-repeat',
         imageRendering: 'pixelated',
         backgroundColor: 'transparent',

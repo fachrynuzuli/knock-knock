@@ -60,16 +60,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     repeat: Infinity, 
                     ease: "easeInOut" 
                   }}
-                  className="bg-primary-600 p-6 rounded-2xl shadow-pixel glow-border"
+                  className="p-6 rounded-2xl shadow-pixel glow-border"
+                  style={{ backgroundColor: 'transparent' }}
                 >
-                  {/* Male Character Walking Right */}
+                  {/* 3x Scaled Male Character Walking Right */}
                   <WalkingCharacterAnimation
                     spritePath="/lv1_male_civilian.png"
                     frameWidth={64}
                     frameHeight={64}
                     frameCount={6}
                     directionRowIndex={2} // Right direction
-                    className="w-16 h-16"
+                    scale={3} // 3x bigger
+                    className=""
                   />
                 </motion.div>
               </div>

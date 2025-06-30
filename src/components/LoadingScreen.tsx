@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Gamepad2, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { ANIMATION_CONFIG, UI_CONFIG, EFFECTS_CONFIG } from '../config/gameConfig';
+import WalkingCharacterAnimation from './WalkingCharacterAnimation';
 
 interface LoadingScreenProps {
   onLoadingComplete?: () => void;
@@ -47,10 +48,20 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="bg-primary-600 p-4 rounded-full shadow-pixel"
+              className="p-4 rounded-full shadow-pixel"
+              style={{ backgroundColor: 'transparent' }}
               aria-hidden="true"
             >
-              <Gamepad2 className="w-12 h-12 text-white" />
+              {/* 2x Scaled Male Character Walking Right */}
+              <WalkingCharacterAnimation
+                spritePath="/lv1_male_civilian.png"
+                frameWidth={64}
+                frameHeight={64}
+                frameCount={6}
+                directionRowIndex={2} // Right direction
+                scale={2} // 2x bigger for loading screen
+                className=""
+              />
             </motion.div>
           </div>
           
@@ -71,7 +82,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           {/* Pixel Art Loading Bar */}
           <div 
-            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden shadow-pixel"
+            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden shadow-pixel glow-border"
             style={{ width: '256px', height: '16px' }}
             role="progressbar"
             aria-label="Loading progress"
