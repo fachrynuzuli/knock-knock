@@ -720,7 +720,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             </div>
           </div>
         </motion.section>
-        */}
 
         {/* Final CTA Section with dramatic enhanced parallax */}
         <motion.section 
