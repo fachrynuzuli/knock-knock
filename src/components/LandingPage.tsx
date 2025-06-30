@@ -62,8 +62,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   const featuresOpacity = useSpring(useTransform(scrollYProgress, [0.3, 0.5, 0.9], [0, 1, 0.7]), springConfig);
   
   // How it works section - staggered parallax with spring
-  // const howItWorksY = useSpring(useTransform(scrollYProgress, [0.5, 0.9], [180, -120]), springConfig);
-  // const howItWorksScale = useSpring(useTransform(scrollYProgress, [0.5, 0.7], [0.9, 1]), springConfig);
+  const howItWorksY = useSpring(useTransform(scrollYProgress, [0.5, 0.9], [180, -120]), springConfig);
+  const howItWorksScale = useSpring(useTransform(scrollYProgress, [0.5, 0.7], [0.9, 1]), springConfig);
   
   // Final CTA - dramatic entrance with spring physics
   const finalCtaY = useSpring(useTransform(scrollYProgress, [0.7, 1], [250, -180]), springConfig);
