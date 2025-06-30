@@ -14,7 +14,7 @@ const AppContent: React.FC = () => {
   const [isReturningUser, setIsReturningUser] = useState<boolean | null>(null); // null = checking
   const [showLandingPage, setShowLandingPage] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-  const [isLoadingAssets, setIsLoadingAssets] = useState(true);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(false); // Changed to false initially
   const [loadingMessage, setLoadingMessage] = useState('');
   
   // Access game context for form states
@@ -41,6 +41,7 @@ const AppContent: React.FC = () => {
         // Returning user - show loading and prepare to enter game
         setLoadingMessage('Welcome back! Loading your neighborhood...');
         setShowLandingPage(false);
+        setIsLoadingAssets(true);
         
         // Simulate loading for returning users (shorter duration)
         setTimeout(() => {
@@ -49,13 +50,8 @@ const AppContent: React.FC = () => {
           dispatch(initializeGameTime());
         }, 2000);
       } else {
-        // New user - show landing page after brief initial load
-        setLoadingMessage('Initializing game...');
-        
-        setTimeout(() => {
-          setIsLoadingAssets(false);
-          setShowLandingPage(true);
-        }, 1500);
+        // New user - show landing page immediately (no loading)
+        setShowLandingPage(true);
       }
     };
 
@@ -100,14 +96,26 @@ const AppContent: React.FC = () => {
     }
   }, [gameStarted, playerTeammate, playerPosition, dispatch]);
 
-  // Show initial loading screen while checking user status
-  if (isReturningUser === null || isLoadingAssets) {
+  // Show loading screen only for returning users or when explicitly loading assets
+  if (isLoadingAssets) {
     return <LoadingScreen message={loadingMessage} />;
   }
 
-  // Show landing page for new users
+  // Show landing page for new users (with scroll enabled)
   if (showLandingPage && !isReturningUser) {
-    return <LandingPage onEnterGameFlow={handleEnterGameFlow} />;
+    return (
+      <div className="relative">
+        <LandingPage onEnterGameFlow={handleEnterGameFlow} />
+        
+        {/* Global Bolt Logo for landing page */}
+        <img
+          src="/built_on_bolt_new.png"
+          alt="Built with Bolt"
+          className="fixed bottom-4 left-4 z-50 w-16 h-16 opacity-100"
+          style={{ imageRendering: 'auto' }}
+        />
+      </div>
+    );
   }
 
   // Show loading screen if game started but player position not initialized
