@@ -212,7 +212,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               }}
               className="text-xl md:text-2xl lg:text-3xl font-pixel text-white mb-4 glow-text-subtle"
             >
-              Transform Team Reporting Into an Adventure
+              Transform Team Reporting Into a Gamified Neighborhood Communication
             </motion.p>
 
             {/* Description */}
