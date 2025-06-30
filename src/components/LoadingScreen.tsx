@@ -46,7 +46,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           <div className="flex items-center justify-center mb-4">
             <motion.div
-              animate={{ rotate: 360 }}
+              animate={{ rotate: -360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               className="p-4 rounded-full"
               style={{ backgroundColor: 'transparent' }}
