@@ -61,13 +61,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                   }}
                   className="bg-primary-600 p-6 rounded-2xl shadow-pixel glow-border"
                 >
-                  {/* Male Character Walking in Place */}
+                  {/* Male Character Walking Right */}
                   <div 
-                    className="w-16 h-16 character"
+                    className="w-16 h-16 relative"
                     style={{
-                      backgroundImage: 'url(/lv1_male_civilian.png)',
-                      backgroundSize: '384px 256px', // 6 frames * 64px width, 4 rows * 64px height
-                      backgroundRepeat: 'no-repeat',
                       imageRendering: 'pixelated',
                     }}
                   >
@@ -75,12 +72,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                       className="w-full h-full"
                       animate={{
                         backgroundPosition: [
-                          '0px -64px',    // Frame 1 (left direction, row 1)
-                          '-64px -64px',  // Frame 2
-                          '-128px -64px', // Frame 3
-                          '-192px -64px', // Frame 4
-                          '-256px -64px', // Frame 5
-                          '-320px -64px', // Frame 6
+                          '-0px -128px',    // Frame 1 (right direction, row 2 - index 2)
+                          '-64px -128px',   // Frame 2
+                          '-128px -128px',  // Frame 3
+                          '-192px -128px',  // Frame 4
+                          '-256px -128px',  // Frame 5
+                          '-320px -128px',  // Frame 6
                         ]
                       }}
                       transition={{
@@ -89,10 +86,11 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                         ease: "linear"
                       }}
                       style={{
-                        backgroundImage: 'inherit',
-                        backgroundSize: 'inherit',
-                        backgroundRepeat: 'inherit',
-                        imageRendering: 'inherit',
+                        backgroundImage: 'url(/lv1_male_civilian.png)',
+                        backgroundSize: '384px 256px', // 6 frames * 64px width, 4 rows * 64px height
+                        backgroundRepeat: 'no-repeat',
+                        imageRendering: 'pixelated',
+                        backgroundColor: 'transparent',
                       }}
                     />
                   </div>
