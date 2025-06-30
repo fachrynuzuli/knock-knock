@@ -62,8 +62,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   const featuresOpacity = useSpring(useTransform(scrollYProgress, [0.3, 0.5, 0.9], [0, 1, 0.7]), springConfig);
   
   // How it works section - staggered parallax with spring
-  const howItWorksY = useSpring(useTransform(scrollYProgress, [0.5, 0.9], [180, -120]), springConfig);
-  const howItWorksScale = useSpring(useTransform(scrollYProgress, [0.5, 0.7], [0.9, 1]), springConfig);
+  // const howItWorksY = useSpring(useTransform(scrollYProgress, [0.5, 0.9], [180, -120]), springConfig);
+  // const howItWorksScale = useSpring(useTransform(scrollYProgress, [0.5, 0.7], [0.9, 1]), springConfig);
   
   // Final CTA - dramatic entrance with spring physics
   const finalCtaY = useSpring(useTransform(scrollYProgress, [0.7, 1], [250, -180]), springConfig);
@@ -569,7 +569,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
           </div>
         </motion.section>
 
-        {/* How It Works Section with enhanced staggered parallax */}
+        {/* HOW IT WORKS SECTION - COMMENTED OUT FOR TESTING */}
+        {/*
         <motion.section 
           className="py-16 px-4 bg-gray-800 bg-opacity-30 parallax-section scroll-snap-section"
           style={{ y: howItWorksY, scale: howItWorksScale }}
@@ -589,7 +590,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             </motion.h2>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Step 1 */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -622,7 +622,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 </p>
               </motion.div>
 
-              {/* Step 2 */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -655,7 +654,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 </p>
               </motion.div>
 
-              {/* Step 3 */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -688,7 +686,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 </p>
               </motion.div>
 
-              {/* Step 4 */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -723,6 +720,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             </div>
           </div>
         </motion.section>
+        */}
 
         {/* Final CTA Section with dramatic enhanced parallax */}
         <motion.section 
