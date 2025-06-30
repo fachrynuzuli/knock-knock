@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, Users, Trophy, Star, Gamepad2, ArrowRight, Sparkles, Target, BarChart3 } from 'lucide-react';
+import { Play, Users, Trophy, Star, ArrowRight, Sparkles, Target, BarChart3 } from 'lucide-react';
 import { ANIMATION_CONFIG, EFFECTS_CONFIG } from '../config/gameConfig';
 
 interface LandingPageProps {
@@ -61,7 +61,41 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                   }}
                   className="bg-primary-600 p-6 rounded-2xl shadow-pixel glow-border"
                 >
-                  <Gamepad2 className="w-16 h-16 text-white" />
+                  {/* Male Character Walking in Place */}
+                  <div 
+                    className="w-16 h-16 character"
+                    style={{
+                      backgroundImage: 'url(/lv1_male_civilian.png)',
+                      backgroundSize: '384px 256px', // 6 frames * 64px width, 4 rows * 64px height
+                      backgroundRepeat: 'no-repeat',
+                      imageRendering: 'pixelated',
+                    }}
+                  >
+                    <motion.div
+                      className="w-full h-full"
+                      animate={{
+                        backgroundPosition: [
+                          '0px -64px',    // Frame 1 (left direction, row 1)
+                          '-64px -64px',  // Frame 2
+                          '-128px -64px', // Frame 3
+                          '-192px -64px', // Frame 4
+                          '-256px -64px', // Frame 5
+                          '-320px -64px', // Frame 6
+                        ]
+                      }}
+                      transition={{
+                        duration: 1.2,
+                        repeat: Infinity,
+                        ease: "steps(6, end)"
+                      }}
+                      style={{
+                        backgroundImage: 'inherit',
+                        backgroundSize: 'inherit',
+                        backgroundRepeat: 'inherit',
+                        imageRendering: 'inherit',
+                      }}
+                    />
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
