@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Play, Users, Trophy, Star, ArrowRight, Sparkles, Target, BarChart3 } from 'lucide-react';
 import { ANIMATION_CONFIG, EFFECTS_CONFIG } from '../config/gameConfig';
 import WalkingCharacterAnimation from './WalkingCharacterAnimation';
@@ -19,8 +19,44 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
     };
   }, []);
 
+  // Parallax scroll effects
+  const { scrollYProgress } = useScroll();
+  
+  // Background particles - move slower than scroll (parallax background effect)
+  const particlesY = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const particlesOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.3, 0.6, 0.4, 0.1]);
+  
+  // Scanlines - subtle movement
+  const scanlinesY = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  
+  // Hero section - slight parallax movement
+  const heroY = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.95]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2, 0.4], [1, 0.8, 0.3]);
+  
+  // Title effects - zoom out and fade as user scrolls
+  const titleScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.8]);
+  const titleY = useTransform(scrollYProgress, [0, 0.3], [0, -50]);
+  
+  // Character animation - more dramatic movement
+  const characterY = useTransform(scrollYProgress, [0, 0.4], [0, -200]);
+  const characterScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.2]);
+  const characterRotate = useTransform(scrollYProgress, [0, 0.5], [0, 5]);
+  
+  // Features section - slide up effect
+  const featuresY = useTransform(scrollYProgress, [0.2, 0.6], [100, -50]);
+  const featuresOpacity = useTransform(scrollYProgress, [0.2, 0.4, 0.8], [0, 1, 0.7]);
+  
+  // How it works section - staggered parallax
+  const howItWorksY = useTransform(scrollYProgress, [0.4, 0.8], [150, -100]);
+  const howItWorksScale = useTransform(scrollYProgress, [0.4, 0.6], [0.9, 1]);
+  
+  // Final CTA - dramatic entrance
+  const finalCtaY = useTransform(scrollYProgress, [0.6, 1], [200, -150]);
+  const finalCtaScale = useTransform(scrollYProgress, [0.7, 0.9], [0.8, 1.1]);
+
   return (
-    <div className="min-h-screen bg-gray-900 relative">
+    <div className="min-h-screen bg-gray-900 relative overflow-x-hidden">
       {/* Global Bolt Logo for landing page - with spinning animation and responsive sizing */}
       <img
         src="/white_circle_360x360.png"
@@ -29,12 +65,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         style={{ imageRendering: 'auto' }}
       />
 
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+      {/* Animated background particles with parallax */}
+      <motion.div 
+        className="absolute inset-0 overflow-hidden pointer-events-none" 
+        style={{ y: particlesY, opacity: particlesOpacity }}
+        aria-hidden="true"
+      >
         {[...Array(EFFECTS_CONFIG.INTRO_PARTICLES)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary-400 rounded-full opacity-20"
+            className="absolute w-1 h-1 bg-primary-400 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -42,6 +82,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             animate={{
               y: [-20, -100],
               opacity: [0.2, 0],
+              scale: [1, 1.5, 0.5],
             }}
             transition={{
               duration: 3 + Math.random() * 2,
@@ -50,21 +91,29 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             }}
           />
         ))}
-      </div>
+      </motion.div>
 
-      {/* Scanlines effect */}
-      <div className="absolute inset-0 pointer-events-none z-10 scanlines-effect" aria-hidden="true" />
+      {/* Scanlines effect with parallax */}
+      <motion.div 
+        className="absolute inset-0 pointer-events-none z-10 scanlines-effect" 
+        style={{ y: scanlinesY }}
+        aria-hidden="true" 
+      />
 
       {/* Main Content - Scrollable */}
       <div className="relative z-20 flex flex-col">
-        {/* Hero Section */}
-        <section className="flex-1 flex items-center justify-center px-4 py-12">
+        {/* Hero Section with parallax */}
+        <motion.section 
+          className="flex-1 flex items-center justify-center px-4 py-12"
+          style={{ y: heroY, scale: heroScale, opacity: heroOpacity }}
+        >
           <div className="max-w-6xl mx-auto text-center">
-            {/* Logo/Icon */}
+            {/* Logo/Icon with enhanced parallax */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
+              style={{ y: characterY, scale: characterScale, rotate: characterRotate }}
               className="mb-8"
             >
               <div className="flex justify-center mb-6">
@@ -95,11 +144,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               </div>
             </motion.div>
 
-            {/* Main Title */}
+            {/* Main Title with zoom effect */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
+              style={{ scale: titleScale, y: titleY }}
               className="text-4xl md:text-6xl lg:text-7xl font-heading text-primary-400 mb-6 glow-text title-glow"
             >
               Knock-Knock, Shippers!
@@ -142,10 +192,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </motion.button>
           </div>
-        </section>
+        </motion.section>
 
-        {/* Features Section */}
-        <section className="py-16 px-4">
+        {/* Features Section with parallax */}
+        <motion.section 
+          className="py-16 px-4"
+          style={{ y: featuresY, opacity: featuresOpacity }}
+        >
           <div className="max-w-6xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
@@ -164,11 +217,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ scale: 1.05, y: -10 }}
                 className="game-panel text-center p-6 hover:glow-border transition-all duration-300"
               >
-                <div className="bg-primary-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <motion.div 
+                  className="bg-primary-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
                   <Users className="w-8 h-8 text-white" />
-                </div>
+                </motion.div>
                 <h3 className="text-xl font-heading text-primary-400 mb-3">Team Transparency</h3>
                 <p className="text-gray-300 font-pixel text-sm leading-relaxed">
                   See what everyone's working on in a visual, engaging neighborhood format. 
@@ -182,11 +240,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ scale: 1.05, y: -10 }}
                 className="game-panel text-center p-6 hover:glow-border transition-all duration-300"
               >
-                <div className="bg-secondary-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <motion.div 
+                  className="bg-secondary-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
                   <Trophy className="w-8 h-8 text-white" />
-                </div>
+                </motion.div>
                 <h3 className="text-xl font-heading text-secondary-400 mb-3">Gamified Progress</h3>
                 <p className="text-gray-300 font-pixel text-sm leading-relaxed">
                   Earn badges, level up your house, and celebrate achievements. 
@@ -200,11 +263,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ scale: 1.05, y: -10 }}
                 className="game-panel text-center p-6 hover:glow-border transition-all duration-300"
               >
-                <div className="bg-warning-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <motion.div 
+                  className="bg-warning-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
                   <BarChart3 className="w-8 h-8 text-white" />
-                </div>
+                </motion.div>
                 <h3 className="text-xl font-heading text-warning-400 mb-3">Smart Analytics</h3>
                 <p className="text-gray-300 font-pixel text-sm leading-relaxed">
                   Get insights into team productivity, project progress, and individual contributions 
@@ -213,10 +281,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               </motion.div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* How It Works Section */}
-        <section className="py-16 px-4 bg-gray-800 bg-opacity-30">
+        {/* How It Works Section with staggered parallax */}
+        <motion.section 
+          className="py-16 px-4 bg-gray-800 bg-opacity-30"
+          style={{ y: howItWorksY, scale: howItWorksScale }}
+        >
           <div className="max-w-6xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
@@ -235,11 +306,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.05 }}
                 className="text-center"
               >
-                <div className="bg-primary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
+                <motion.div 
+                  className="bg-primary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4"
+                  whileHover={{ rotate: 360, scale: 1.2 }}
+                  transition={{ duration: 0.5 }}
+                >
                   1
-                </div>
+                </motion.div>
                 <h3 className="text-lg font-heading text-primary-400 mb-2">Create Neighborhood</h3>
                 <p className="text-gray-300 font-pixel text-sm">
                   Set up your team's virtual neighborhood and invite members
@@ -252,11 +328,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.05 }}
                 className="text-center"
               >
-                <div className="bg-secondary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
+                <motion.div 
+                  className="bg-secondary-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4"
+                  whileHover={{ rotate: 360, scale: 1.2 }}
+                  transition={{ duration: 0.5 }}
+                >
                   2
-                </div>
+                </motion.div>
                 <h3 className="text-lg font-heading text-secondary-400 mb-2">Log Activities</h3>
                 <p className="text-gray-300 font-pixel text-sm">
                   Update your activity board with weekly accomplishments
@@ -269,11 +350,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.05 }}
                 className="text-center"
               >
-                <div className="bg-warning-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
+                <motion.div 
+                  className="bg-warning-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4"
+                  whileHover={{ rotate: 360, scale: 1.2 }}
+                  transition={{ duration: 0.5 }}
+                >
                   3
-                </div>
+                </motion.div>
                 <h3 className="text-lg font-heading text-warning-400 mb-2">Explore & Engage</h3>
                 <p className="text-gray-300 font-pixel text-sm">
                   Visit teammates' houses and celebrate their achievements
@@ -286,11 +372,16 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
                 viewport={{ once: true }}
+                whileHover={{ y: -10, scale: 1.05 }}
                 className="text-center"
               >
-                <div className="bg-success-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4">
+                <motion.div 
+                  className="bg-success-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-heading text-lg mx-auto mb-4"
+                  whileHover={{ rotate: 360, scale: 1.2 }}
+                  transition={{ duration: 0.5 }}
+                >
                   4
-                </div>
+                </motion.div>
                 <h3 className="text-lg font-heading text-success-400 mb-2">Level Up</h3>
                 <p className="text-gray-300 font-pixel text-sm">
                   Earn badges and upgrade your house as you contribute
@@ -298,10 +389,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               </motion.div>
             </div>
           </div>
-        </section>
+        </motion.section>
 
-        {/* Final CTA Section */}
-        <section className="py-16 px-4">
+        {/* Final CTA Section with dramatic parallax */}
+        <motion.section 
+          className="py-16 px-4"
+          style={{ y: finalCtaY, scale: finalCtaScale }}
+        >
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -317,7 +411,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               </p>
               
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onEnterGameFlow}
                 className="group bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-heading text-xl px-10 py-5 rounded-lg neon-button transition-all duration-300 flex items-center space-x-3 mx-auto"
@@ -328,7 +422,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               </motion.button>
             </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Footer */}
         <footer className="py-8 px-4 border-t border-gray-700">
