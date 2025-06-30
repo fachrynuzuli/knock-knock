@@ -89,8 +89,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
           if (newIsAtTop) {
             setScrollEnabled(false);
             setShowScrollInstruction(false);
-            // Re-lock the body scroll
-            document.body.style.overflow = 'hidden';
+            // Re-lock the container scroll, not body
+            if (containerRef.current) {
+              containerRef.current.style.overflow = 'hidden';
+            }
           }
         }
       }
@@ -106,22 +108,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
 
   // Handle arrow button click - UNLOCK THE SCROLL MAGIC! 🎯
   const handleScrollUnlock = () => {
-    if (!scrollEnabled) {
+    if (!scrollEnabled && containerRef.current) {
       // Enable scrolling
       setScrollEnabled(true);
       setIsAtTop(false);
-      document.body.style.overflow = 'auto';
+      containerRef.current.style.overflow = 'auto';
       
       // Show instruction with fade effect
       setShowScrollInstruction(true);
       
       // Auto-scroll to start the parallax experience
-      if (containerRef.current) {
-        containerRef.current.scrollTo({
-          top: window.innerHeight * 0.3, // Scroll down 30% of viewport
-          behavior: 'smooth'
-        });
-      }
+      containerRef.current.scrollTo({
+        top: window.innerHeight * 0.3, // Scroll down 30% of viewport
+        behavior: 'smooth'
+      });
       
       // Hide instruction after 3 seconds
       setTimeout(() => {
@@ -174,11 +174,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         )}
       </AnimatePresence>
 
-      {/* Main Scrollable Container */}
+      {/* Main Scrollable Container - FIXED: Now properly controls its own overflow */}
       <div 
         ref={containerRef}
-        className={`w-full h-screen ${scrollEnabled ? 'overflow-y-auto' : 'overflow-hidden'} smooth-scroll-container`}
+        className="w-full h-screen smooth-scroll-container"
         style={{
+          overflow: scrollEnabled ? 'auto' : 'hidden',
           scrollBehavior: scrollEnabled ? 'smooth' : 'auto'
         }}
       >
