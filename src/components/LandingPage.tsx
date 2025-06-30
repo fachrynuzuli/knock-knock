@@ -331,7 +331,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                   Scroll to see live demo
                 </motion.div>
               </motion.button>
-            </div>
+            </motion.div>
           </div>
         </motion.section>
 
