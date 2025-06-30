@@ -5,13 +5,20 @@ import { updatePlayerPosition, initializeGameTime } from './store/slices/gameSta
 import Game from './components/Game';
 import IntroScreen from './components/IntroScreen';
 import LoadingScreen from './components/LoadingScreen';
-import { GameProvider } from './contexts/GameContext';
-import { Maximize2 } from 'lucide-react';
+import LandingPage from './components/LandingPage';
+import { GameProvider, useGameContext } from './contexts/GameContext';
 
-function App() {
+// Create a wrapper component to access GameContext
+const AppContent: React.FC = () => {
   const dispatch = useDispatch();
+  const [isReturningUser, setIsReturningUser] = useState<boolean | null>(null); // null = checking
+  const [showLandingPage, setShowLandingPage] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
-  const [isLoadingAssets, setIsLoadingAssets] = useState(true);
+  const [isLoadingAssets, setIsLoadingAssets] = useState(false); // Changed to false initially
+  const [loadingMessage, setLoadingMessage] = useState('');
+  
+  // Access game context for form states
+  const { isFormOpen, viewingTeammate } = useGameContext();
   
   // Get player position and teammate data from Redux
   const playerPosition = useSelector((state: RootState) => state.gameState.playerPosition);
@@ -19,28 +26,54 @@ function App() {
     state.teammates.items.find(teammate => teammate.isPlayer)
   );
 
+  // Check if user is returning on app load
+  useEffect(() => {
+    const checkUserStatus = () => {
+      const hasRegistered = localStorage.getItem('hasRegistered');
+      const playerName = localStorage.getItem('playerName');
+      const playerAvatar = localStorage.getItem('playerAvatar');
+      
+      const isReturning = hasRegistered === 'true' && playerName && playerAvatar;
+      
+      setIsReturningUser(isReturning);
+      
+      if (isReturning) {
+        // Returning user - show loading and prepare to enter game
+        setLoadingMessage('Welcome back! Loading your neighborhood...');
+        setShowLandingPage(false);
+        setIsLoadingAssets(true);
+        
+        // Simulate loading for returning users (shorter duration)
+        setTimeout(() => {
+          setIsLoadingAssets(false);
+          setGameStarted(true);
+          dispatch(initializeGameTime());
+        }, 2000);
+      } else {
+        // New user - show landing page immediately (no loading)
+        setShowLandingPage(true);
+      }
+    };
+
+    checkUserStatus();
+  }, [dispatch]);
+
+  const handleEnterGameFlow = () => {
+    setShowLandingPage(false);
+    setIsLoadingAssets(true);
+    setLoadingMessage('Loading game assets...');
+    
+    // Simulate asset loading for new users
+    setTimeout(() => {
+      setIsLoadingAssets(false);
+    }, 3000);
+  };
+
   const handleStartGame = () => {
     // Initialize game time when starting
     dispatch(initializeGameTime());
     setGameStarted(true);
   };
-
-  const handleFullscreen = async () => {
-    try {
-      await document.documentElement.requestFullscreen();
-    } catch (err) {
-      console.error('Could not enter fullscreen mode:', err);
-    }
-  };
-
-  // Loading screen effect
-  useEffect(() => {
-    const loadingTimer = setTimeout(() => {
-      setIsLoadingAssets(false);
-    }, 3000); // 3 second loading simulation
-
-    return () => clearTimeout(loadingTimer);
-  }, []);
 
   // Dynamic player spawn position initialization
   useEffect(() => {
@@ -63,9 +96,16 @@ function App() {
     }
   }, [gameStarted, playerTeammate, playerPosition, dispatch]);
 
-  // Show loading screen first
+  // Show loading screen only for returning users or when explicitly loading assets
   if (isLoadingAssets) {
-    return <LoadingScreen />;
+    return <LoadingScreen message={loadingMessage} />;
+  }
+
+  // Show landing page for new users (with scroll enabled)
+  if (showLandingPage && !isReturningUser) {
+    return (
+      <LandingPage onEnterGameFlow={handleEnterGameFlow} />
+    );
   }
 
   // Show loading screen if game started but player position not initialized
@@ -74,28 +114,31 @@ function App() {
   }
 
   return (
-    <div className="w-full h-full overflow-hidden">
-      <GameProvider>
-        {!gameStarted ? (
-          <IntroScreen onStartGame={handleStartGame} />
-        ) : (
-          <Game />
-        )}
-      </GameProvider>
+    <div className="w-full h-full overflow-hidden relative">
+      {!gameStarted ? (
+        <IntroScreen onStartGame={handleStartGame} />
+      ) : (
+        <Game />
+      )}
       
-      {/* Built on Bolt Badge - COMMENTED OUT */}
-      {/*
-      <div className="fixed bottom-0 left-0 z-50">
-        <div className="transform transition-transform hover:scale-105">
-          <img 
-            src="/built_on_bolt_new.png" 
-            alt="Built on Bolt" 
-            className="max-w-32"
-          />
-        </div>
-      </div>
-      */}
+      {/* Global Bolt Logo - positioned at bottom-left with conditional opacity, spinning animation, and responsive sizing */}
+      <img
+        src="/white_circle_360x360.png"
+        alt="Built with Bolt"
+        className={`absolute bottom-2 left-2 z-50 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-opacity duration-300 bolt-logo-spin ${
+          isFormOpen || viewingTeammate ? 'opacity-50' : 'opacity-100'
+        }`}
+        style={{ imageRendering: 'auto' }}
+      />
     </div>
+  );
+};
+
+function App() {
+  return (
+    <GameProvider>
+      <AppContent />
+    </GameProvider>
   );
 }
 

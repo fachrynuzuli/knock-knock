@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Gamepad2, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { ANIMATION_CONFIG, UI_CONFIG, EFFECTS_CONFIG } from '../config/gameConfig';
+import WalkingCharacterAnimation from './WalkingCharacterAnimation';
 
 interface LoadingScreenProps {
   onLoadingComplete?: () => void;
@@ -18,6 +20,9 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       className="fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50"
+      role="dialog"
+      aria-label="Loading screen"
+      aria-live="polite"
     >
       {/* Background Pattern */}
       <div 
@@ -27,6 +32,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           backgroundSize: '32px 32px',
           backgroundPosition: '0 0, 0 16px, 16px -16px, -16px 0px',
         }}
+        aria-hidden="true"
       />
       
       {/* Main Content */}
@@ -40,11 +46,22 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           <div className="flex items-center justify-center mb-4">
             <motion.div
-              animate={{ rotate: 360 }}
+              animate={{ rotate: -360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="bg-primary-600 p-4 rounded-full shadow-pixel"
+              className="p-4 rounded-full"
+              style={{ backgroundColor: 'transparent' }}
+              aria-hidden="true"
             >
-              <Gamepad2 className="w-12 h-12 text-white" />
+              {/* 2x Scaled Male Character Walking Right */}
+              <WalkingCharacterAnimation
+                spritePath="/lv1_male_civilian.png"
+                frameWidth={64}
+                frameHeight={64}
+                frameCount={6}
+                directionRowIndex={2} // Right direction
+                scale={2} // 2x bigger for loading screen
+                className=""
+              />
             </motion.div>
           </div>
           
@@ -64,11 +81,19 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           className="flex flex-col items-center space-y-6"
         >
           {/* Pixel Art Loading Bar */}
-          <div className="w-64 h-4 bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden shadow-pixel">
+          <div 
+            className="bg-gray-800 border-2 border-gray-600 rounded-lg overflow-hidden"
+            style={{ width: '256px', height: '16px' }}
+            role="progressbar"
+            aria-label="Loading progress"
+            aria-valuenow={0}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          >
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
-              transition={{ duration: 2.5, ease: "easeInOut" }}
+              transition={{ duration: ANIMATION_CONFIG.LOADING_DURATION / 1000, ease: "easeInOut" }}
               className="h-full bg-gradient-to-r from-primary-600 to-secondary-500"
             />
           </div>
@@ -78,6 +103,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              aria-hidden="true"
             >
               <Loader2 className="w-6 h-6 text-primary-400" />
             </motion.div>
@@ -85,7 +111,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           </div>
 
           {/* Pixel Art Houses Animation */}
-          <div className="flex space-x-4 mt-8">
+          <div className="flex space-x-4 mt-8" aria-hidden="true">
             {[0, 1, 2, 3].map((index) => (
               <motion.div
                 key={index}
@@ -98,7 +124,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                   repeatType: "reverse",
                   repeatDelay: 1
                 }}
-                className="w-8 h-8 bg-primary-600 border-2 border-primary-800 rounded-sm shadow-pixel"
+                className="w-8 h-8 bg-primary-600 border-2 border-primary-800 rounded-sm"
                 style={{
                   clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
                 }}
@@ -123,8 +149,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       </div>
 
       {/* Floating Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {[...Array(EFFECTS_CONFIG.LOADING_PARTICLES)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-primary-400 rounded-full opacity-30"
