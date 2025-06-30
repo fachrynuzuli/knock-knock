@@ -109,7 +109,7 @@ const AppContent: React.FC = () => {
         
         {/* Global Bolt Logo for landing page */}
         <img
-          src="/built_on_bolt_new.png"
+          src="/white_circle_360x360.png"
           alt="Built with Bolt"
           className="fixed bottom-4 left-4 z-50 w-16 h-16 opacity-100"
           style={{ imageRendering: 'auto' }}
@@ -133,7 +133,7 @@ const AppContent: React.FC = () => {
       
       {/* Global Bolt Logo - positioned at bottom-left with conditional opacity */}
       <img
-        src="/built_on_bolt_new.png"
+        src="/white_circle_360x360.png"
         alt="Built with Bolt"
         className={`absolute bottom-4 left-4 z-50 w-16 h-16 transition-opacity duration-300 ${
           isFormOpen || viewingTeammate ? 'opacity-50' : 'opacity-100'
