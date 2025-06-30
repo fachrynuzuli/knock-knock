@@ -40,6 +40,8 @@ body.landing-page {
   /* GPU acceleration for smoother scrolling */
   transform: translateZ(0);
   will-change: scroll-position;
+  /* CRITICAL FIX: Ensure scroll snapping starts at the very top */
+  scroll-padding-top: 0;
 }
 
 /* Optimize scroll performance */
