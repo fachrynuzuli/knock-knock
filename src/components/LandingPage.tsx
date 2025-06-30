@@ -569,8 +569,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
           </div>
         </motion.section>
 
-        {/* HOW IT WORKS SECTION - COMMENTED OUT FOR TESTING */}
-        {/*
+        {/* HOW IT WORKS SECTION*/}
+        
         <motion.section 
           className="py-16 px-4 bg-gray-800 bg-opacity-30 parallax-section scroll-snap-section"
           style={{ y: howItWorksY, scale: howItWorksScale }}
@@ -723,7 +723,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
         */}
 
         {/* Final CTA Section with dramatic enhanced parallax */}
-        {/*
         <motion.section 
           className="py-16 px-4 parallax-section scroll-snap-section"
           style={{ y: finalCtaY, scale: finalCtaScale }}
@@ -765,7 +764,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             </motion.div>
           </div>
         </motion.section>
-      
 
         {/* Footer */}
         <footer className="py-8 px-4 border-t border-gray-700">
