@@ -27,8 +27,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
   // Enhanced parallax scroll effects with spring physics for smoother motion
   const { scrollYProgress } = useScroll();
   
-  // Create spring-based transforms for ultra-smooth scrolling
-  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 };
+  // Create spring-based transforms for ultra-smooth scrolling using centralized config
+  const springConfig = ANIMATION_CONFIG.SPRING_CONFIG;
   
   // Background particles - move slower than scroll (parallax background effect)
   const particlesY = useSpring(useTransform(scrollYProgress, [0, 1], [0, -300]), springConfig);
@@ -169,6 +169,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     frameHeight={64}
                     frameCount={6}
                     directionRowIndex={2} // Right direction
+                    rowCount={4} // Added rowCount prop
                     scale={1.5} // 1.5x size instead of 3x
                     className=""
                   />

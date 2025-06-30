@@ -49,6 +49,13 @@ export const ANIMATION_CONFIG = {
   
   // Hover effects
   HOVER_TRANSITION_DURATION: 200, // General hover transition duration
+  
+  // Framer Motion Spring Configuration
+  SPRING_CONFIG: {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  },
 } as const;
 
 // Interaction and Proximity Configuration

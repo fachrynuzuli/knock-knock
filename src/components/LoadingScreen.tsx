@@ -46,19 +46,18 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
         >
           <div className="flex items-center justify-center mb-4">
             <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               className="p-4 rounded-full"
               style={{ backgroundColor: 'transparent' }}
               aria-hidden="true"
             >
-              {/* 2x Scaled Male Character Walking Right */}
+              {/* 2x Scaled Male Character Walking Right - NO SPINNING */}
               <WalkingCharacterAnimation
                 spritePath="/lv1_male_civilian.png"
                 frameWidth={64}
                 frameHeight={64}
                 frameCount={6}
                 directionRowIndex={2} // Right direction
+                rowCount={4} // Added rowCount prop
                 scale={2} // 2x bigger for loading screen
                 className=""
               />
