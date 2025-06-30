@@ -21,12 +21,12 @@ html {
 
 body {
   background-color: #111827;
-  overflow: hidden; /* Keep hidden for game screens */
+  overflow: hidden; /* Keep hidden for game screens - CONTROLLED BY LANDING PAGE */
 }
 
 /* Allow scrolling for landing page specifically with enhanced smoothness */
 body.landing-page {
-  overflow: auto;
+  /* Scroll state is now controlled dynamically by the landing page component */
   overflow-x: hidden;
   /* Enhanced scrolling performance */
   -webkit-overflow-scrolling: touch;
@@ -460,6 +460,15 @@ body.landing-page {
 .scroll-snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: normal;
+}
+
+/* SPECIAL: Scroll lock override classes */
+.scroll-locked {
+  overflow: hidden !important;
+}
+
+.scroll-unlocked {
+  overflow-y: auto !important;
 }
 
 /* Responsive enhancements */
