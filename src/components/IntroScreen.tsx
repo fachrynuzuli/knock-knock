@@ -662,7 +662,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
                   aria-live="polite"
                 >
                   {lockedMessage}
-                </div>
+                </motion.div>
               )}
 
               <div className="pt-3 border-t border-gray-700">
