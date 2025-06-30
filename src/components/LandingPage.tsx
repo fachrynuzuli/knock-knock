@@ -230,7 +230,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
           </div>
         </motion.section>
 
-        {/* LIVE PLAYABLE GAME DEMO SECTION */}
+        {/* LIVE PLAYABLE GAME DEMO SECTION - NOW 4X BIGGER! */}
         <motion.section 
           className="py-20 px-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 parallax-section scroll-snap-section"
           style={{ y: videoY, scale: videoScale, opacity: videoOpacity }}
@@ -247,15 +247,15 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-5xl font-heading text-white mb-6 glow-text-subtle">
-                🎮 Try It Right Now!
+                🎮 Try It Right Now! (4X Zoom!)
               </h2>
               <p className="text-lg md:text-xl text-gray-300 font-pixel max-w-3xl mx-auto leading-relaxed">
                 This isn't a video - it's the <span className="text-primary-400 font-bold">actual game running live!</span> 
-                Use WASD or arrow keys to walk around and explore the neighborhood.
+                Use <span className="text-secondary-400 font-bold">WASD to move</span>, <span className="text-warning-400 font-bold">arrows to pan camera</span>, and <span className="text-success-400 font-bold">E to interact</span>!
               </p>
             </motion.div>
 
-            {/* LIVE GAME DEMO */}
+            {/* LIVE GAME DEMO - NOW WITH 4X ZOOM AND FULL INTERACTIONS! */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -269,13 +269,13 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             >
               <MiniGameDemo 
                 onFullGameRequest={onEnterGameFlow}
-                scale={0.5}
+                scale={1.0} // 4X bigger than before!
                 autoPlay={false}
                 demoMode={true}
               />
             </motion.div>
 
-            {/* Game Features Highlight */}
+            {/* Enhanced Game Features Highlight */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -287,7 +287,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               viewport={{ once: true, margin: "-50px" }}
               className="mt-8 text-center"
             >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <motion.div 
                   className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 section-transition"
                   whileHover={{ 
@@ -295,9 +295,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
                   }}
                 >
-                  <div className="text-primary-400 font-heading text-lg mb-2">🏠 Explore</div>
+                  <div className="text-primary-400 font-heading text-lg mb-2">🚶 Move</div>
                   <p className="text-gray-300 font-pixel text-sm">
-                    Walk around your team's virtual neighborhood and visit houses
+                    WASD keys to walk around the neighborhood
                   </p>
                 </motion.div>
                 
@@ -308,9 +308,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
                   }}
                 >
-                  <div className="text-secondary-400 font-heading text-lg mb-2">📋 Report</div>
+                  <div className="text-secondary-400 font-heading text-lg mb-2">📹 Pan</div>
                   <p className="text-gray-300 font-pixel text-sm">
-                    Update your activity board with weekly accomplishments
+                    Arrow keys to pan camera independently
                   </p>
                 </motion.div>
                 
@@ -321,9 +321,22 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
                     transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
                   }}
                 >
-                  <div className="text-warning-400 font-heading text-lg mb-2">🎉 Celebrate</div>
+                  <div className="text-warning-400 font-heading text-lg mb-2">🏠 Interact</div>
                   <p className="text-gray-300 font-pixel text-sm">
-                    React and comment on teammates' achievements
+                    Press E near houses to view activity boards
+                  </p>
+                </motion.div>
+                
+                <motion.div 
+                  className="bg-gray-800/50 rounded-lg p-4 border border-gray-700 section-transition"
+                  whileHover={{ 
+                    y: -5,
+                    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                  }}
+                >
+                  <div className="text-success-400 font-heading text-lg mb-2">📋 Report</div>
+                  <p className="text-gray-300 font-pixel text-sm">
+                    Add your own activities and see the magic!
                   </p>
                 </motion.div>
               </div>
