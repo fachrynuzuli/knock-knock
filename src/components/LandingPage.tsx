@@ -352,7 +352,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               className="text-center mb-12"
             >
               <h2 className="text-3xl md:text-5xl font-heading text-white mb-6 glow-text-subtle">
-                🎮 Try It Right Now!
+                🎮 Try It Now!
               </h2>
               <p className="text-lg md:text-xl text-gray-300 font-pixel max-w-3xl mx-auto leading-relaxed">
                 This isn't a video, it's the <span className="text-primary-400 font-bold">actual game running live! </span> 
