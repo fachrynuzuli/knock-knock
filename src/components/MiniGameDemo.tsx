@@ -282,7 +282,7 @@ const MiniGameDemo: React.FC<MiniGameDemoProps> = ({
   };
 
   const cameraPosition = calculateCameraPosition();
-  const scaledMapWidth = 800; // Fixed demo size
+  const scaledMapWidth = 600; // Fixed demo size
   const scaledMapHeight = 600; // Fixed demo size
 
   return (
