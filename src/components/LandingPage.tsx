@@ -277,7 +277,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
               <motion.button
                 onClick={scrollToGameDemo}
                 whileHover={{ 
-                  scale: 1.8,
+                  scale: 1.1,
                   y: -5,
                   transition: { duration: 0.2 }
                 }}
