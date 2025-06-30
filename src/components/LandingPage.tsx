@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Users, Trophy, Star, ArrowRight, Sparkles, Target, BarChart3 } from 'lucide-react';
 import { ANIMATION_CONFIG, EFFECTS_CONFIG } from '../config/gameConfig';
@@ -9,8 +9,18 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
+  // Enable scrolling when landing page mounts
+  useEffect(() => {
+    document.body.classList.add('landing-page');
+    
+    // Cleanup when component unmounts
+    return () => {
+      document.body.classList.remove('landing-page');
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-900 relative">
+    <div className="min-h-screen bg-gray-900 relative overflow-y-auto">
       {/* Animated background particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {[...Array(EFFECTS_CONFIG.INTRO_PARTICLES)].map((_, i) => (
@@ -38,7 +48,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
       <div className="absolute inset-0 pointer-events-none z-10 scanlines-effect" aria-hidden="true" />
 
       {/* Main Content - Scrollable */}
-      <div className="relative z-20 flex flex-col overflow-y-auto">
+      <div className="relative z-20 flex flex-col">
         {/* Hero Section */}
         <section className="flex-1 flex items-center justify-center px-4 py-12 min-h-screen">
           <div className="max-w-6xl mx-auto text-center">
