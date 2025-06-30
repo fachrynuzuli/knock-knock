@@ -765,7 +765,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onEnterGameFlow }) => {
             </motion.div>
           </div>
         </motion.section>
-        */}
+      
 
         {/* Footer */}
         <footer className="py-8 px-4 border-t border-gray-700">
