@@ -31,10 +31,8 @@ const Player: React.FC<PlayerProps> = ({
   // Robust fallback handling - use default sprite if config is missing
   const finalSpriteConfig = spriteConfig || FALLBACK_CONFIG.DEFAULT_SPRITE;
   
-  // Additional validation for direction map
-  if (!finalSpriteConfig.directionMap) {
-    finalSpriteConfig.directionMap = FALLBACK_CONFIG.DEFAULT_SPRITE.directionMap;
-  }
+  // Use avatar's specific direction mapping with fallback
+  const directionMap = finalSpriteConfig.directionMap || FALLBACK_CONFIG.DEFAULT_SPRITE.directionMap;
   
   // Animation frame handling with centralized timing
   useEffect(() => {
@@ -71,8 +69,8 @@ const Player: React.FC<PlayerProps> = ({
   const getDirectionRow = () => {
     const directionToUse = isMoving ? direction : idleDirection;
     
-    // Use the avatar's specific direction mapping with fallback
-    const rowIndex = finalSpriteConfig.directionMap[directionToUse];
+    // Use the resolved direction map
+    const rowIndex = directionMap[directionToUse];
     
     // Validate that the row index is valid
     if (rowIndex === undefined || rowIndex < 0 || rowIndex >= finalSpriteConfig.rowCount) {
