@@ -120,16 +120,6 @@ const AppContent: React.FC = () => {
       ) : (
         <Game />
       )}
-      
-      {/* Global Bolt Logo - positioned at bottom-left with conditional opacity, spinning animation, and responsive sizing */}
-      <img
-        src="/white_circle_360x360.png"
-        alt="Built with Bolt"
-        className={`absolute bottom-2 left-2 z-50 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-opacity duration-300 bolt-logo-spin ${
-          isFormOpen || viewingTeammate ? 'opacity-50' : 'opacity-100'
-        }`}
-        style={{ imageRendering: 'auto' }}
-      />
     </div>
   );
 };
