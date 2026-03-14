@@ -264,6 +264,10 @@ export const getInteractableObjects = (): CollidableObject[] => {
   return allCollidableObjects.filter(obj => obj.interactable);
 };
 
+/**
+ * AABB collision check — used for **interaction and proximity detection only**.
+ * Movement collision is handled by the walkability mask in `Game.tsx`.
+ */
 export const checkCollision = (
   playerX: number,
   playerY: number,

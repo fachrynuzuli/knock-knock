@@ -18,12 +18,13 @@ import BadgeNotification from './BadgeNotification';
 
 // Import game objects and collision detection
 import { 
-  allCollidableObjects, 
   getObjectsByType, 
-  checkCollision, 
   checkProximity,
   CollidableObject 
 } from '../data/gameObjects';
+
+// Import walkability mask for pixel-based movement collision
+import { walkabilityMask } from '../utils/walkabilityMask';
 
 // Import centralized configuration
 import { 
@@ -51,11 +52,16 @@ const Game: React.FC = () => {
   // Camera state
   const [cameraOffsetX, setCameraOffsetX] = useState(0);
   const [cameraOffsetY, setCameraOffsetY] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(ZOOM_CONFIG.DEFAULT_ZOOM);
+  const [zoomLevel, setZoomLevel] = useState<number>(ZOOM_CONFIG.DEFAULT_ZOOM);
   const [isRecenteringCamera, setIsRecenteringCamera] = useState(false);
 
   // Get player's house from teammates array
   const playerHouse = teammates.find(teammate => teammate.isPlayer);
+
+  // Load the walkability mask once on mount
+  useEffect(() => {
+    walkabilityMask.load('/walkability_mask.png');
+  }, []);
   
   // Get game objects by type for rendering
   const townHallObjects = getObjectsByType('townHall');
@@ -117,23 +123,29 @@ const Game: React.FC = () => {
     setIsRecenteringCamera(false);
   };
 
-  // Enhanced collision detection function
+  // Pixel-based collision detection using walkability mask
   const canMoveTo = (newX: number, newY: number): boolean => {
-    // Check map boundaries
-    if (newX < MAP_CONFIG.PLAYER_WIDTH/2 || newX > MAP_CONFIG.MAP_WIDTH - MAP_CONFIG.PLAYER_WIDTH/2 || 
-        newY < MAP_CONFIG.PLAYER_HEIGHT/2 || newY > MAP_CONFIG.MAP_HEIGHT - MAP_CONFIG.PLAYER_HEIGHT/2) {
+    // 1. Map boundary guard (always applied)
+    if (
+      newX < MAP_CONFIG.PLAYER_WIDTH / 2 ||
+      newX > MAP_CONFIG.MAP_WIDTH - MAP_CONFIG.PLAYER_WIDTH / 2 ||
+      newY < MAP_CONFIG.PLAYER_HEIGHT / 2 ||
+      newY > MAP_CONFIG.MAP_HEIGHT - MAP_CONFIG.PLAYER_HEIGHT / 2
+    ) {
       return false;
     }
 
-    // Check collision with static objects
-    const collision = checkCollision(
-      newX - MAP_CONFIG.PLAYER_WIDTH/2, 
-      newY - MAP_CONFIG.PLAYER_HEIGHT/2, 
-      MAP_CONFIG.PLAYER_WIDTH, 
-      MAP_CONFIG.PLAYER_HEIGHT
-    );
+    // 2. Sample all four corners of the player hitbox against the walkability mask
+    const hw = MAP_CONFIG.PLAYER_WIDTH / 2;
+    const hh = MAP_CONFIG.PLAYER_HEIGHT / 2;
+    const corners = [
+      { x: newX - hw, y: newY - hh }, // top-left
+      { x: newX + hw, y: newY - hh }, // top-right
+      { x: newX - hw, y: newY + hh }, // bottom-left
+      { x: newX + hw, y: newY + hh }, // bottom-right
+    ];
 
-    return collision === null;
+    return corners.every(c => walkabilityMask.isWalkable(c.x, c.y));
   };
 
   // Enhanced interaction detection with priority system
