@@ -9,6 +9,7 @@ interface GameContextType {
   playerAvatarLevel: number;
   setPlayerName: (name: string) => void;
   setPlayerAvatar: (avatar: number) => void;
+  registerPlayer: (name: string, avatarId: number) => void;
   currentWeek: string;
   setCurrentWeek: (week: string) => void;
   isFormOpen: boolean;
@@ -50,7 +51,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     }
     
-    // Update Redux store with saved data
+    // Update Redux store with saved data atomically
     if (savedName || savedAvatar) {
       dispatch(updatePlayerInfo({ 
         name: savedName || 'Player', 
@@ -58,6 +59,18 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }));
     }
   }, [dispatch]);
+
+  const registerPlayer = (name: string, avatarId: number) => {
+    setPlayerNameState(name);
+    setPlayerAvatarState(avatarId);
+    
+    // Dispatch a single unified call to Redux
+    dispatch(updatePlayerInfo({ name, avatarId }));
+    
+    // Save to localStorage atomically
+    localStorage.setItem('playerName', name);
+    localStorage.setItem('playerAvatar', avatarId.toString());
+  };
 
   const setPlayerName = (name: string) => {
     setPlayerNameState(name);
@@ -81,6 +94,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setPlayerName,
     playerAvatar,
     setPlayerAvatar,
+    registerPlayer,
     playerAvatarLevel,
     currentWeek,
     setCurrentWeek,

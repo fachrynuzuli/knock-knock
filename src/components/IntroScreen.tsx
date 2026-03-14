@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useGameContext } from '../contexts/GameContext';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { MapPin, Lock, Users, UserPlus, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { MapPin, Users, UserPlus, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import { getAvatarById, getAllAvatarIds, isAvatarUnlocked, getAvatarUnlockMessage } from '../data/avatars';
 import AvatarCarousel from './AvatarCarousel';
-import WalkingCharacterAnimation from './WalkingCharacterAnimation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ANIMATION_CONFIG, EFFECTS_CONFIG, UI_CONFIG, ACCESSIBILITY_CONFIG } from '../config/gameConfig';
 
@@ -16,7 +15,7 @@ interface IntroScreenProps {
 type ScreenMode = 'initial' | 'create' | 'join' | 'instructions';
 
 const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
-  const { setPlayerName, setPlayerAvatar } = useGameContext();
+  const { registerPlayer } = useGameContext();
   const [screenMode, setScreenMode] = useState<ScreenMode>('initial');
   const [name, setName] = useState('');
   const [inviteCode, setInviteCode] = useState('');
@@ -40,9 +39,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
   });
 
   const avatarOptions = getAllAvatarIds();
-
-  // Focus management for accessibility
-  const [focusedElement, setFocusedElement] = useState<string | null>(null);
 
   // CRITICAL: Strict validation for locked avatars based on player level
   const validateAvatarSelection = (avatarId: number): { isValid: boolean; message?: string } => {
@@ -113,8 +109,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       // Save registration data
       saveUserRegistration(name, selectedAvatarId);
       
-      setPlayerName(name);
-      setPlayerAvatar(selectedAvatarId);
+      registerPlayer(name, selectedAvatarId);
       onStartGame();
     });
   };
@@ -148,8 +143,7 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         // Save registration data
         saveUserRegistration(name, selectedAvatarId);
         
-        setPlayerName(name);
-        setPlayerAvatar(selectedAvatarId);
+        registerPlayer(name, selectedAvatarId);
         onStartGame();
       });
     } else if (upperCode === 'HACKATHON') {
@@ -291,8 +285,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           whileTap={{ scale: 0.98 }}
           className="neon-button bg-primary-600 hover:bg-primary-700 p-6 md:p-8 rounded-lg text-white transition-all border-2 border-primary-400 shadow-pixel"
           aria-label="Create a new neighborhood as team lead"
-          onFocus={() => setFocusedElement('create')}
-          onBlur={() => setFocusedElement(null)}
         >
           <Users className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 floating-icon" aria-hidden="true" />
           <h3 className="text-lg md:text-xl font-heading mb-2">Create Neighborhood</h3>
@@ -305,8 +297,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
           whileTap={{ scale: 0.98 }}
           className="neon-button bg-secondary-600 hover:bg-secondary-700 p-6 md:p-8 rounded-lg text-white transition-all border-2 border-secondary-400 shadow-pixel"
           aria-label="Join an existing neighborhood with invite code"
-          onFocus={() => setFocusedElement('join')}
-          onBlur={() => setFocusedElement(null)}
         >
           <UserPlus className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 floating-icon" aria-hidden="true" />
           <h3 className="text-lg md:text-xl font-heading mb-2">Join Neighborhood</h3>
@@ -320,8 +310,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         whileTap={{ scale: 0.98 }}
         className="mt-6 md:mt-8 w-full py-3 md:py-4 rounded-lg font-heading text-white bg-gray-600 hover:bg-gray-700 shadow-pixel neon-button transition-all"
         aria-label="View game instructions and controls"
-        onFocus={() => setFocusedElement('instructions')}
-        onBlur={() => setFocusedElement(null)}
       >
         How To Play
       </motion.button>
@@ -793,8 +781,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ 
           opacity: 1, 
-          y: 0,
-          // Floating animation
           y: [0, -8, 0],
         }}
         transition={{ 
