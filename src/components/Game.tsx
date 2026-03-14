@@ -237,6 +237,13 @@ const Game: React.FC = () => {
   
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Input focus guard: skip all game keybinds if the user is typing in a form field
+      const activeEl = document.activeElement;
+      const tag = activeEl?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || activeEl?.getAttribute('contenteditable') === 'true') {
+        return;
+      }
+
       // Prevent default for game controls to avoid page scrolling
       if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'e', ' ', 'escape', 'l'].includes(e.key.toLowerCase())) {
         e.preventDefault();

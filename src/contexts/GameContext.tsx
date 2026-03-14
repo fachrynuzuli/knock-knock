@@ -60,7 +60,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [dispatch]);
 
   const setPlayerName = (name: string) => {
-    console.log('GameContext: Setting player name to:', name, 'Current avatar:', playerAvatar, 'Current level:', playerAvatarLevel);
     setPlayerNameState(name);
     dispatch(updatePlayerInfo({ name, avatarId: playerAvatar }));
     // Save to localStorage
@@ -68,7 +67,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const setPlayerAvatar = (avatar: number) => {
-    console.log('GameContext: Setting player avatar to:', avatar, 'Current name:', playerName, 'Current level:', playerAvatarLevel);
     setPlayerAvatarState(avatar);
     dispatch(updatePlayerInfo({ name: playerName, avatarId: avatar }));
     // Save to localStorage

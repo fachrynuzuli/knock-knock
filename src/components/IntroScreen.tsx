@@ -108,14 +108,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
       return;
     }
 
-    console.log('AVATAR SELECTION: Starting game with validated avatar:', {
-      avatarId: selectedAvatarId,
-      avatarName: getAvatarById(selectedAvatarId)?.name,
-      playerName: name,
-      playerLevel: playerLevel,
-      isUnlocked: isAvatarUnlocked(selectedAvatarId, playerLevel)
-    });
-
     // Enhanced loading experience
     simulateLoading(() => {
       // Save registration data
@@ -152,14 +144,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     const upperCode = inviteCode.trim().toUpperCase();
     
     if (upperCode === 'HACKED') {
-      console.log('AVATAR SELECTION: Joining with validated avatar:', {
-        avatarId: selectedAvatarId,
-        avatarName: getAvatarById(selectedAvatarId)?.name,
-        playerName: name,
-        playerLevel: playerLevel,
-        isUnlocked: isAvatarUnlocked(selectedAvatarId, playerLevel)
-      });
-
       simulateLoading(() => {
         // Save registration data
         saveUserRegistration(name, selectedAvatarId);
@@ -178,7 +162,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
 
   const handleAvatarSelect = (avatarId: number) => {
     setSelectedAvatarId(avatarId);
-    console.log('AVATAR SELECTION: Selected avatar:', avatarId, getAvatarById(avatarId)?.name, 'Player Level:', playerLevel);
   };
 
   const handleLockedMessage = (message: string) => {
@@ -220,7 +203,6 @@ const IntroScreen: React.FC<IntroScreenProps> = ({ onStartGame }) => {
     const firstUnlockedAvatar = avatarOptions.find(id => isAvatarUnlocked(id, playerLevel));
     if (firstUnlockedAvatar && firstUnlockedAvatar !== selectedAvatarId) {
       setSelectedAvatarId(firstUnlockedAvatar);
-      console.log('AVATAR SELECTION: Auto-selected first unlocked avatar:', firstUnlockedAvatar, 'for player level:', playerLevel);
     }
   }, [playerLevel]);
 

@@ -143,7 +143,6 @@ const teammatesSlice = createSlice({
         state.items[playerIndex].avatarId = action.payload.avatarId;
         // CRITICAL FIX: Do NOT reset avatar level when updating player info
         // Avatar level should persist based on player progress
-        console.log('Updated player info - Name:', action.payload.name, 'Avatar ID:', action.payload.avatarId, 'Current Avatar Level:', state.items[playerIndex].avatarLevel, 'Player Level:', state.items[playerIndex].playerLevel);
       }
     },
     setPlayerLevel: (state, action: PayloadAction<{ id: string; level: number }>) => {
@@ -152,7 +151,6 @@ const teammatesSlice = createSlice({
       
       if (index !== -1) {
         state.items[index].playerLevel = level;
-        console.log(`Player level set to ${level} for teammate ${id}`);
       }
     },
     upgradeAvatarLevel: (state, action: PayloadAction<{ id: string }>) => {
@@ -179,16 +177,12 @@ const teammatesSlice = createSlice({
         // Update player level based on total activities
         if (totalActivities === 1 && state.items[index].playerLevel < 2) {
           state.items[index].playerLevel = 2;
-          console.log(`Player level advanced to 2 after first activity submission`);
         } else if (totalActivities === 15 && state.items[index].playerLevel < 3) {
           state.items[index].playerLevel = 3;
-          console.log(`Player level advanced to 3 after 15 activities`);
         } else if (totalActivities === 30 && state.items[index].playerLevel < 4) {
           state.items[index].playerLevel = 4;
-          console.log(`Player level advanced to 4 after 30 activities`);
         } else if (totalActivities === 50 && state.items[index].playerLevel < 5) {
           state.items[index].playerLevel = 5;
-          console.log(`Player level advanced to 5 after 50 activities`);
         }
         
         // Check if house level should be upgraded (every 10 activities)

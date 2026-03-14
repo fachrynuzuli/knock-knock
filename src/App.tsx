@@ -17,9 +17,6 @@ const AppContent: React.FC = () => {
   const [isLoadingAssets, setIsLoadingAssets] = useState(false); // Changed to false initially
   const [loadingMessage, setLoadingMessage] = useState('');
   
-  // Access game context for form states
-  const { isFormOpen, viewingTeammate } = useGameContext();
-  
   // Get player position and teammate data from Redux
   const playerPosition = useSelector((state: RootState) => state.gameState.playerPosition);
   const playerTeammate = useSelector((state: RootState) => 
@@ -33,7 +30,7 @@ const AppContent: React.FC = () => {
       const playerName = localStorage.getItem('playerName');
       const playerAvatar = localStorage.getItem('playerAvatar');
       
-      const isReturning = hasRegistered === 'true' && playerName && playerAvatar;
+      const isReturning = (hasRegistered === 'true') && !!playerName && !!playerAvatar;
       
       setIsReturningUser(isReturning);
       

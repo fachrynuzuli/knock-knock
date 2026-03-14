@@ -28,20 +28,11 @@ const Player: React.FC<PlayerProps> = ({
   // Get sprite configuration from centralized data with robust fallback
   const spriteConfig = getAvatarStage(playerData.avatarId, playerData.avatarLevel);
   
-  // Debug logging for avatar rendering
-  console.log('Player component rendering with:', { 
-    avatarId: playerData.avatarId, 
-    avatarLevel: playerData.avatarLevel, 
-    name: playerData.name, 
-    spriteConfig 
-  });
-  
   // Robust fallback handling - use default sprite if config is missing
   const finalSpriteConfig = spriteConfig || FALLBACK_CONFIG.DEFAULT_SPRITE;
   
   // Additional validation for direction map
   if (!finalSpriteConfig.directionMap) {
-    console.error(`CRITICAL: No directionMap found for avatarId: ${playerData.avatarId}, level: ${playerData.avatarLevel}. Using fallback.`);
     finalSpriteConfig.directionMap = FALLBACK_CONFIG.DEFAULT_SPRITE.directionMap;
   }
   
@@ -85,7 +76,6 @@ const Player: React.FC<PlayerProps> = ({
     
     // Validate that the row index is valid
     if (rowIndex === undefined || rowIndex < 0 || rowIndex >= finalSpriteConfig.rowCount) {
-      console.error(`Invalid direction mapping for ${directionToUse}: ${rowIndex}. Using fallback row 0.`);
       return 0;
     }
     
